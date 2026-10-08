@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 using Dapper;
 
 
-public class AccountsAccess
+public class AccountsAccess : IDataAccess<AccountModel>
 {
     private SqliteConnection _connection = new SqliteConnection($"Data Source=DataSources/project.db");
 
@@ -13,6 +13,12 @@ public class AccountsAccess
     {
         string sql = $"INSERT INTO {Table} (email, password, fullname) VALUES (@EmailAddress, @Password, @FullName)";
         _connection.Execute(sql, account);
+    }
+
+    public AccountModel Select(int id )
+    {
+        string sql = $"SELECT * FROM {Table} WHERE  id = @Id";
+        return _connection.QueryFirstOrDefault<AccountModel>(sql, new {  Id = id});
     }
 
     public AccountModel GetByEmail(string email)
