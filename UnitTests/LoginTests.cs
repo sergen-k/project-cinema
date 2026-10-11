@@ -16,7 +16,7 @@ public sealed class Test1
         AccountsAccess access = new();
 
         // act 
-        AccountModel result = l.CheckLogin(m, p);
+        UserModel result = l.CheckLogin(m, p);
 
         // assert
         Assert.IsNotNull(result);
@@ -36,7 +36,7 @@ public sealed class Test1
         AccountsLogic l = new();
 
         // act 
-        AccountModel result = l.CheckLogin(m, p);
+        UserModel result = l.CheckLogin(m, p);
 
         // assert
         Assert.IsNull(result);
