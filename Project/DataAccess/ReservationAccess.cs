@@ -6,7 +6,7 @@ public class ReservationAccess : IDataAccess<ReservationModel>
 
     private SqliteConnection _connection = new SqliteConnection($"Data Source=DataSources/project.db");
 
-    private string Table = "Accounts";
+    private string Table = "Reservation";
 
     public void Write(ReservationModel reservation)
     {
@@ -20,10 +20,10 @@ public class ReservationAccess : IDataAccess<ReservationModel>
         return _connection.QueryFirstOrDefault<ReservationModel>(sql, new {Id = id});
     }
 
-    public List<ReservationModel> GetByUser(int userId)
+    public List<ReservationModel> GetByUser(UserModel user)
     {
         string sql = $"SELECT * FROM {Table} WHERE userId = @UserId";
-        return _connection.Query<ReservationModel>(sql, new { UserId = userId}).ToList();
+        return _connection.Query<ReservationModel>(sql, new { UserId = user.Id}).ToList();
     }
 
     public void Update(ReservationModel reservation)
@@ -37,5 +37,4 @@ public class ReservationAccess : IDataAccess<ReservationModel>
         string sql = $"DELETE FROM {Table} WHERE id = @Id";
         _connection.Execute(sql, new { Id = reservation.Id });
     }
-
 }
