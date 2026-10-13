@@ -16,8 +16,10 @@
         FullName = fullname;
     }
 
-
+    public UserModel()
+    {
+        EmailAddress = "";
+        Password = "";
+        FullName = "";
+    }
 }
-
-
-
