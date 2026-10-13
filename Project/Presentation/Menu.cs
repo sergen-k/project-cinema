@@ -1,28 +1,61 @@
 static class Menu
 {
-
-    //This shows the menu. You can call back to this method to show the menu again
-    //after another presentation method is completed.
-    //You could edit this to show different menus depending on the user's role
-    static public void Start()
+    public static UserModel User = null;
+    private static Dictionary<int,string> _options = new();
+    public static void Start()
     {
-        Console.WriteLine("Enter 1 to login");
-        Console.WriteLine("Enter 2 to do something else in the future");
-
-        string input = Console.ReadLine();
-        if (input == "1")
+        LoadOptions();
+        PrintMenuOptions();
+        string chosenMenu = _options[Options()];
+        switch (chosenMenu) // Got to give each option a body
         {
-            UserLogin.Start();
+            case "About Us":
+                break;
+            case "Browse Movies":
+                break;
+            case "Register":
+                break;
+            case "Log In":
+                break;
+            case "Log Out":
+                break;
+            case "View Reservations":
+                break;
         }
-        else if (input == "2")
+    }
+
+    private static void LoadOptions()
+    {
+        _options.Clear();
+        int indexer = 0;
+        _options[++indexer] = "About Us";
+        _options[++indexer] = "Browse Movies";
+        if (User == null)
         {
-            Console.WriteLine("This feature is not yet implemented");
+            _options[++indexer] = "Register";
+            _options[++indexer] = "Log In";
         }
         else
         {
-            Console.WriteLine("Invalid input");
-            Start();
+            _options[++indexer] = "Log Out";
+            _options[++indexer] = "View Reservations";
         }
+        // can expand to give options to admins
+    }
 
+    private static void PrintMenuOptions()
+    {
+        foreach(KeyValuePair<int,string> option in _options)
+            Console.WriteLine($"{option.Key}. {option.Value}");
+    }
+
+    private static int Options()
+    {
+        int option;
+        do
+        {
+            int.TryParse(Console.ReadLine(), out option);
+        } while (!_options.ContainsKey(option));
+        return option;
     }
 }

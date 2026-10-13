@@ -32,4 +32,8 @@ public class UserModel
         DateOfBirth = dateOfBirth;
         Role = role;
     }
+
+    public UserModel()
+    {
+    }
 }

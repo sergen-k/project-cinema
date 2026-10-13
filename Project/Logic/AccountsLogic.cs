@@ -8,19 +8,12 @@ public class AccountsLogic
     //This can be used to get the current logged in account from anywhere in the program
     //private set, so this can only be set by the class itself
     public static UserModel? CurrentAccount { get; private set; }
-    private AccountsAccess _access = new();
+    private UserAccess _access = new UserAccess();
 
-    public AccountsLogic()
+    public UserModel? CheckLogin(string email, string password)
     {
-        // Could do something here
+        UserModel? acc = _access.SelectByEmail(email);
 
-    }
-
-    public UserModel CheckLogin(string email, string password)
-    {
-
-
-        UserModel acc = _access.GetByEmail(email);
         if (acc != null && acc.Password == password)
         {
             CurrentAccount = acc;
@@ -29,7 +22,3 @@ public class AccountsLogic
         return null;
     }
 }
-
-
-
-
