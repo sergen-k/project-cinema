@@ -1,2 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
-Menu.Start();
+
+ViewReservation test = new();
+
+test.Start();
+
+// Menu.Start();

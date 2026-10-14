@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 public class ViewReservation
 {
     private readonly ReservationLogic _reservationLogic = new();
@@ -11,7 +13,7 @@ public class ViewReservation
     public void Start()
     {
 
-        UserModel user = new(0, "jogndoe", "sdwd", "wd");
+        UserModel user = new(1, "jogndoe", "sdwd", "wd");
         _reservations = _reservationLogic.GetByUser(user);
 
         Console.WriteLine("overview of your reservations:");
@@ -20,19 +22,23 @@ public class ViewReservation
             Console.Clear();
             PrintTable();
             PrintMenu();
+            string userInput = MenuInput();
+            switch (userInput) {
+                case "Q": return;
+                case "+": 
+                    if (10*_pageNumber <= _reservations.Count+10) _pageNumber++;
+                    break;
+                case "-": if (_pageNumber >0 )_pageNumber--; break;
+            }
 
-
-            
         } 
-
-
     }
 
 
     public void PrintTable()
     {
-        int min = Math.Min(Math.Max(0, _pageNumber * 10), _reservations.Count - 1);
-        int max = Math.Min(_pageNumber * 10 + 9, _reservations.Count - 1);
+        int min = Math.Min(Math.Max(0, _pageNumber * 10), _reservations.Count);
+        int max = Math.Min(_pageNumber * 10 + 9, _reservations.Count);
 
         List<ReservationModel> sliced = _reservations[min..max];
         Console.WriteLine("ReservationNumber; Movie title; Date; Price ");
@@ -65,7 +71,7 @@ public class ViewReservation
                 return userInput;
             } else
             {
-                
+                Console.WriteLine("Please enter one of the valid options: Q, +, - to continue");
             }
         }
     }
