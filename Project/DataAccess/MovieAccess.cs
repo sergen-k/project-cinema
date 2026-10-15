@@ -7,11 +7,11 @@ public class MovieAccess : IDataAccess<MovieModel>
 {
     private SqliteConnection _connection = new SqliteConnection($"Data Source=DataSources/project.db");
 
-    private string Table = "Movies";
+    private string Table = "Movie";
 
     public void Write(MovieModel movie)
     {
-        string sql = $"INSERT INTO {Table} (title, description, director, ageLimit, duration) VALUES (@Title, @Description, @Director, @AgeLimit, @Duration)";
+        string sql = $"INSERT INTO {Table} (title, description, director, genre, ageLimit, duration) VALUES (@Title, @Description, @Director, @Genre, @AgeLimit, @Duration)";
         _connection.Execute(sql, movie);
     }
 
@@ -29,7 +29,7 @@ public class MovieAccess : IDataAccess<MovieModel>
 
     public void Update(MovieModel movie)
     {
-        string sql = $"UPDATE {Table} SET title = @Title, description = @Description, director = @Director WHERE id = @Id, ageLimit = @AgeLimit, duration = @Duration";
+        string sql = $"UPDATE {Table} SET title = @Title, description = @Description, director = @Director, genre = @Genre WHERE id = @Id, ageLimit = @AgeLimit, duration = @Duration";
         _connection.Execute(sql, movie);
     }
 
