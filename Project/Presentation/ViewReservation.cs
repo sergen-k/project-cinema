@@ -8,7 +8,7 @@ public class ViewReservation
     public void Start()
     {
 
-        UserModel user = new(0, "jogndoe", "sdwd", "wd");
+         UserModel user = new(0, "jogndoe", "sdwd", "0000000000", "wd", 0, "Customer");
         _reservations = _reservationLogic.GetByUser(user);
 
         
