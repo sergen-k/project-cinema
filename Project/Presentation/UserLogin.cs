@@ -17,7 +17,7 @@ static class UserLogin
 
             if (acc != null)
             {
-                Menu.User = acc;
+                AccountsLogic.ChangeAccount(acc);
 
                 Console.WriteLine("Welcome back " + acc.FullName);
                 Console.WriteLine("Login successful!");

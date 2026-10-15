@@ -51,7 +51,7 @@ public class MoviesLogic
             director,
             genre,
             ageLimit,
-            duration
+            minutes
         );
 
         _movieAccess.AddMovie(movie);

@@ -14,7 +14,7 @@ public static class AdminAddMovie
         string duration = AskForDuration();
 
         bool success = moviesLogic.AddMovie(
-            Menu.User,
+            AccountsLogic.CurrentAccount,
             title,
             genre,
             director,
