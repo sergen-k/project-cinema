@@ -1,6 +1,6 @@
 
     public class MovieModel {
-    public MovieModel(long id, string title, string description, string director, long ageLimit, string duration)
+    public MovieModel(long id, string title, string description, string director, long ageLimit, double duration)
     {
         Id = id;
         Title = title;
@@ -15,5 +15,5 @@
     public  String   Description {get; set;}
     public  String   Director {get; set;}
     public  Int64   AgeLimit {get; set;}
-    public  String   Duration {get; set;}
+    public  double   Duration {get; set;}
  }
