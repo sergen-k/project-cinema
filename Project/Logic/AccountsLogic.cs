@@ -1,5 +1,5 @@
 ﻿
-
+using Microsoft.Data.Sqlite;
 //This class is not static so later on we can use inheritance and interfaces
 public class AccountsLogic
 {
@@ -8,7 +8,7 @@ public class AccountsLogic
     //This can be used to get the current logged in account from anywhere in the program
     //private set, so this can only be set by the class itself
     public static UserModel? CurrentAccount { get; private set; }
-    private UserAccess _access = new UserAccess();
+    private UserAccess _access = new UserAccess(new SqliteConnection("Data Source=DataSources/project.db"));
 
     public UserModel? CheckLogin(string email, string password)
     {
