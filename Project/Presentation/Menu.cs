@@ -4,23 +4,30 @@ static class Menu
     private static Dictionary<int,string> _options = new();
     public static void Start()
     {
-        LoadOptions();
-        PrintMenuOptions();
-        string chosenMenu = _options[Options()];
-        switch (chosenMenu) // Got to give each option a body
+        while (true)
         {
-            case "About Us":
-                break;
-            case "Browse Movies":
-                break;
-            case "Register":
-                break;
-            case "Log In":
-                break;
-            case "Log Out":
-                break;
-            case "View Reservations":
-                break;
+            LoadOptions();
+            PrintMenuOptions();
+            
+            string chosenMenu = _options[Options()];
+
+            switch (chosenMenu) // Got to give each option a body
+            {
+                case "About Us":
+                    break;
+                case "Browse Movies":
+                    break;
+                case "Register":
+                    break;
+                case "Log In":
+                    UserLogin.Start();
+                    break;
+                case "Log Out":
+                    User = null;
+                    break;
+                case "View Reservations":
+                    break;
+            }
         }
     }
 
