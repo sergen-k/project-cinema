@@ -26,7 +26,6 @@ public static class Register
         _userLogic.AddUser(newUser);
 
         Console.WriteLine("Registration successful!");
-        Menu.Start();
     }
 
     private static string AskFullName()
@@ -48,7 +47,9 @@ public static class Register
         {
             Console.WriteLine("Enter your email:");
             email = Console.ReadLine();
-        } while (string.IsNullOrEmpty(email) || !_userLogic.IsValidEmail(email));
+        } while (string.IsNullOrEmpty(email)
+               || !_userLogic.IsValidEmail(email)
+               || _userLogic.EmailAlreadyExists(email));
 
         return email;
     }

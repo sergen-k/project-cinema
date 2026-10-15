@@ -14,6 +14,7 @@ static class Menu
             case "Browse Movies":
                 break;
             case "Register":
+                Register.Start();
                 break;
             case "Log In":
                 break;
