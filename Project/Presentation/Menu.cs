@@ -1,6 +1,5 @@
 static class Menu
 {
-    public static UserModel User = null;
     private static Dictionary<int,string> _options = new();
     public static void Start()
     {
@@ -16,6 +15,7 @@ static class Menu
                 case "About Us":
                     break;
                 case "Browse Movies":
+                    BrowseMovies.Start();
                     break;
                 case "Register":
                     break;
@@ -23,7 +23,7 @@ static class Menu
                     UserLogin.Start();
                     break;
                 case "Log Out":
-                    User = null;
+                    AccountsLogic.LogOut();
                     break;
                 case "View Reservations":
                     break;
@@ -37,7 +37,7 @@ static class Menu
         int indexer = 0;
         _options[++indexer] = "About Us";
         _options[++indexer] = "Browse Movies";
-        if (User == null)
+        if (AccountsLogic.CurrentAccount == null)
         {
             _options[++indexer] = "Register";
             _options[++indexer] = "Log In";
