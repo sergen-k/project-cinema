@@ -21,4 +21,14 @@ public class AccountsLogic
         }
         return null;
     }
+
+    public static void ChangeAccount(UserModel user)
+    {
+        CurrentAccount = user;
+    }
+
+    public static void LogOut()
+    {
+        CurrentAccount = null;
+    }
 }
