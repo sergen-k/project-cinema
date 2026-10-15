@@ -17,9 +17,10 @@ public static class InspectMovie
 
     private static void DisplayInfo(MovieModel movie)
     {
-        Console.WriteLine(movie.Name);
+        Console.WriteLine(movie.Title);
+        Console.WriteLine($"Genre: {movie.Genre}");
         Console.WriteLine($"Directed by: {movie.Director}");
-        Console.WriteLine($"Must be atleast {movie.AgeLimit} years old");
+        Console.WriteLine($"Must be at least {movie.AgeLimit} years old");
         Console.WriteLine($"Duration: {movie.Duration} minutes");
         Console.WriteLine();
         Console.WriteLine(movie.Description);
