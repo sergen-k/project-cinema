@@ -1,6 +1,6 @@
 public class InspectMovieLogic
 {
-    public static bool IsLoggedIn() => Menu.User == null ? false : true;
+    public static bool IsLoggedIn() => AccountsLogic.CurrentAccount == null ? false : true;
 
     public static bool IsOfAge(MovieModel movie)
     {
