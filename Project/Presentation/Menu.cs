@@ -27,6 +27,9 @@ static class Menu
                     break;
                 case "View Reservations":
                     break;
+                case "Add Movie":
+                    AdminAddMovie.Start();
+                    break;
             }
         }
     }
@@ -46,6 +49,11 @@ static class Menu
         {
             _options[++indexer] = "Log Out";
             _options[++indexer] = "View Reservations";
+
+            if (AccountsLogic.CurrentAccount?.Rol == "admin")
+            {
+                _options[++indexer] = "Add Movie";
+            }
         }
         // can expand to give options to admins
     }

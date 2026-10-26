@@ -9,7 +9,7 @@ public class UserAccess
 
     public UserModel? SelectByEmail(string email)
     {
-        string sql = $"SELECT id, email AS EmailAddress, password, fullName FROM {Table} WHERE email = @Email";
+        string sql = $"SELECT id, email AS EmailAddress, password, fullName, rol FROM {Table} WHERE email = @Email";
 
         return _connection.QueryFirstOrDefault<UserModel>(sql, new { Email = email });
     }
