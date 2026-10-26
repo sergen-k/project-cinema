@@ -5,7 +5,7 @@ public class MoviesLogic
     public bool AddMovie(UserModel? user, string title, string genre, string director,
                          string description, long ageLimit, string duration)
     {
-        if (user == null || user.Rol != "admin")
+        if (user == null || user.Role != "admin")
         {
             return false;
         }
