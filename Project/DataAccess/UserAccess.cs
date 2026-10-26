@@ -9,7 +9,6 @@ public class UserAccess : IDataAccess<UserModel>
     public UserAccess(SqliteConnection connection)
     {
         _connection = connection;
-        
     }
 
     public void Write(UserModel model)

@@ -1,27 +1,37 @@
 static class Menu
 {
-    public static UserModel User = null;
     private static Dictionary<int,string> _options = new();
     public static void Start()
     {
-        LoadOptions();
-        PrintMenuOptions();
-        string chosenMenu = _options[Options()];
-        switch (chosenMenu) // Got to give each option a body
+        while (true)
         {
-            case "About Us":
-                break;
-            case "Browse Movies":
-                break;
-            case "Register":
-                Register.Start();
-                break;
-            case "Log In":
-                break;
-            case "Log Out":
-                break;
-            case "View Reservations":
-                break;
+            LoadOptions();
+            PrintMenuOptions();
+
+            string chosenMenu = _options[Options()];
+
+            switch (chosenMenu) // Got to give each option a body
+            {
+                case "About Us":
+                    break;
+                case "Browse Movies":
+                    BrowseMovies.Start();
+                    break;
+                case "Register":
+                    Register.Start();
+                    break;
+                case "Log In":
+                    UserLogin.Start();
+                    break;
+                case "Log Out":
+                    AccountsLogic.LogOut();
+                    break;
+                case "View Reservations":
+                    break;
+                case "Add Movie":
+                    AdminAddMovie.Start();
+                    break;
+            }
         }
     }
 
@@ -31,7 +41,7 @@ static class Menu
         int indexer = 0;
         _options[++indexer] = "About Us";
         _options[++indexer] = "Browse Movies";
-        if (User == null)
+        if (AccountsLogic.CurrentAccount == null)
         {
             _options[++indexer] = "Register";
             _options[++indexer] = "Log In";
@@ -40,8 +50,12 @@ static class Menu
         {
             _options[++indexer] = "Log Out";
             _options[++indexer] = "View Reservations";
+
+            if (AccountsLogic.CurrentAccount?.Role == "admin")
+            {
+                _options[++indexer] = "Add Movie";
+            }
         }
-        // can expand to give options to admins
     }
 
     private static void PrintMenuOptions()
