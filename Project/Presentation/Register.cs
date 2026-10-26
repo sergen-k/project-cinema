@@ -35,7 +35,7 @@ public static class Register
         {
             Console.WriteLine("Enter your full name:");
             fullName = Console.ReadLine();
-        } while (string.IsNullOrEmpty(fullName));
+        } while (!_userLogic.IsValidFullName(fullName));
 
         return fullName;
     }

@@ -9,13 +9,14 @@ public class UserAccess : IDataAccess<UserModel>
     public UserAccess(SqliteConnection connection)
     {
         _connection = connection;
+        
     }
 
     public void Write(UserModel model)
     {
         string sql = $@"INSERT INTO {Table} 
-                        (FullName, Email, Phone, Password, DateOfBirth, Role) 
-                        VALUES (@FullName, @Email, @Phone, @Password, @DateOfBirth, @Role)";
+                        (FullName, Email, phoneNumber, Password, DateOfBirth, Role) 
+                        VALUES (@FullName, @Email, @PhoneNumber, @Password, @DateOfBirth, @Role)";
         _connection.Execute(sql, model);
     }
 
@@ -28,7 +29,7 @@ public class UserAccess : IDataAccess<UserModel>
     public void Update(UserModel model)
     {
         string sql = $@"UPDATE {Table} 
-                        SET FullName = @FullName, Email = @Email, Phone = @Phone, 
+                        SET FullName = @FullName, Email = @Email, phoneNumber  = @PhoneNumber, 
                             Password = @Password, DateOfBirth = @DateOfBirth, Role = @Role 
                         WHERE Id = @Id";
         _connection.Execute(sql, model);

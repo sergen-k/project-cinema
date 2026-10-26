@@ -61,4 +61,8 @@ public class UserLogic
     {
         _userAccess.Write(user);
     }
+    public bool IsValidFullName(string fullName)
+    {
+        return !string.IsNullOrWhiteSpace(fullName) && fullName.Trim().Length >= 2;
+    }
 }
