@@ -1,7 +1,6 @@
 
 public class ReservationLogic
 {
-
     private readonly ReservationAccess _reservationAccess = new();
 
 
