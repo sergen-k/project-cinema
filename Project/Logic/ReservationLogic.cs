@@ -1,7 +1,6 @@
 
 public class ReservationLogic
 {
-
     private readonly ReservationAccess _reservationAccess = new();
 
 
@@ -13,6 +12,16 @@ public class ReservationLogic
         }
         
         return _reservationAccess.GetByUser(user);
+    }
+
+
+    public long getNextReservationId()
+    {
+        return _reservationAccess.getNextReservationId();
+    }
+    public void MakeReservation(ReservationModel reservation)
+    {
+        _reservationAccess.Write(reservation);
     }
 
 }
