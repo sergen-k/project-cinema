@@ -31,6 +31,7 @@ public static class BrowseMovies
                     break;
                 default:
                     movieToSee = Movies[int.Parse(answer)-1];
+                    Console.Clear();
                     InspectMovie.Start(movieToSee);
                     break;
             }

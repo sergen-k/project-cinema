@@ -9,6 +9,7 @@ static class Menu
             PrintMenuOptions();
             
             string chosenMenu = _options[Options()];
+            Console.Clear();
 
             switch (chosenMenu) // Got to give each option a body
             {
@@ -26,6 +27,9 @@ static class Menu
                     AccountsLogic.LogOut();
                     break;
                 case "View Reservations":
+                    ViewReservation viewReservation = new();
+                    viewReservation.Start();
+
                     break;
                 case "Add Movie":
                     AdminAddMovie.Start();
