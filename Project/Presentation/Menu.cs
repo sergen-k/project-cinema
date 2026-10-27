@@ -36,6 +36,8 @@ static class Menu
                     AdminAddMovie.Start();
                     break;
             }
+
+            Console.Clear();
         }
     }
 

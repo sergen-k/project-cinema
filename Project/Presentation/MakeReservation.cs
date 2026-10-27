@@ -7,16 +7,22 @@ public static class MakeReservation
 
   public static void Start(MovieModel movie)
   {
-
+    Console.Clear();
     // tijdelijke suser id en movie id, we gaan er vanuit dat iemand is ingelogd en een movie heeft gekozen
     // int user_id = 1;
     TimetableAccess timetableAccess = new();
     List<TimetableModel> timetables = timetableAccess.SelectByMovieId(movie);
     if (timetables.Count == 0)
     {
-      Console.WriteLine("Currently there are no planned viewings of this movie. Try again later");
+      Console.WriteLine("Currently there are no planned viewings of this movie. Try again later, press Q to return");
+
+      while (true)
+      {
+        if (Console.ReadLine() == "Q") break;
+      }
+
       return;
-    } 
+    }
 
     ConsoleMenu<DateTime> menu = new ConsoleMenu<DateTime>();
 
@@ -53,4 +59,5 @@ public static class MakeReservation
 
   }
   // daarna heb je timetable menu waar ik alle tijden laat zien waaruit je het kan fixen.
+
 }

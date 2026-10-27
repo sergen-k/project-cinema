@@ -14,7 +14,15 @@ public static class BrowseMovies
         do
         {
             Movies = BrowseMovieLogic.SelectAll();
+            if (Movies.Count == 0)
+            {
+                Console.WriteLine("Currently no movies available");
+            }
+
             MovieList();
+
+
+
             Console.WriteLine();
             answer = Options();
             switch(answer)

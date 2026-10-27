@@ -1,8 +1,10 @@
 using System;
+using System.Security.Cryptography;
+using System.Text;
 
 public static class Register
 {
-    private static UserLogic _userLogic;
+    private static UserLogic _userLogic = new();
 
     public static void Initialize(UserLogic userLogic)
     {
@@ -15,12 +17,16 @@ public static class Register
         string email = AskEmail();
         string phone = AskPhoneNumber();
         string dateOfBirthInput = AskDateOfBirth();
+        
+        Console.WriteLine("Enter a password (min 12 characters, 1 uppercase, 1 number, 1 special character):");
         string password = AskPassword();
         AskPasswordConfirmation(password);
 
         DateTime dob = _userLogic.ParseDateOfBirth(dateOfBirthInput);
 
-        UserModel newUser = new UserModel(0, fullName, email, phone, password, 0, "Customer");
+        string hashedPassword = HashPassword(password);
+
+        UserModel newUser = new UserModel(0, fullName, email, phone, hashedPassword, 0, "Customer");
         newUser.HumanReadableDateOfBirth = dob;
 
         _userLogic.AddUser(newUser);
@@ -78,16 +84,67 @@ public static class Register
         return dateOfBirthInput;
     }
 
+
+    // Source - https://stackoverflow.com/a/17001289
+    // Posted by Dmitrii Bychenko, modified by community. See post 'Timeline' for change history
+    // Retrieved 2026-10-27, License - CC BY-SA 4.0
+
+    public static string sha256_hash(String value)
+    {
+        StringBuilder Sb = new StringBuilder();
+
+        using (SHA256 hash = SHA256Managed.Create())
+        {
+            Encoding enc = Encoding.UTF8;
+            Byte[] result = hash.ComputeHash(enc.GetBytes(value));
+
+            foreach (Byte b in result)
+                Sb.Append(b.ToString("x2"));
+        }
+
+        return Sb.ToString();
+    }
+
+    private static string HashPassword(string password)
+    {
+        return sha256_hash(password);
+    }
+
     private static string AskPassword()
     {
-        string password;
-        do
-        {
-            Console.WriteLine("Enter a password (min 12 characters, 1 uppercase, 1 number, 1 special character):");
-            password = Console.ReadLine();
-        } while (string.IsNullOrEmpty(password) || !_userLogic.IsValidPassword(password));
+        string password = "";
 
-        return password;
+        while (true)
+        {
+            ConsoleKeyInfo key = Console.ReadKey(true);
+
+            if (key.Key == ConsoleKey.Enter)
+            {
+                Console.WriteLine();
+
+                if (string.IsNullOrEmpty(password) || !_userLogic.IsValidPassword(password))
+                {
+                    Console.WriteLine("Enter a password (min 12 characters, 1 uppercase, 1 number, 1 special character):");
+                }
+                else
+                {
+                    return password;
+                }
+            }
+            else if (key.Key == ConsoleKey.Backspace)
+            {
+                if (password.Length > 0)
+                {
+                    password = password.Substring(0, password.Length - 1);
+                    Console.Write("\b \b");
+                }
+            }
+            else if (!char.IsControl(key.KeyChar))
+            {
+                password += key.KeyChar;
+                Console.Write("*");
+            }
+        }
     }
 
     private static void AskPasswordConfirmation(string originalPassword)
@@ -96,7 +153,8 @@ public static class Register
         do
         {
             Console.WriteLine("Confirm your password:");
-            confirmation = Console.ReadLine();
+
+            confirmation = AskPassword();
         } while (string.IsNullOrEmpty(confirmation) || confirmation != originalPassword);
     }
 }

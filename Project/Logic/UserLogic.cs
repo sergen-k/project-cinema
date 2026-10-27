@@ -4,11 +4,10 @@ using System.Text.RegularExpressions;
 
 public class UserLogic
 {
-    private UserAccess _userAccess;
+    private UserAccess _userAccess = new();
 
-    public UserLogic(UserAccess userAccess)
+    public UserLogic()
     {
-        _userAccess = userAccess;
     }
 
     public bool IsValidEmail(string email)

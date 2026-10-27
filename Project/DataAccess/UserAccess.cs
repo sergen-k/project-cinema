@@ -3,12 +3,12 @@ using Microsoft.Data.Sqlite;
 
 public class UserAccess : IDataAccess<UserModel>
 {
-    private SqliteConnection _connection;
+    private SqliteConnection _connection =
+        new SqliteConnection("Data Source=DataSources/project.db");
     private string Table = "User";
 
-    public UserAccess(SqliteConnection connection)
+    public UserAccess()
     {
-        _connection = connection;
     }
 
     public void Write(UserModel model)

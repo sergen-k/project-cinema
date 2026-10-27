@@ -23,9 +23,6 @@ class ConsoleMenu<T> : IConsoleMenu<T>
                     Console.WriteLine($"> {options[i]}");
                     Console.ResetColor();
                 }
-
-
-
                 else
                 {
                     Console.WriteLine($"  {options[i]}");
