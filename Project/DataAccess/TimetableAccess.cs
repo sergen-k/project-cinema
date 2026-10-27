@@ -20,6 +20,13 @@ public class TimetableAccess: IDataAccess<TimetableModel>
         return _connection.QueryFirstOrDefault<TimetableModel>(sql, new {Id = id});
     }
 
+    public List<TimetableModel> SelectByMovieId(MovieModel movie)
+    {
+        string sql = $"SELECT * FROM {Table} WHERE  movieId = @Id";
+        return _connection.Query<TimetableModel>(sql, new {Id = movie.Id}).ToList();
+
+    }
+
     public void Update(TimetableModel timetable)
     {
         string sql = $"UPDATE {Table} SET showtime = @ShowTime, movieId = @MovieId, roomNumber = @RoomNumber WHERE id = @Id";
