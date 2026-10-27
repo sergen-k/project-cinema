@@ -10,7 +10,7 @@ public static class InspectMovie
         }
         else
         {
-            //ReservationMenu.Start(movie);
+            MakeReservation.Start(movie);
         }
 
     }

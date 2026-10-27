@@ -49,6 +49,10 @@ class ConsoleMenu<T> : IConsoleMenu<T>
 
                 case ConsoleKey.Enter:
                     return selectedIndex;
+
+                case ConsoleKey.Q :
+                    // TODO: this is not an error
+                    return -1;
             }
 
 
