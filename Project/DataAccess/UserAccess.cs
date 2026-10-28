@@ -14,10 +14,19 @@ public class UserAccess : IDataAccess<UserModel>
     public void Write(UserModel model)
     {
         string sql = $@"INSERT INTO {Table} 
-                        (FullName, Email, phoneNumber, Password, DateOfBirth, Role) 
-                        VALUES (@FullName, @Email, @PhoneNumber, @Password, @DateOfBirth, @Role)";
+                        (id, FullName, Email, phoneNumber, Password, DateOfBirth, Role) 
+                        VALUES (@Id, @FullName, @Email, @PhoneNumber, @Password, @DateOfBirth, @Role)";
         _connection.Execute(sql, model);
     }
+
+
+    public long GetNextUserId()
+    {
+        string sql = $"SELECT COALESCE(MAX(id), 0) + 1 FROM {Table}";
+
+        return _connection.ExecuteScalar<long>(sql);
+    }
+
 
     public UserModel Select(int id)
     {

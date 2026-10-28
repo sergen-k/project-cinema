@@ -50,6 +50,11 @@ public class UserLogic
         return hasUpper && hasNumber && hasSpecial;
     }
 
+    public long getNextId()
+    {
+       return _userAccess.GetNextUserId();
+    }
+
     public bool EmailAlreadyExists(string email)
     {
         UserModel existing = _userAccess.SelectByEmail(email);

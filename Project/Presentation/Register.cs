@@ -26,7 +26,9 @@ public static class Register
 
         string hashedPassword = HashPassword(password);
 
-        UserModel newUser = new UserModel(0, fullName, email, phone, hashedPassword, 0, "Customer");
+        long nextUserId = _userLogic.getNextId(); 
+
+        UserModel newUser = new UserModel(nextUserId, fullName, email, phone, hashedPassword, 0, "Customer");
         newUser.HumanReadableDateOfBirth = dob;
 
         _userLogic.AddUser(newUser);
