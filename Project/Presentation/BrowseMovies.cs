@@ -13,6 +13,7 @@ public static class BrowseMovies
         MovieModel movieToSee = null;
         do
         {
+            Console.Clear();
             Movies = BrowseMovieLogic.SelectAll();
             if (Movies.Count == 0)
             {
