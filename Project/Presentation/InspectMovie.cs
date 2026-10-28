@@ -10,7 +10,7 @@ public static class InspectMovie
         }
         else
         {
-            //ReservationMenu.Start(movie);
+            MakeReservation.Start(movie);
         }
 
     }
@@ -18,7 +18,9 @@ public static class InspectMovie
     private static void DisplayInfo(MovieModel movie)
     {
         Console.WriteLine(movie.Title);
+
         Console.WriteLine($"Genre: {movie.Genre}");
+
         Console.WriteLine($"Directed by: {movie.Director}");
         Console.WriteLine($"Must be at least {movie.AgeLimit} years old");
         Console.WriteLine($"Duration: {movie.Duration} minutes");

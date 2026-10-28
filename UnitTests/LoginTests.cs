@@ -19,7 +19,7 @@ public sealed class Test1
 
         // assert
         Assert.IsNotNull(result);
-        Assert.AreEqual(m, result.EmailAddress);
+        Assert.AreEqual(m, result.Email);
         Assert.AreEqual(p, result.Password);
     }
 

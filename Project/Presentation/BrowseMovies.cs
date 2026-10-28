@@ -13,8 +13,17 @@ public static class BrowseMovies
         MovieModel movieToSee = null;
         do
         {
+            Console.Clear();
             Movies = BrowseMovieLogic.SelectAll();
+            if (Movies.Count == 0)
+            {
+                Console.WriteLine("Currently no movies available");
+            }
+
             MovieList();
+
+
+
             Console.WriteLine();
             answer = Options();
             switch(answer)
@@ -31,6 +40,7 @@ public static class BrowseMovies
                     break;
                 default:
                     movieToSee = Movies[int.Parse(answer)-1];
+                    Console.Clear();
                     InspectMovie.Start(movieToSee);
                     break;
             }

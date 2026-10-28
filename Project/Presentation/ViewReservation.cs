@@ -1,5 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-
 public class ViewReservation
 {
     private readonly ReservationLogic _reservationLogic = new();
@@ -14,8 +12,7 @@ public class ViewReservation
     public void Start()
     {
 
-        UserModel user = new(1, "jogndoe", "sdwd", "wd");
-        FetchData(user);
+        FetchData(AccountsLogic.CurrentAccount);
 
         Console.WriteLine("overview of your reservations:");
         while (true)
@@ -26,7 +23,9 @@ public class ViewReservation
             string userInput = MenuInput();
             switch (userInput)
             {
-                case "Q": return;
+                case "Q":
+                Console.Clear();
+                return;
                 case "+":
                     if (10 * (_pageNumber + 1) <= _reservations.Count) _pageNumber++;
                     break;
@@ -34,6 +33,7 @@ public class ViewReservation
             }
 
         }
+
     }
 
 

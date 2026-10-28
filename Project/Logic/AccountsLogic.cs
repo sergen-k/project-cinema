@@ -1,5 +1,6 @@
-﻿
-
+﻿using System.Security.Cryptography;
+using System.Text;
+using Microsoft.Data.Sqlite;
 //This class is not static so later on we can use inheritance and interfaces
 public class AccountsLogic
 {
@@ -14,13 +15,36 @@ public class AccountsLogic
     {
         UserModel? acc = _access.SelectByEmail(email);
 
-        if (acc != null && acc.Password == password)
+        if (acc != null && acc.Password == sha256_hash(password))
         {
             CurrentAccount = acc;
             return acc;
         }
         return null;
     }
+
+        // Source - https://stackoverflow.com/a/17001289
+    // Posted by Dmitrii Bychenko, modified by community. See post 'Timeline' for change history
+    // Retrieved 2026-10-27, License - CC BY-SA 4.0
+
+    public static string sha256_hash(String value)
+    {
+        StringBuilder Sb = new StringBuilder();
+
+        using (SHA256 hash = SHA256Managed.Create())
+        {
+            Encoding enc = Encoding.UTF8;
+            Byte[] result = hash.ComputeHash(enc.GetBytes(value));
+
+            foreach (Byte b in result)
+                Sb.Append(b.ToString("x2"));
+        }
+
+        return Sb.ToString();
+    }
+
+
+
 
     public static void ChangeAccount(UserModel user)
     {
