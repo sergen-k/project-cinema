@@ -26,6 +26,7 @@ public static class AdminAddMovie
         if (success)
         {
             Console.WriteLine("Movie added successfully!");
+            Console.ReadLine();
         }
         else
         {
