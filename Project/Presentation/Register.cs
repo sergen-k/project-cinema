@@ -17,23 +17,24 @@ public static class Register
         string email = AskEmail();
         string phone = AskPhoneNumber();
         string dateOfBirthInput = AskDateOfBirth();
-        
+
         Console.WriteLine("Enter a password (min 12 characters, 1 uppercase, 1 number, 1 special character):");
         string password = AskPassword();
         AskPasswordConfirmation(password);
 
         DateTime dob = _userLogic.ParseDateOfBirth(dateOfBirthInput);
-
         string hashedPassword = HashPassword(password);
 
-        UserModel newUser = new UserModel(0, fullName, email, phone, hashedPassword, 0, "Customer");
-        newUser.HumanReadableDateOfBirth = dob;
+        if (!_userLogic.EmailAlreadyExists(email))
+        {
+            UserModel newUser = new UserModel(0, fullName, email, phone, hashedPassword, 0, "Customer");
+            newUser.HumanReadableDateOfBirth = dob;
 
-        _userLogic.AddUser(newUser);
+            _userLogic.AddUser(newUser);
+        }
 
-        Console.WriteLine("Registration successful!");
+        Console.WriteLine("If this email address is not already registered, your account has been created.");
     }
-
     private static string AskFullName()
     {
         string fullName;
@@ -53,9 +54,7 @@ public static class Register
         {
             Console.WriteLine("Enter your email:");
             email = Console.ReadLine();
-        } while (string.IsNullOrEmpty(email)
-               || !_userLogic.IsValidEmail(email)
-               || _userLogic.EmailAlreadyExists(email));
+        } while (string.IsNullOrEmpty(email) || !_userLogic.IsValidEmail(email));
 
         return email;
     }
