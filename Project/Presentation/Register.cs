@@ -38,22 +38,33 @@ public static class Register
     private static string AskFullName()
     {
         string fullName;
+        bool firstAttempt = true;
         do
         {
+            if (!firstAttempt)
+            {
+                Console.WriteLine("Full name must be at least 2 characters long.");
+            }
             Console.WriteLine("Enter your full name:");
             fullName = Console.ReadLine();
+            firstAttempt = false;
         } while (!_userLogic.IsValidFullName(fullName));
 
         return fullName;
     }
-
     private static string AskEmail()
     {
         string email;
+        bool firstAttempt = true;
         do
         {
+            if (!firstAttempt)
+            {
+                Console.WriteLine("Please enter a valid email address (e.g. name@example.com).");
+            }
             Console.WriteLine("Enter your email:");
             email = Console.ReadLine();
+            firstAttempt = false;
         } while (string.IsNullOrEmpty(email) || !_userLogic.IsValidEmail(email));
 
         return email;
@@ -62,10 +73,16 @@ public static class Register
     private static string AskPhoneNumber()
     {
         string phone;
+        bool firstAttempt = true;
         do
         {
+            if (!firstAttempt)
+            {
+                Console.WriteLine("Please enter a valid phone number (10-15 digits, optionally starting with +).");
+            }
             Console.WriteLine("Enter your phone number:");
             phone = Console.ReadLine();
+            firstAttempt = false;
         } while (string.IsNullOrEmpty(phone) || !_userLogic.IsValidPhoneNumber(phone));
 
         return phone;
@@ -74,10 +91,16 @@ public static class Register
     private static string AskDateOfBirth()
     {
         string dateOfBirthInput;
+        bool firstAttempt = true;
         do
         {
+            if (!firstAttempt)
+            {
+                Console.WriteLine("Please enter a valid date of birth in the format dd-MM-yyyy. It must be in the past and no more than 150 years ago.");
+            }
             Console.WriteLine("Enter your date of birth (dd-MM-yyyy):");
             dateOfBirthInput = Console.ReadLine();
+            firstAttempt = false;
         } while (string.IsNullOrEmpty(dateOfBirthInput) || !_userLogic.IsValidDateOfBirth(dateOfBirthInput));
 
         return dateOfBirthInput;
@@ -139,9 +162,17 @@ public static class Register
     private static string AskPassword()
     {
         string password = "";
+        bool showError = false;
 
         while (true)
         {
+            if (showError)
+            {
+                Console.WriteLine("Password must be at least 12 characters and include an uppercase letter, a number, and a special character.");
+                Console.WriteLine("Enter a password:");
+                showError = false;
+            }
+
             ConsoleKeyInfo key = Console.ReadKey(true);
 
             if (key.Key == ConsoleKey.Enter)
@@ -150,7 +181,8 @@ public static class Register
 
                 if (string.IsNullOrEmpty(password) || !_userLogic.IsValidPassword(password))
                 {
-                    Console.WriteLine("Enter a password (min 12 characters, 1 uppercase, 1 number, 1 special character):");
+                    password = "";
+                    showError = true;
                 }
                 else
                 {
