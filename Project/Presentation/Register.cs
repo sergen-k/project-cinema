@@ -109,7 +109,34 @@ public static class Register
     {
         return sha256_hash(password);
     }
+    private static string ReadMaskedInput()
+    {
+        string input = "";
 
+        while (true)
+        {
+            ConsoleKeyInfo key = Console.ReadKey(true);
+
+            if (key.Key == ConsoleKey.Enter)
+            {
+                Console.WriteLine();
+                return input;
+            }
+            else if (key.Key == ConsoleKey.Backspace)
+            {
+                if (input.Length > 0)
+                {
+                    input = input.Substring(0, input.Length - 1);
+                    Console.Write("\b \b");
+                }
+            }
+            else if (!char.IsControl(key.KeyChar))
+            {
+                input += key.KeyChar;
+                Console.Write("*");
+            }
+        }
+    }
     private static string AskPassword()
     {
         string password = "";
@@ -153,8 +180,12 @@ public static class Register
         do
         {
             Console.WriteLine("Confirm your password:");
+            confirmation = ReadMaskedInput();
 
-            confirmation = AskPassword();
-        } while (string.IsNullOrEmpty(confirmation) || confirmation != originalPassword);
+            if (confirmation != originalPassword)
+            {
+                Console.WriteLine("Passwords do not match. Please try again.");
+            }
+        } while (confirmation != originalPassword);
     }
 }
