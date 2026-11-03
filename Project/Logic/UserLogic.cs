@@ -30,7 +30,25 @@ public class UserLogic
 
         bool success = DateTime.TryParseExact(dateOfBirth, expectedFormat, culture, style, out DateTime result);
 
-        return success;
+        if (!success)
+        {
+            return false;
+        }
+
+        DateTime today = DateTime.Today;
+        DateTime earliestAllowed = today.AddYears(-150);
+
+        if (result >= today)
+        {
+            return false;
+        }
+
+        if (result < earliestAllowed)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public DateTime ParseDateOfBirth(string dateOfBirth)
