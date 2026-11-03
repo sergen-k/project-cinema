@@ -5,12 +5,12 @@ static class Menu
     {
         while (true)
         {
-            LoadOptions();
+            LoadOptions(); 
+            PrintHeader();
             PrintMenuOptions();
 
             string chosenMenu = _options[Options()];
             Console.Clear();
-
             switch (chosenMenu) // Got to give each option a body
             {
                 case "About Us":
@@ -45,12 +45,11 @@ static class Menu
     {
         _options.Clear();
         int indexer = 0;
-        _options[++indexer] = "About Us";
         _options[++indexer] = "Browse Movies";
         if (AccountsLogic.CurrentAccount == null)
         {
-            _options[++indexer] = "Register";
             _options[++indexer] = "Log In";
+            _options[++indexer] = "Register";
         }
         else
         {
@@ -62,6 +61,7 @@ static class Menu
                 _options[++indexer] = "Add Movie";
             }
         }
+        _options[++indexer] = "About Us";
     }
 
     private static void PrintMenuOptions()
@@ -78,5 +78,26 @@ static class Menu
             int.TryParse(Console.ReadLine(), out option);
         } while (!_options.ContainsKey(option));
         return option;
+    }
+
+    private static void PrintHeader()
+    {
+        Console.WriteLine("══════════════════════════════════════════════════════════════════════════════");
+        Console.WriteLine();
+        Console.WriteLine("██████╗  ██████╗ ████████╗████████╗███████╗██████╗ ██████╗  █████╗ ███╗   ███╗");
+        Console.WriteLine("██╔══██╗██╔═══██╗╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗██╔══██╗██╔══██╗████╗ ████║");
+        Console.WriteLine("██████╔╝██║   ██║   ██║      ██║   █████╗  ██████╔╝██║  ██║███████║██╔████╔██║");
+        Console.WriteLine("██╔══██╗██║   ██║   ██║      ██║   ██╔══╝  ██╔══██╗██║  ██║██╔══██║██║╚██╔╝██║");
+        Console.WriteLine("██║  ██║╚██████╔╝   ██║      ██║   ███████╗██║  ██║██████╔╝██║  ██║██║ ╚═╝ ██║");
+        Console.WriteLine("╚═╝  ╚═╝ ╚═════╝    ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝");
+        Console.WriteLine();
+        Console.WriteLine("               ██████╗██╗███╗   ██╗███████╗███╗   ███╗ █████╗");
+        Console.WriteLine("              ██╔════╝██║████╗  ██║██╔════╝████╗ ████║██╔══██╗");
+        Console.WriteLine("              ██║     ██║██╔██╗ ██║█████╗  ██╔████╔██║███████║");
+        Console.WriteLine("              ██║     ██║██║╚██╗██║██╔══╝  ██║╚██╔╝██║██╔══██║");
+        Console.WriteLine("              ╚██████╗██║██║ ╚████║███████╗██║ ╚═╝ ██║██║  ██║");
+        Console.WriteLine("               ╚═════╝╚═╝╚═╝  ╚═══╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝");
+        Console.WriteLine();
+        Console.WriteLine("══════════════════════════════════════════════════════════════════════════════");
     }
 }

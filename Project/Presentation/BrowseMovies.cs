@@ -71,7 +71,7 @@ public static class BrowseMovies
             Console.WriteLine("+ Scroll up");
             Console.WriteLine("- Scroll down");
             Console.WriteLine("Q. Return to the main menu");
-            Console.WriteLine("Fill in a movie's title to inspect it.");
+            Console.WriteLine("Fill in a movie's title or number to inspect it.");
             answer = Console.ReadLine()!.ToLower();
             int.TryParse(answer, out movieAnswer);
         } while (!(answer == "+" || answer == "-" || answer == "q" || movieAnswer-1 >= _scrollStart && movieAnswer-1 < _scrollEnd));
