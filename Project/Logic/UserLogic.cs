@@ -28,9 +28,9 @@ public class UserLogic
         var culture = CultureInfo.InvariantCulture;
         var style = DateTimeStyles.None;
 
-        bool success = DateTime.TryParseExact(dateOfBirth, expectedFormat, culture, style, out DateTime result);
+        bool isSuccessful = DateTime.TryParseExact(dateOfBirth, expectedFormat, culture, style, out DateTime result);
 
-        if (!success)
+        if (!isSuccessful)
         {
             return false;
         }
