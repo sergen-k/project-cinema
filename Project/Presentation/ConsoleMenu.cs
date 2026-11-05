@@ -1,4 +1,4 @@
-class ConsoleMenu<T> : IConsoleMenu<T>
+class ConsoleMenu<T> 
 {
 
     public int SelectOption(List<T> options)
@@ -9,6 +9,7 @@ class ConsoleMenu<T> : IConsoleMenu<T>
         }
 
         int selectedIndex = 0;
+
 
 
         while (true)
@@ -47,8 +48,14 @@ class ConsoleMenu<T> : IConsoleMenu<T>
                         (selectedIndex + 1) % options.Count;
                     break;
 
+                case ConsoleKey.Escape:
+                     return -1;    
+
                 case ConsoleKey.Enter:
                     return selectedIndex;
+
+                
+
             }
 
 
