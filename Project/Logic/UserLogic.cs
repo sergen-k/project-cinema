@@ -78,8 +78,13 @@ public class UserLogic
     {
         _userAccess.Write(user);
     }
-    public bool IsValidFullName(string fullName)
+    public bool IsValidFirstName(string firstName)
     {
-        return !string.IsNullOrWhiteSpace(fullName) && fullName.Trim().Length >= 2;
+        return !string.IsNullOrWhiteSpace(firstName) && firstName.Trim().Length >= 2;
+    }
+
+    public bool IsValidLastName(string lastName)
+    {
+        return !string.IsNullOrWhiteSpace(lastName) && lastName.Trim().Length >= 2;
     }
 }

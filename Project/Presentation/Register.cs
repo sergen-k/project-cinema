@@ -13,7 +13,8 @@ public static class Register
 
     public static void Start()
     {
-        string fullName = AskFullName();
+        string firstName = AskFirstName();
+        string lastName = AskLastName();
         string email = AskEmail();
         string phone = AskPhoneNumber();
         string dateOfBirthInput = AskDateOfBirth();
@@ -27,7 +28,7 @@ public static class Register
 
         if (!_userLogic.EmailAlreadyExists(email))
         {
-            UserModel newUser = new UserModel(0, fullName, email, phone, hashedPassword, 0, "Customer");
+            UserModel newUser = new UserModel(0, firstName, lastName, email, phone, hashedPassword, 0, "Customer");
             newUser.HumanReadableDateOfBirth = dob;
 
             _userLogic.AddUser(newUser);
@@ -35,22 +36,40 @@ public static class Register
 
         Console.WriteLine("If this email address is not already registered, your account has been created.");
     }
-    private static string AskFullName()
+    private static string AskFirstName()
     {
-        string fullName;
+        string firstName;
         bool firstAttempt = true;
         do
         {
             if (!firstAttempt)
             {
-                Console.WriteLine("Full name must be at least 2 characters long.");
+                Console.WriteLine("First name must be at least 2 characters long.");
             }
-            Console.WriteLine("Enter your full name:");
-            fullName = Console.ReadLine();
+            Console.WriteLine("Enter your first name:");
+            firstName = Console.ReadLine();
             firstAttempt = false;
-        } while (!_userLogic.IsValidFullName(fullName));
+        } while (!_userLogic.IsValidFirstName(firstName));
 
-        return fullName;
+        return firstName;
+    }
+
+    private static string AskLastName()
+    {
+        string lastName;
+        bool firstAttempt = true;
+        do
+        {
+            if (!firstAttempt)
+            {
+                Console.WriteLine("Last name must be at least 2 characters long.");
+            }
+            Console.WriteLine("Enter your last name:");
+            lastName = Console.ReadLine();
+            firstAttempt = false;
+        } while (!_userLogic.IsValidLastName(lastName));
+
+        return lastName;
     }
     private static string AskEmail()
     {
