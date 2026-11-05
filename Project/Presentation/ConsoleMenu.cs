@@ -1,4 +1,4 @@
-class ConsoleMenu<T> 
+public class ConsoleMenu<T> 
 {
 
     public int SelectOption(List<T> options)

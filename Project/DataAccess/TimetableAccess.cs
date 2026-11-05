@@ -10,7 +10,7 @@ public class TimetableAccess: IDataAccess<TimetableModel>
 
     public void Write(TimetableModel reservation)
     {
-        string sql = $"INSERT INTO {Table} (showtime, movieId, roomNumber) VALUES (@ShowTime, @MovieId, @RoomNumber)";
+        string sql = $"INSERT INTO {Table} (startTime,endTime movieId, roomNumber) VALUES (@StartTime,@EndTime @MovieId, @RoomNumber)";
         _connection.Execute(sql, reservation);
     }
 
