@@ -13,49 +13,78 @@ public static class Register
 
     public static void Start()
     {
-        string fullName = AskFullName();
+        string firstName = AskFirstName();
+        string lastName = AskLastName();
         string email = AskEmail();
         string phone = AskPhoneNumber();
         string dateOfBirthInput = AskDateOfBirth();
-        
+
         Console.WriteLine("Enter a password (min 12 characters, 1 uppercase, 1 number, 1 special character):");
         string password = AskPassword();
         AskPasswordConfirmation(password);
 
         DateTime dob = _userLogic.ParseDateOfBirth(dateOfBirthInput);
-
         string hashedPassword = HashPassword(password);
 
-        UserModel newUser = new UserModel(0, fullName, email, phone, hashedPassword, 0, "Customer");
-        newUser.HumanReadableDateOfBirth = dob;
+        if (!_userLogic.EmailAlreadyExists(email))
+        {
+            UserModel newUser = new UserModel(0, firstName, lastName, email, phone, hashedPassword, 0, "Customer");
+            newUser.HumanReadableDateOfBirth = dob;
 
-        _userLogic.AddUser(newUser);
+            _userLogic.AddUser(newUser);
+        }
 
-        Console.WriteLine("Registration successful!");
+        Console.WriteLine("If this email address is not already registered, your account has been created.");
     }
-
-    private static string AskFullName()
+    private static string AskFirstName()
     {
-        string fullName;
+        string firstName;
+        bool firstAttempt = true;
         do
         {
-            Console.WriteLine("Enter your full name:");
-            fullName = Console.ReadLine();
-        } while (!_userLogic.IsValidFullName(fullName));
+            if (!firstAttempt)
+            {
+                Console.WriteLine("First name must be at least 2 characters long.");
+            }
+            Console.WriteLine("Enter your first name:");
+            firstName = Console.ReadLine();
+            firstAttempt = false;
+        } while (!_userLogic.IsValidFirstName(firstName));
 
-        return fullName;
+        return firstName;
     }
 
+    private static string AskLastName()
+    {
+        string lastName;
+        bool firstAttempt = true;
+        do
+        {
+            if (!firstAttempt)
+            {
+                Console.WriteLine("Last name must be at least 2 characters long.");
+            }
+            Console.WriteLine("Enter your last name:");
+            lastName = Console.ReadLine();
+            firstAttempt = false;
+        } while (!_userLogic.IsValidLastName(lastName));
+
+        return lastName;
+    }
     private static string AskEmail()
     {
         string email;
+        bool firstAttempt = true;
         do
         {
+            if (!firstAttempt)
+            {
+                Console.WriteLine("Please enter a valid email address (e.g. name@example.com).");
+            }
             Console.WriteLine("Enter your email:");
             email = Console.ReadLine();
-        } while (string.IsNullOrEmpty(email)
-               || !_userLogic.IsValidEmail(email)
-               || _userLogic.EmailAlreadyExists(email));
+            firstAttempt = false;
+        } while (string.IsNullOrEmpty(email) || !_userLogic.IsValidEmail(email));
 
         return email;
     }
@@ -63,10 +92,16 @@ public static class Register
     private static string AskPhoneNumber()
     {
         string phone;
+        bool firstAttempt = true;
         do
         {
+            if (!firstAttempt)
+            {
+                Console.WriteLine("Please enter a valid phone number (10-15 digits, optionally starting with +).");
+            }
             Console.WriteLine("Enter your phone number:");
             phone = Console.ReadLine();
+            firstAttempt = false;
         } while (string.IsNullOrEmpty(phone) || !_userLogic.IsValidPhoneNumber(phone));
 
         return phone;
@@ -75,10 +110,16 @@ public static class Register
     private static string AskDateOfBirth()
     {
         string dateOfBirthInput;
+        bool firstAttempt = true;
         do
         {
+            if (!firstAttempt)
+            {
+                Console.WriteLine("Please enter a valid date of birth in the format dd-MM-yyyy. It must be in the past and no more than 150 years ago.");
+            }
             Console.WriteLine("Enter your date of birth (dd-MM-yyyy):");
             dateOfBirthInput = Console.ReadLine();
+            firstAttempt = false;
         } while (string.IsNullOrEmpty(dateOfBirthInput) || !_userLogic.IsValidDateOfBirth(dateOfBirthInput));
 
         return dateOfBirthInput;
@@ -109,10 +150,9 @@ public static class Register
     {
         return sha256_hash(password);
     }
-
-    private static string AskPassword()
+    private static string ReadMaskedInput()
     {
-        string password = "";
+        string input = "";
 
         while (true)
         {
@@ -121,10 +161,47 @@ public static class Register
             if (key.Key == ConsoleKey.Enter)
             {
                 Console.WriteLine();
+                return input;
+            }
+            else if (key.Key == ConsoleKey.Backspace)
+            {
+                if (input.Length > 0)
+                {
+                    input = input.Substring(0, input.Length - 1);
+                    Console.Write("\b \b");
+                }
+            }
+            else if (!char.IsControl(key.KeyChar))
+            {
+                input += key.KeyChar;
+                Console.Write("*");
+            }
+        }
+    }
+    private static string AskPassword()
+    {
+        string password = "";
+        bool showError = false;
+
+        while (true)
+        {
+            if (showError)
+            {
+                Console.WriteLine("Password must be at least 12 characters and include an uppercase letter, a number, and a special character.");
+                Console.WriteLine("Enter a password:");
+                showError = false;
+            }
+
+            ConsoleKeyInfo key = Console.ReadKey(true);
+
+            if (key.Key == ConsoleKey.Enter)
+            {
+                Console.WriteLine();
 
                 if (string.IsNullOrEmpty(password) || !_userLogic.IsValidPassword(password))
                 {
-                    Console.WriteLine("Enter a password (min 12 characters, 1 uppercase, 1 number, 1 special character):");
+                    password = "";
+                    showError = true;
                 }
                 else
                 {
@@ -153,8 +230,12 @@ public static class Register
         do
         {
             Console.WriteLine("Confirm your password:");
+            confirmation = ReadMaskedInput();
 
-            confirmation = AskPassword();
-        } while (string.IsNullOrEmpty(confirmation) || confirmation != originalPassword);
+            if (confirmation != originalPassword)
+            {
+                Console.WriteLine("Passwords do not match. Please try again.");
+            }
+        } while (confirmation != originalPassword);
     }
 }
