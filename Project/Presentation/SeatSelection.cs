@@ -69,7 +69,7 @@ public class SeatSelection
             }
             if (toReserve.Count == amountToReserve)
             {
-                Console.WriteLine("You have reached the desire amount of seats. Do you want to continue? (y/n)");
+                Console.WriteLine("You have reached the desired amount of seats. Do you want to continue? (y/n)");
                 string input = Console.ReadLine();
                 if (input.ToLower() == "y")
                 {
