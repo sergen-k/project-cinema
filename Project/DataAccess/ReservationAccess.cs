@@ -10,7 +10,7 @@ public class ReservationAccess : IDataAccess<ReservationModel>
 
     public void Write(ReservationModel reservation)
     {
-        string sql = $"INSERT INTO {Table} (movieShowingId, userId) VALUES (@MovieShowingId, @UserId)";
+        string sql = $"INSERT INTO {Table} (movieShowingId, userId,peaple) VALUES (@MovieShowingId, @UserId,@Peaple)";
         _connection.Execute(sql, reservation);
     }
 
