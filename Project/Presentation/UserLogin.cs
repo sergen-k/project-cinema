@@ -23,7 +23,7 @@ static class UserLogin
             {
                 AccountsLogic.ChangeAccount(acc);
 
-                Console.WriteLine("Welcome back " + acc.FullName);
+                Console.WriteLine("Welcome back " + acc.FirstName + " " + acc.LastName);
                 Console.WriteLine("Login successful!");
 
                 return;

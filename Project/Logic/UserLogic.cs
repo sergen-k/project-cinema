@@ -28,9 +28,27 @@ public class UserLogic
         var culture = CultureInfo.InvariantCulture;
         var style = DateTimeStyles.None;
 
-        bool success = DateTime.TryParseExact(dateOfBirth, expectedFormat, culture, style, out DateTime result);
+        bool isSuccessful = DateTime.TryParseExact(dateOfBirth, expectedFormat, culture, style, out DateTime result);
 
-        return success;
+        if (!isSuccessful)
+        {
+            return false;
+        }
+
+        DateTime today = DateTime.Today;
+        DateTime earliestAllowed = today.AddYears(-150);
+
+        if (result >= today)
+        {
+            return false;
+        }
+
+        if (result < earliestAllowed)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public DateTime ParseDateOfBirth(string dateOfBirth)
@@ -65,8 +83,13 @@ public class UserLogic
     {
         _userAccess.Write(user);
     }
-    public bool IsValidFullName(string fullName)
+    public bool IsValidFirstName(string firstName)
     {
-        return !string.IsNullOrWhiteSpace(fullName) && fullName.Trim().Length >= 2;
+        return !string.IsNullOrWhiteSpace(firstName) && firstName.Trim().Length >= 2;
+    }
+
+    public bool IsValidLastName(string lastName)
+    {
+        return !string.IsNullOrWhiteSpace(lastName) && lastName.Trim().Length >= 2;
     }
 }

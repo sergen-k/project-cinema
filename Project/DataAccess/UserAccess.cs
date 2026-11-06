@@ -14,8 +14,8 @@ public class UserAccess : IDataAccess<UserModel>
     public void Write(UserModel model)
     {
         string sql = $@"INSERT INTO {Table} 
-                        (id, FullName, Email, phoneNumber, Password, DateOfBirth, Role) 
-                        VALUES (@Id, @FullName, @Email, @PhoneNumber, @Password, @DateOfBirth, @Role)";
+                        (FirstName, LastName, Email, phoneNumber, Password, DateOfBirth, Role) 
+                        VALUES (@FirstName, @LastName, @Email, @PhoneNumber, @Password, @DateOfBirth, @Role)";
         _connection.Execute(sql, model);
     }
 
@@ -37,7 +37,7 @@ public class UserAccess : IDataAccess<UserModel>
     public void Update(UserModel model)
     {
         string sql = $@"UPDATE {Table} 
-                        SET FullName = @FullName, Email = @Email, phoneNumber  = @PhoneNumber, 
+                        SET FirstName = @FirstName, LastName = @LastName, Email = @Email, phoneNumber  = @PhoneNumber, 
                             Password = @Password, DateOfBirth = @DateOfBirth, Role = @Role 
                         WHERE Id = @Id";
         _connection.Execute(sql, model);
