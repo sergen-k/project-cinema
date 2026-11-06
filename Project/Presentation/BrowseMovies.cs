@@ -40,6 +40,16 @@ public static class BrowseMovies
                     break;
                 default:
                     movieToSee = Movies[int.Parse(answer)-1];
+                    if (movieToSee.AgeLimit >= 18)
+                    {
+                        Console.WriteLine("This move is 18+. To continue, type 'y'");
+                        if (Console.ReadLine()!.ToLower() != "y")
+                        {
+                            movieToSee = null;
+                            break;
+                        }
+                    }
+
                     Console.Clear();
                     InspectMovie.Start(movieToSee);
                     break;
