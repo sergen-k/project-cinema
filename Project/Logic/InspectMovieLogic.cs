@@ -1,17 +1,19 @@
 public class InspectMovieLogic
 {
-    public static bool IsLoggedIn() => AccountsLogic.CurrentAccount == null ? false : true;
+    public static bool IsLoggedIn() => AccountsLogic.CurrentAccount != null;
 
     public static bool IsOfAge(MovieModel movie)
     {
         if (IsLoggedIn())
         {
-            // replace with calculation to determine age and if its actually age appropriate
-            return true;
+            DateTime today = DateTime.Today;
+            DateTime birthdate = AccountsLogic.CurrentAccount.HumanReadableDateOfBirth;
+
+            int age = DateTime.Today.Year-birthdate.Year;
+            if (today < birthdate.AddYears(age)) {age--;}
+            
+            if (age >= movie.AgeLimit){return true;}
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }

@@ -40,6 +40,16 @@ public static class BrowseMovies
                     break;
                 default:
                     movieToSee = Movies[int.Parse(answer)-1];
+                    if (movieToSee.AgeLimit >= 18)
+                    {
+                        Console.WriteLine("This move is 18+. To continue, type 'y'");
+                        if (Console.ReadLine()!.ToLower() != "y")
+                        {
+                            movieToSee = null;
+                            break;
+                        }
+                    }
+
                     Console.Clear();
                     InspectMovie.Start(movieToSee);
                     break;
@@ -71,7 +81,7 @@ public static class BrowseMovies
             Console.WriteLine("+ Scroll up");
             Console.WriteLine("- Scroll down");
             Console.WriteLine("Q. Return to the main menu");
-            Console.WriteLine("Fill in a movie's title to inspect it.");
+            Console.WriteLine("Fill in a movie's title or number to inspect it.");
             answer = Console.ReadLine()!.ToLower();
             int.TryParse(answer, out movieAnswer);
         } while (!(answer == "+" || answer == "-" || answer == "q" || movieAnswer-1 >= _scrollStart && movieAnswer-1 < _scrollEnd));
