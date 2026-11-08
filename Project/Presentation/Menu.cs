@@ -56,13 +56,8 @@ static class Menu
                     AdminAddMovie.Start();
                     break;
 
-                case "Log in As Customer (Test)":
+                case "Auto Log (Test)":
                     UserAccess userAccess = new();
-                    AccountsLogic.ChangeAccount(userAccess.Select(0));
-                    break;
-
-                case "Log in As Admin (Test)":
-                    userAccess = new();
                     AccountsLogic.ChangeAccount(userAccess.Select(1));
                     break;
             }
@@ -96,8 +91,7 @@ static class Menu
         _options.Add("About Us");
         if (!InspectMovieLogic.IsLoggedIn())
         {
-        _options.Add("Log in As Customer (Test)");
-        _options.Add("Log in As Admin (Test)");
+        _options.Add("Auto Log (Test)");
         }
     }
 }

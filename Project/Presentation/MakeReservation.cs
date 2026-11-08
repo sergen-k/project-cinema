@@ -68,17 +68,18 @@ public static class MakeReservation
             ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id);
             ReservationAccess reservationAccess = new();
             reservationAccess.Write(reservation);
-
-                    Console.WriteLine("Reservation saved!");
-                    Console.ReadLine();
-                    //Moviecatalogue.Start();
+            Console.WriteLine("Press enter to return!");
+            Console.ReadLine();
+            Console.CursorVisible = false;
+            //Moviecatalogue.Start();
 
         }
 
-                else if (userAnswer == ConsoleKey.N)
+                else
                 {
                     //says no return back to info page of the movie 
                     //  MovieInfo.Start(movie);
+                    Console.CursorVisible = false;
                     return;
                 }
 
@@ -87,5 +88,3 @@ public static class MakeReservation
 
 
         }
-    }
-}

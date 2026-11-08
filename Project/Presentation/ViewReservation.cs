@@ -100,7 +100,7 @@ public class ViewReservation
             }
 
 
-            _reservations.Add((reservation.Id, movie.Title, timetable.HumanReadableStarttime, totalCost));
+            _reservations.Add((reservation.Id, movie.Title, timetable.HumanReadableShowtime, totalCost));
         }
     }
 }
