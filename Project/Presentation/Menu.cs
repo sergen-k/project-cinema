@@ -1,14 +1,33 @@
 static class Menu
 {
+    const string Banner = """
+        ══════════════════════════════════════════════════════════════════════════════
+
+        ██████╗  ██████╗ ████████╗████████╗███████╗██████╗ ██████╗  █████╗ ███╗   ███╗
+        ██╔══██╗██╔═══██╗╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗██╔══██╗██╔══██╗████╗ ████║
+        ██████╔╝██║   ██║   ██║      ██║   █████╗  ██████╔╝██║  ██║███████║██╔████╔██║
+        ██╔══██╗██║   ██║   ██║      ██║   ██╔══╝  ██╔══██╗██║  ██║██╔══██║██║╚██╔╝██║
+        ██║  ██║╚██████╔╝   ██║      ██║   ███████╗██║  ██║██████╔╝██║  ██║██║ ╚═╝ ██║
+        ╚═╝  ╚═╝ ╚═════╝    ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝
+
+                     ██████╗██╗███╗   ██╗███████╗███╗   ███╗ █████╗
+                    ██╔════╝██║████╗  ██║██╔════╝████╗ ████║██╔══██╗
+                    ██║     ██║██╔██╗ ██║█████╗  ██╔████╔██║███████║
+                    ██║     ██║██║╚██╗██║██╔══╝  ██║╚██╔╝██║██╔══██║
+                    ╚██████╗██║██║ ╚████║███████╗██║ ╚═╝ ██║██║  ██║
+                    ╚═════╝╚═╝╚═╝  ╚═══╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝
+
+        ══════════════════════════════════════════════════════════════════════════════
+        
+        """;
     private static List<string> _options = new();
     public static void Start()
     {
         while (true)
         {
             LoadOptions(); 
-            PrintHeader();
-            ConsoleMenu<string> menu = new();
-            string chosenMenu = _options[menu.SelectOption(_options, true)];
+            ConsoleMenu menu = new(Banner);
+            string chosenMenu = menu.SelectOption(_options);
 
             Console.Clear();
             switch (chosenMenu) // Got to give each option a body
@@ -28,16 +47,27 @@ static class Menu
                     AccountsLogic.LogOut();
                     break;
                 case "View Reservations":
+                    Console.CursorVisible = true;
                     ViewReservation viewReservation = new();
                     viewReservation.Start();
-
+                    Console.CursorVisible = false;
                     break;
                 case "Add Movie":
                     AdminAddMovie.Start();
                     break;
+
+                case "Log in As Customer (Test)":
+                    UserAccess userAccess = new();
+                    AccountsLogic.ChangeAccount(userAccess.Select(0));
+                    break;
+
+                case "Log in As Admin (Test)":
+                    userAccess = new();
+                    AccountsLogic.ChangeAccount(userAccess.Select(1));
+                    break;
             }
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
+            // Console.WriteLine("Press any key to continue...");
+            // Console.ReadKey();
 
             Console.Clear();
         }
@@ -64,26 +94,10 @@ static class Menu
             }
         }
         _options.Add("About Us");
-    }
-
-    public static void PrintHeader()
-    {
-        Console.WriteLine("══════════════════════════════════════════════════════════════════════════════");
-        Console.WriteLine();
-        Console.WriteLine("██████╗  ██████╗ ████████╗████████╗███████╗██████╗ ██████╗  █████╗ ███╗   ███╗");
-        Console.WriteLine("██╔══██╗██╔═══██╗╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗██╔══██╗██╔══██╗████╗ ████║");
-        Console.WriteLine("██████╔╝██║   ██║   ██║      ██║   █████╗  ██████╔╝██║  ██║███████║██╔████╔██║");
-        Console.WriteLine("██╔══██╗██║   ██║   ██║      ██║   ██╔══╝  ██╔══██╗██║  ██║██╔══██║██║╚██╔╝██║");
-        Console.WriteLine("██║  ██║╚██████╔╝   ██║      ██║   ███████╗██║  ██║██████╔╝██║  ██║██║ ╚═╝ ██║");
-        Console.WriteLine("╚═╝  ╚═╝ ╚═════╝    ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝");
-        Console.WriteLine();
-        Console.WriteLine("               ██████╗██╗███╗   ██╗███████╗███╗   ███╗ █████╗");
-        Console.WriteLine("              ██╔════╝██║████╗  ██║██╔════╝████╗ ████║██╔══██╗");
-        Console.WriteLine("              ██║     ██║██╔██╗ ██║█████╗  ██╔████╔██║███████║");
-        Console.WriteLine("              ██║     ██║██║╚██╗██║██╔══╝  ██║╚██╔╝██║██╔══██║");
-        Console.WriteLine("              ╚██████╗██║██║ ╚████║███████╗██║ ╚═╝ ██║██║  ██║");
-        Console.WriteLine("               ╚═════╝╚═╝╚═╝  ╚═══╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝");
-        Console.WriteLine();
-        Console.WriteLine("══════════════════════════════════════════════════════════════════════════════");
+        if (!InspectMovieLogic.IsLoggedIn())
+        {
+        _options.Add("Log in As Customer (Test)");
+        _options.Add("Log in As Admin (Test)");
+        }
     }
 }

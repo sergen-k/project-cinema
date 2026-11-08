@@ -8,6 +8,7 @@ static class UserLogin
 
     public static void Start()
     {
+        Console.CursorVisible = true;
         Console.WriteLine("Welcome to the login page");
 
         int attempts = 0;
@@ -46,6 +47,7 @@ static class UserLogin
         Console.WriteLine("Press any key to return to the main menu...");
 
         Console.ReadKey(true);
+        Console.CursorVisible = false;
     }
 
     private static string AskForEmail()
