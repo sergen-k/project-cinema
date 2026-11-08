@@ -4,9 +4,9 @@ using System.Text;
 
 public static class Register
 {
-    private static UserLogic _userLogic = new();
+    private static AccountsLogic _userLogic = new();
 
-    public static void Initialize(UserLogic userLogic)
+    public static void Initialize(AccountsLogic userLogic)
     {
         _userLogic = userLogic;
     }
