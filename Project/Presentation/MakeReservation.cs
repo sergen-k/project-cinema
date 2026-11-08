@@ -1,6 +1,9 @@
+using System.Security.Cryptography;
+
 public static class MakeReservation
 {
 
+  public static readonly ReservationLogic reservationLogic = new();
 
     public static void Start()
     {

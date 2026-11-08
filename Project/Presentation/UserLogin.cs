@@ -1,3 +1,7 @@
+using System.Security.Cryptography;
+using System.Text;
+
+
 static class UserLogin
 {
     private static AccountsLogic accountsLogic = new AccountsLogic();
@@ -19,7 +23,7 @@ static class UserLogin
             {
                 AccountsLogic.ChangeAccount(acc);
 
-                Console.WriteLine("Welcome back " + acc.FullName);
+                Console.WriteLine("Welcome back " + acc.FirstName + " " + acc.LastName);
                 Console.WriteLine("Login successful!");
 
                 return;

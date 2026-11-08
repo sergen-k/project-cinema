@@ -14,6 +14,15 @@ public class ReservationAccess : IDataAccess<ReservationModel>
         _connection.Execute(sql, reservation);
     }
 
+
+    public long getNextReservationId()
+    {
+        string sql = $"SELECT COALESCE(MAX(id), 0) + 1 FROM {Table}";
+
+        return _connection.ExecuteScalar<long>(sql);
+    }
+
+
     public ReservationModel Select(int id )
     {
         string sql = $"SELECT * FROM {Table} WHERE  id = @Id";

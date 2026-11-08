@@ -1,25 +1,41 @@
-﻿public class UserModel
+﻿using System;
+
+public class UserModel
 {
-
     public Int64 Id { get; set; }
-    public string EmailAddress { get; set; }
-
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
     public string Password { get; set; }
+    public Int64 DateOfBirth { get; set; }
+    public string Role { get; set; }
 
-    public string FullName { get; set; }
+    public DateTime HumanReadableDateOfBirth
+    {
+        get
+        {
+            return DateTimeOffset.FromUnixTimeSeconds(DateOfBirth).LocalDateTime;
+        }
+        set
+        {
+            DateOfBirth = ((DateTimeOffset)value).ToUnixTimeSeconds();
+        }
+    }
 
-    public UserModel(Int64 id, string email, string password, string fullname)
+    public UserModel(Int64 id,  string firstName, string lastName, string email, string phoneNumber, string password, Int64 dateOfBirth, string role)
     {
         Id = id;
-        EmailAddress = email;
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        PhoneNumber = phoneNumber;
         Password = password;
-        FullName = fullname;
+        DateOfBirth = dateOfBirth;
+        Role = role;
     }
 
     public UserModel()
     {
-        EmailAddress = "";
-        Password = "";
-        FullName = "";
     }
 }

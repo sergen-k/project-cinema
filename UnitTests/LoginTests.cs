@@ -9,18 +9,17 @@ public sealed class Test1
 
     [DataTestMethod]
     [DataRow("kevin@kevin.nl", "kevin")]
-    public void LoginValidCredentials(string m, string p)
+    public void LoginValidCredentials(string? m, string? p)
     {
         // arrange
         AccountsLogic l = new();
-        AccountsAccess access = new();
 
         // act 
-        UserModel result = l.CheckLogin(m, p);
+        UserModel? result = l.CheckLogin(m!, p!);
 
         // assert
         Assert.IsNotNull(result);
-        Assert.AreEqual(m, result.EmailAddress);
+        Assert.AreEqual(m, result.Email);
         Assert.AreEqual(p, result.Password);
     }
 
@@ -30,13 +29,13 @@ public sealed class Test1
     [DataRow("wrong2", "wrong")] // everything wrong
     [DataRow("", "")]
     [DataRow(null, null)]
-    public void LoginInvalidCredentials(string m, string p)
+    public void LoginInvalidCredentials(string? m, string? p)
     {
         // arrange
         AccountsLogic l = new();
 
         // act 
-        UserModel result = l.CheckLogin(m, p);
+        UserModel? result = l.CheckLogin(m!, p!);
 
         // assert
         Assert.IsNull(result);

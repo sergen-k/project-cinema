@@ -6,7 +6,7 @@ class TimetableLogic
     {
     }
 
-    public TimetableModel select(int id)
+    public TimetableModel Select(int id)
     {
         return _timeTableAccess.Select(id);
     }

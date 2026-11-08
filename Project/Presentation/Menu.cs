@@ -7,8 +7,9 @@ static class Menu
         {
             LoadOptions();
             PrintMenuOptions();
-            
+
             string chosenMenu = _options[Options()];
+            Console.Clear();
 
             switch (chosenMenu) // Got to give each option a body
             {
@@ -18,6 +19,7 @@ static class Menu
                     BrowseMovies.Start();
                     break;
                 case "Register":
+                    Register.Start();
                     break;
                 case "Log In":
                     UserLogin.Start();
@@ -26,8 +28,18 @@ static class Menu
                     AccountsLogic.LogOut();
                     break;
                 case "View Reservations":
+                    ViewReservation viewReservation = new();
+                    viewReservation.Start();
+
+                    break;
+                case "Add Movie":
+                    AdminAddMovie.Start();
                     break;
             }
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+
+            Console.Clear();
         }
     }
 
@@ -46,8 +58,12 @@ static class Menu
         {
             _options[++indexer] = "Log Out";
             _options[++indexer] = "View Reservations";
+
+            if (AccountsLogic.CurrentAccount?.Role == "admin")
+            {
+                _options[++indexer] = "Add Movie";
+            }
         }
-        // can expand to give options to admins
     }
 
     private static void PrintMenuOptions()

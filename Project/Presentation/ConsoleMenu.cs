@@ -24,9 +24,6 @@ public class ConsoleMenu<T>
                     Console.WriteLine($"> {options[i]}");
                     Console.ResetColor();
                 }
-
-
-
                 else
                 {
                     Console.WriteLine($"  {options[i]}");
@@ -54,8 +51,9 @@ public class ConsoleMenu<T>
                 case ConsoleKey.Enter:
                     return selectedIndex;
 
-                
-
+                case ConsoleKey.Q :
+                    // TODO: this is not an error
+                    return -1;
             }
 
 
