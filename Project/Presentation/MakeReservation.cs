@@ -7,7 +7,7 @@ public static class MakeReservation
     public static readonly AccountsLogic userLogic = new();
 
 
-    public static void Start(MovieModel movie)
+    public static int Start(MovieModel movie)
     {
 
         // tijdelijke suser id en movie id, we gaan er vanuit dat iemand is ingelogd en een movie heeft gekozen
@@ -74,7 +74,7 @@ public static class MakeReservation
                     Console.WriteLine("Reservation saved!");
                     Console.ReadLine();
                     //Moviecatalogue.Start();
-                    return;
+                    return 1;
 
                 }
 
@@ -82,7 +82,7 @@ public static class MakeReservation
                 {
                     //says no return back to info page of the movie 
                     //  MovieInfo.Start(movie);
-                    return;
+                    return -1;
                 }
 
 

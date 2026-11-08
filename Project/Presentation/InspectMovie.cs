@@ -2,17 +2,26 @@ public static class InspectMovie
 {
     public static void Start(MovieModel movie)
     {
-        DisplayInfo(movie);
-        string option = Options(InspectMovieLogic.IsOfAge(movie), movie);
-        if(option == "1")
+        bool exit = false;
+        do
         {
-            return;
-        }
-        else
-        {
-            MakeReservation.Start(movie);
-        }
+            DisplayInfo(movie);
+            string option = Options(InspectMovieLogic.IsOfAge(movie), movie);
+            if (option == "1")
+            {
+                return;
+            }
+            else
+            {
+                int succes = MakeReservation.Start(movie);
+                Console.Clear();
+                if (succes == 1)
+                {
+                    exit = true;
+                } 
+            }
 
+        } while (exit == false);
     }
 
     private static void DisplayInfo(MovieModel movie)
