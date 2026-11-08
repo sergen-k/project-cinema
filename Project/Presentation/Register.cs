@@ -13,6 +13,7 @@ public static class Register
 
     public static void Start()
     {
+        Console.CursorVisible = true;
         string firstName = AskFirstName();
         string lastName = AskLastName();
         string email = AskEmail();
@@ -35,6 +36,7 @@ public static class Register
         }
 
         Console.WriteLine("If this email address is not already registered, your account has been created.");
+        Console.CursorVisible = false;
     }
     private static string AskFirstName()
     {
