@@ -25,7 +25,7 @@ public class MovieAccess : IDataAccess<MovieModel>
 
         return _connection.ExecuteScalar<long>(sql);
     }
-
+    
     public void Write(MovieModel movie)
     {
         if (movie.Id == 0)

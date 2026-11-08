@@ -1,7 +1,8 @@
 public class ConsoleMenu<T> 
+
 {
 
-    public int SelectOption(List<T> options)
+    public int SelectOption(List<T> options, bool isMainMenu = false)
     {
         if (options == null || options.Count() == 0)
         {
@@ -15,6 +16,9 @@ public class ConsoleMenu<T>
         while (true)
         {
             Console.Clear();
+            if (isMainMenu)
+                Menu.PrintHeader();
+
             for (int i = 0; i < options.Count; i++)
             {
                 if (i == selectedIndex)
@@ -50,10 +54,6 @@ public class ConsoleMenu<T>
 
                 case ConsoleKey.Enter:
                     return selectedIndex;
-
-                case ConsoleKey.Q :
-                    // TODO: this is not an error
-                    return -1;
             }
 
 

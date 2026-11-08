@@ -1,16 +1,16 @@
 static class Menu
 {
-    private static Dictionary<int,string> _options = new();
+    private static List<string> _options = new();
     public static void Start()
     {
         while (true)
         {
-            LoadOptions();
-            PrintMenuOptions();
+            LoadOptions(); 
+            PrintHeader();
+            ConsoleMenu<string> menu = new();
+            string chosenMenu = _options[menu.SelectOption(_options, true)];
 
-            string chosenMenu = _options[Options()];
             Console.Clear();
-
             switch (chosenMenu) // Got to give each option a body
             {
                 case "About Us":
@@ -47,38 +47,43 @@ static class Menu
     {
         _options.Clear();
         int indexer = 0;
-        _options[++indexer] = "About Us";
-        _options[++indexer] = "Browse Movies";
+        _options.Add("Browse Movies");
         if (AccountsLogic.CurrentAccount == null)
         {
-            _options[++indexer] = "Register";
-            _options[++indexer] = "Log In";
+            _options.Add("Log In");
+            _options.Add("Register");
         }
         else
         {
-            _options[++indexer] = "Log Out";
-            _options[++indexer] = "View Reservations";
+            _options.Add("Log Out");
+            _options.Add("View Reservations");
 
             if (AccountsLogic.CurrentAccount?.Role == "admin")
             {
-                _options[++indexer] = "Add Movie";
+                _options.Add("Add Movie");
             }
         }
+        _options.Add("About Us");
     }
 
-    private static void PrintMenuOptions()
+    public static void PrintHeader()
     {
-        foreach(KeyValuePair<int,string> option in _options)
-            Console.WriteLine($"{option.Key}. {option.Value}");
-    }
-
-    private static int Options()
-    {
-        int option;
-        do
-        {
-            int.TryParse(Console.ReadLine(), out option);
-        } while (!_options.ContainsKey(option));
-        return option;
+        Console.WriteLine("══════════════════════════════════════════════════════════════════════════════");
+        Console.WriteLine();
+        Console.WriteLine("██████╗  ██████╗ ████████╗████████╗███████╗██████╗ ██████╗  █████╗ ███╗   ███╗");
+        Console.WriteLine("██╔══██╗██╔═══██╗╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗██╔══██╗██╔══██╗████╗ ████║");
+        Console.WriteLine("██████╔╝██║   ██║   ██║      ██║   █████╗  ██████╔╝██║  ██║███████║██╔████╔██║");
+        Console.WriteLine("██╔══██╗██║   ██║   ██║      ██║   ██╔══╝  ██╔══██╗██║  ██║██╔══██║██║╚██╔╝██║");
+        Console.WriteLine("██║  ██║╚██████╔╝   ██║      ██║   ███████╗██║  ██║██████╔╝██║  ██║██║ ╚═╝ ██║");
+        Console.WriteLine("╚═╝  ╚═╝ ╚═════╝    ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝");
+        Console.WriteLine();
+        Console.WriteLine("               ██████╗██╗███╗   ██╗███████╗███╗   ███╗ █████╗");
+        Console.WriteLine("              ██╔════╝██║████╗  ██║██╔════╝████╗ ████║██╔══██╗");
+        Console.WriteLine("              ██║     ██║██╔██╗ ██║█████╗  ██╔████╔██║███████║");
+        Console.WriteLine("              ██║     ██║██║╚██╗██║██╔══╝  ██║╚██╔╝██║██╔══██║");
+        Console.WriteLine("              ╚██████╗██║██║ ╚████║███████╗██║ ╚═╝ ██║██║  ██║");
+        Console.WriteLine("               ╚═════╝╚═╝╚═╝  ╚═══╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝");
+        Console.WriteLine();
+        Console.WriteLine("══════════════════════════════════════════════════════════════════════════════");
     }
 }
