@@ -1,4 +1,5 @@
-class ConsoleMenu<T>
+public class ConsoleMenu<T> 
+
 {
 
     public int SelectOption(List<T> options, bool isMainMenu = false)
@@ -9,6 +10,7 @@ class ConsoleMenu<T>
         }
 
         int selectedIndex = 0;
+
 
 
         while (true)
@@ -46,6 +48,9 @@ class ConsoleMenu<T>
                     selectedIndex =
                         (selectedIndex + 1) % options.Count;
                     break;
+
+                case ConsoleKey.Escape:
+                     return -1;    
 
                 case ConsoleKey.Enter:
                     return selectedIndex;
