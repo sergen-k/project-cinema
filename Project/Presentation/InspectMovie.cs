@@ -3,7 +3,7 @@ public static class InspectMovie
     public static void Start(MovieModel movie)
     {
         DisplayInfo(movie);
-        string option = Options(InspectMovieLogic.IsOfAge(movie));
+        string option = Options(InspectMovieLogic.IsOfAge(movie), movie);
         if(option == "1")
         {
             return;
@@ -29,13 +29,15 @@ public static class InspectMovie
         Console.WriteLine();
     }
 
-    private static string Options(bool isOfAge)
+    private static string Options(bool isOfAge, MovieModel movie)
     {
         string answer;
         do
         {
+            TimetableAccess timetableAccess = new();
+            List<TimetableModel> timetables = timetableAccess.SelectByMovieId(movie);
             Console.WriteLine("1. Return to Menu");
-            if (isOfAge)
+            if (isOfAge && timetables.Count > 0)
                 Console.WriteLine("2. Reserve Movie");
             answer = Console.ReadLine()!;
         } while (!(answer == "1" || (answer == "2" && isOfAge)));
