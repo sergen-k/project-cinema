@@ -1,16 +1,18 @@
-using System.Security.Cryptography;
 
 public static class MakeReservation
 {
 
-  public static readonly ReservationLogic reservationLogic = new();
+    public static readonly ReservationLogic reservationLogic = new();
+    
+    public static readonly AccountsLogic userLogic = new();
 
-    public static void Start()
+
+    public static int Start(MovieModel movie)
     {
 
         // tijdelijke suser id en movie id, we gaan er vanuit dat iemand is ingelogd en een movie heeft gekozen
-        int user_id = 1;
-        MovieModel movie = new(0, "The Lord of the Rings: Fellowship of the ring", "It's a movie about a lord who wants rings", "Peter Jackson ", "Fantasy", 13, 178.0);
+        Int64 user_id = AccountsLogic.CurrentAccount.Id;
+
         TimetableAccess timetableAccess = new();
         List<TimetableModel> timetables = timetableAccess.SelectByMovieId(movie);
         ConsoleMenu<string> menu = new ConsoleMenu<string>();
@@ -72,6 +74,7 @@ public static class MakeReservation
                     Console.WriteLine("Reservation saved!");
                     Console.ReadLine();
                     //Moviecatalogue.Start();
+                    return 1;
 
                 }
 
@@ -79,7 +82,7 @@ public static class MakeReservation
                 {
                     //says no return back to info page of the movie 
                     //  MovieInfo.Start(movie);
-                    return;
+                    return -1;
                 }
 
 

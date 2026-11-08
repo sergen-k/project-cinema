@@ -13,7 +13,8 @@ static class UserLogin
         int attempts = 0;
 
         while (attempts < 3)
-        {
+        { 
+
             string email = AskForEmail();
             string password = AskForPassword();
 
@@ -32,7 +33,6 @@ static class UserLogin
             {
                 attempts++;
 
-                Console.WriteLine("Invalid email or password.");
 
                 if (attempts < 3)
                 {
