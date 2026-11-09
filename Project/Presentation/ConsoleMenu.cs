@@ -1,32 +1,44 @@
-class ConsoleMenu<T> : IConsoleMenu<T>
-{
+public class ConsoleMenu
 
-    public int SelectOption(List<T> options)
+{
+    public string Header {get; set;}
+
+    public ConsoleMenu(string header) => Header = header;
+    public ConsoleMenu() => Header = null;
+
+    public string SelectOption(List<string> options)
     {
         if (options == null || options.Count() == 0)
         {
-            return -1;
+            return null;
         }
 
         int selectedIndex = 0;
 
 
+
         while (true)
         {
             Console.Clear();
+            if (Header != null) {Console.WriteLine(Header);}
+
             for (int i = 0; i < options.Count; i++)
             {
-                if (i == selectedIndex)
+                if (options[i] == null)
+                {
+                    Console.WriteLine();
+                }
+                else if (i == selectedIndex)
                 {
                     Console.BackgroundColor = ConsoleColor.Gray;
                     Console.ForegroundColor = ConsoleColor.Black;
-                    Console.WriteLine($"> {options[i]}");
+                    Console.Write($"> {options[i]} ");
                     Console.ResetColor();
+                    Console.WriteLine();
                 }
                 else
                 {
-                    Console.WriteLine($"  {options[i]}");
-
+                    Console.WriteLine($"  {options[i]} ");
                 }
             }
 
@@ -35,21 +47,17 @@ class ConsoleMenu<T> : IConsoleMenu<T>
             switch (key)
             {
                 case ConsoleKey.UpArrow:
-                    selectedIndex =
-                    (selectedIndex - 1 + options.Count) % options.Count;
+                    selectedIndex = (selectedIndex - 1 + options.Count) % options.Count;
+                    if (options[selectedIndex] == null) {selectedIndex--;}
                     break;
 
                 case ConsoleKey.DownArrow:
-                    selectedIndex =
-                        (selectedIndex + 1) % options.Count;
+                    selectedIndex = (selectedIndex + 1) % options.Count;
+                    if (options[selectedIndex] == null) {selectedIndex++;}
                     break;
 
                 case ConsoleKey.Enter:
-                    return selectedIndex;
-
-                case ConsoleKey.Q :
-                    // TODO: this is not an error
-                    return -1;
+                    return options[selectedIndex];
             }
 
 

@@ -15,67 +15,71 @@ public static class BrowseMovies
         {
             Console.Clear();
             Movies = BrowseMovieLogic.SelectAll();
-            if (Movies.Count == 0)
-            {
-                Console.WriteLine("Currently no movies available");
-            }
-
-            MovieList();
-
-
-
-            Console.WriteLine();
-            answer = Options();
+            // if (Movies.Count == 0)
+            // {
+            //     Console.WriteLine("Currently no movies available");
+            // }
+            
+            answer = ChooseMovie();
             switch(answer)
             {
-                case "+":
+                case "↓ Scroll Down ↓":
                     if (_scrollPosition < Movies.Count / 10)
                         _scrollPosition++;
                     break;
-                case "-":
+                case "↑ Scroll Up ↑":
                     if (_scrollPosition > 0)
                         _scrollPosition--;
                     break;
-                case "q":
+                case "Return":
                     break;
                 default:
-                    movieToSee = Movies[int.Parse(answer)-1];
+                    movieToSee = Movies.Find(m => m.Title == answer);
                     Console.Clear();
+                    if (movieToSee.AgeLimit >= 18)
+                    {
+                        Console.CursorVisible = true;
+                        Console.WriteLine("This move is 18+");
+                        Console.WriteLine("Are you sure you want to continue? (Y/N)");
+                        Console.CursorVisible = false;
+                        if (Console.ReadKey().Key != ConsoleKey.Y) {break;}
+                    }
                     InspectMovie.Start(movieToSee);
                     break;
             }
-        } while (answer != "q" && movieToSee == null);
+        } while (answer != "Return");
     }
 
-    private static void MovieList()
+    private static List<string> MovieOptionsList()
     {
+        List<string> movieOptions = [];
         _scrollStart = _scrollPosition + 10 * _scrollPosition;
         _scrollEnd = _scrollStart+10 > Movies.Count ? Movies.Count : _scrollStart + 10;
         for(int i = _scrollStart; i < _scrollEnd; i++)
         {
-            Console.WriteLine(MovieInfoLine(Movies[i], i+1));
+            movieOptions.Add(MovieInfoLine(Movies[i]));
         }
+        movieOptions.Add(null);
+        if (_scrollEnd == Movies.Count) {movieOptions.Add("↑ Scroll Up ↑");}
+        if (_scrollStart == 0) {movieOptions.Add("↓ Scroll Down ↓");}
+        movieOptions.Add("Return");
+        return movieOptions;
+
     }
 
-    private static string MovieInfoLine(MovieModel movie, int iteration)
+    private static string MovieInfoLine(MovieModel movie)
     { 
-        return $"{iteration}. {movie.Title}; {movie.Genre}; {movie.AgeLimit}+";
+        return $"{movie.Title}; {movie.Genre}; {movie.AgeLimit}+";
     }
 
-    private static string Options()
+    private static string ChooseMovie()
     {
-        string answer;
-        int movieAnswer;
-        do
+        ConsoleMenu menu = new( $"Page ({_scrollPosition+1}/{(int)Math.Ceiling((double)Movies.Count/10)})");
+        string option = menu.SelectOption(MovieOptionsList());
+        if (option.Contains(';'))
         {
-            Console.WriteLine("+ Scroll up");
-            Console.WriteLine("- Scroll down");
-            Console.WriteLine("Q. Return to the main menu");
-            Console.WriteLine("Fill in a movie's title to inspect it.");
-            answer = Console.ReadLine()!.ToLower();
-            int.TryParse(answer, out movieAnswer);
-        } while (!(answer == "+" || answer == "-" || answer == "q" || movieAnswer-1 >= _scrollStart && movieAnswer-1 < _scrollEnd));
-        
-        return (movieAnswer-1 >= _scrollStart && movieAnswer-1 <= _scrollEnd) ? $"{movieAnswer}" : answer;
+            option = option.Split(';')[0];
+        }
+        return option;
     }
 }

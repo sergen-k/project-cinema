@@ -1,16 +1,35 @@
 static class Menu
 {
-    private static Dictionary<int,string> _options = new();
+    const string Banner = """
+        ══════════════════════════════════════════════════════════════════════════════
+
+        ██████╗  ██████╗ ████████╗████████╗███████╗██████╗ ██████╗  █████╗ ███╗   ███╗
+        ██╔══██╗██╔═══██╗╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗██╔══██╗██╔══██╗████╗ ████║
+        ██████╔╝██║   ██║   ██║      ██║   █████╗  ██████╔╝██║  ██║███████║██╔████╔██║
+        ██╔══██╗██║   ██║   ██║      ██║   ██╔══╝  ██╔══██╗██║  ██║██╔══██║██║╚██╔╝██║
+        ██║  ██║╚██████╔╝   ██║      ██║   ███████╗██║  ██║██████╔╝██║  ██║██║ ╚═╝ ██║
+        ╚═╝  ╚═╝ ╚═════╝    ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝
+
+                     ██████╗██╗███╗   ██╗███████╗███╗   ███╗ █████╗
+                    ██╔════╝██║████╗  ██║██╔════╝████╗ ████║██╔══██╗
+                    ██║     ██║██╔██╗ ██║█████╗  ██╔████╔██║███████║
+                    ██║     ██║██║╚██╗██║██╔══╝  ██║╚██╔╝██║██╔══██║
+                    ╚██████╗██║██║ ╚████║███████╗██║ ╚═╝ ██║██║  ██║
+                    ╚═════╝╚═╝╚═╝  ╚═══╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝
+
+        ══════════════════════════════════════════════════════════════════════════════
+        
+        """;
+    private static List<string> _options = new();
     public static void Start()
     {
         while (true)
         {
-            LoadOptions();
-            PrintMenuOptions();
+            LoadOptions(); 
+            ConsoleMenu menu = new(Banner);
+            string chosenMenu = menu.SelectOption(_options);
 
-            string chosenMenu = _options[Options()];
             Console.Clear();
-
             switch (chosenMenu) // Got to give each option a body
             {
                 case "About Us":
@@ -28,16 +47,22 @@ static class Menu
                     AccountsLogic.LogOut();
                     break;
                 case "View Reservations":
+                    Console.CursorVisible = true;
                     ViewReservation viewReservation = new();
                     viewReservation.Start();
-
+                    Console.CursorVisible = false;
                     break;
                 case "Add Movie":
                     AdminAddMovie.Start();
                     break;
+
+                case "Auto Log (Test)":
+                    UserAccess userAccess = new();
+                    AccountsLogic.ChangeAccount(userAccess.Select(1));
+                    break;
             }
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
+            // Console.WriteLine("Press any key to continue...");
+            // Console.ReadKey();
 
             Console.Clear();
         }
@@ -47,38 +72,26 @@ static class Menu
     {
         _options.Clear();
         int indexer = 0;
-        _options[++indexer] = "About Us";
-        _options[++indexer] = "Browse Movies";
+        _options.Add("Browse Movies");
         if (AccountsLogic.CurrentAccount == null)
         {
-            _options[++indexer] = "Register";
-            _options[++indexer] = "Log In";
+            _options.Add("Log In");
+            _options.Add("Register");
         }
         else
         {
-            _options[++indexer] = "Log Out";
-            _options[++indexer] = "View Reservations";
+            _options.Add("Log Out");
+            _options.Add("View Reservations");
 
             if (AccountsLogic.CurrentAccount?.Role == "admin")
             {
-                _options[++indexer] = "Add Movie";
+                _options.Add("Add Movie");
             }
         }
-    }
-
-    private static void PrintMenuOptions()
-    {
-        foreach(KeyValuePair<int,string> option in _options)
-            Console.WriteLine($"{option.Key}. {option.Value}");
-    }
-
-    private static int Options()
-    {
-        int option;
-        do
+        _options.Add("About Us");
+        if (!InspectMovieLogic.IsLoggedIn())
         {
-            int.TryParse(Console.ReadLine(), out option);
-        } while (!_options.ContainsKey(option));
-        return option;
+        _options.Add("Auto Log (Test)");
+        }
     }
 }

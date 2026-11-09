@@ -7,7 +7,10 @@
         UserId = userId;
     }
 
-    public  Int64   Id {get; set;}
-    public  Int64   MovieShowingId {get; set;}
-    public  Int64   UserId {get; set;}
+    public ReservationModel() { }
+
+    public long Id { get; set; }
+    public long MovieShowingId { get; set; }
+    public long UserId { get; set; }
+    public long Peaple { get; set; }
  }

@@ -10,7 +10,7 @@ public class TimetableAccess: IDataAccess<TimetableModel>
 
     public void Write(TimetableModel reservation)
     {
-        string sql = $"INSERT INTO {Table} (showtime, movieId, roomNumber) VALUES (@ShowTime, @MovieId, @RoomNumber)";
+        string sql = $"INSERT INTO {Table} (startTime, endTime, movieId, roomNumber) VALUES (@StartTime, @EndTime, @MovieId, @RoomNumber)";
         _connection.Execute(sql, reservation);
     }
 
@@ -29,10 +29,9 @@ public class TimetableAccess: IDataAccess<TimetableModel>
 
     public void Update(TimetableModel timetable)
     {
-        string sql = $"UPDATE {Table} SET showtime = @ShowTime, movieId = @MovieId, roomNumber = @RoomNumber WHERE id = @Id";
+        string sql = $"UPDATE {Table} SET startTime = @StartTime, endTime = @EndTime, movieId = @MovieId, roomNumber = @RoomNumber WHERE id = @Id";
         _connection.Execute(sql, timetable);
     }
-
     public void Delete(TimetableModel timetable)
     {
         string sql = $"DELETE FROM {Table} WHERE id = @Id";
