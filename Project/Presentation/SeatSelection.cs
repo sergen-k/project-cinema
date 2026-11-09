@@ -15,15 +15,16 @@ public class SeatSelection
 
     private static SeatLogic _seatLogic = new();
 
-    private int cursorX = 3;
-    private int cursorY = 1;
+    private int cursorX = 2;
+    private int cursorY = 0;
 
 
     public List<SeatModel> Start(TimetableModel timetableModel, int amountToReserve)
     {
 
-
+        // make a roomA
         SeatRoomA roomA = new();
+        // get the already reserved seats
         List<SeatModel> filledSeats = _seatLogic.SelectOrderedSeatsForViewing(timetableModel);
         List<SeatModel> toReserve = [];
 
@@ -31,7 +32,7 @@ public class SeatSelection
         while (true)
         {
             Console.WriteLine("Please select the correct amount of seats.");
-            Console.WriteLine("Use arrow keys to navigate through the menu");
+            Console.WriteLine("Use arrow keys to navigate through the menu. Press enter to select a seat or remove selection with backspace");
             Console.WriteLine("When the correct amount of seats has been selected press y to continu");
 
             Console.WriteLine(DrawAuditorium(roomA, filledSeats, toReserve));
@@ -154,7 +155,16 @@ public class SeatSelection
         }
 
 
-
+        // draw screen 
+        
+        string screen = "\n \n \n|";
+        for (int i = 0; i < 14*4.25; i++)
+        {
+            screen += "-";
+        }
+        screen += "|";
+    
+        finalResult += screen;
 
         return finalResult;
     }

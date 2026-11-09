@@ -2,7 +2,8 @@
 public static class MakeReservation
 {
 
-  public static readonly ReservationLogic reservationLogic = new();
+    public static readonly ReservationLogic reservationLogic = new();
+    public static readonly SeatOrderLogic seatOrderLogic = new();
 
     public static void Start(MovieModel movie)
     {
@@ -20,7 +21,7 @@ public static class MakeReservation
 
         ConsoleMenu menu = new();
 
-            // makes sure there are no duplicates and that it get turned into a list
+        // makes sure there are no duplicates and that it get turned into a list
 
         List<DateTime> dates = timetables
         .Select(t => t.HumanReadableShowtime.Date)
@@ -56,7 +57,15 @@ public static class MakeReservation
 
         // Get the selected timetable
         TimetableModel selectedTimetable = dayTimetables[selectedStartTimeIndex];
-        
+        Console.Clear();
+        Console.WriteLine("How many seats would you like to reserve for?");
+        int numberOfSeats = AmountOfSeats();
+
+        Console.Clear();
+        SeatSelection seatSelection = new();
+        List<SeatModel> toReserveSeats =  seatSelection.Start(selectedTimetable, numberOfSeats);
+        Console.Clear();
+
         Console.CursorVisible = true;
         Console.WriteLine("Are you sure you wanna reserve at this time? (Y/N)");
         var userAnswer = Console.ReadKey().Key;
@@ -67,7 +76,16 @@ public static class MakeReservation
             Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {formattedTimes[selectedStartTimeIndex]} on {formatteddates[selectedDateIndex]}");
             ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id);
             ReservationAccess reservationAccess = new();
+
             reservationAccess.Write(reservation);
+            ReservationModel reservationRefreshed = reservationLogic.GetByUser(AccountsLogic.CurrentAccount).Last();
+            
+            foreach (SeatModel seat in toReserveSeats)
+            {
+                seatOrderLogic.Write(reservationRefreshed, seat);
+            }
+
+
             Console.WriteLine("Press enter to return!");
             Console.ReadLine();
             Console.CursorVisible = false;
@@ -75,16 +93,29 @@ public static class MakeReservation
 
         }
 
-                else
-                {
-                    //says no return back to info page of the movie 
-                    //  MovieInfo.Start(movie);
-                    Console.CursorVisible = false;
-                    return;
-                }
-
-
-            }
-
-
+        else
+        {
+            //says no return back to info page of the movie 
+            //  MovieInfo.Start(movie);
+            Console.CursorVisible = false;
+            return;
         }
+
+
+    }
+
+
+    public static int AmountOfSeats()
+    {   
+        int attempts = 0;
+
+        while (true)
+        {
+            if(attempts >0) Console.WriteLine("Please enter a valid number.");
+            string userInput = Console.ReadLine();
+            if(int.TryParse(userInput, out int val)) return val;
+            attempts++;
+        }
+    }
+
+}
