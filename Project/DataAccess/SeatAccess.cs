@@ -27,10 +27,31 @@ public class SeatAccess: IDataAccess<SeatModel>
     }
 
 
+    public  List<SeatModel> SelectByRoom(int room)
+    {
+        string sql = $"SELECT * FROM {Table} WHERE roomnumber = @RoomNumber";
+        return _connection.Query<SeatModel>(sql, new {RoomNumber = room}).ToList();
+    }
+
+
     public void Update(SeatModel Seat)
     {
         string sql = $"UPDATE {Table} SET roomnumber = @RoomNumber, seattype = @SeatType, seatCost = @SeatCost WHERE id = @Id";
         _connection.Execute(sql, Seat);
+    }
+
+
+    public List<SeatModel> SelectOrderedSeatsForViewing(TimetableModel timetableModel)
+    {
+        string sql = $@"
+            SELECT Seat.* from Timetable
+                INNER JOIN Reservation on Reservation.movieShowingId = Timetable.id
+                INNER JOIN SeatOrder on SeatOrder.reservationId = Reservation.id
+                INNER JOIN Seat on Seat.id = SeatOrder.seatId
+                where Timetable.id = @Id
+        ";
+        return _connection.Query<SeatModel>(sql, timetableModel).ToList();
+
     }
 
     public void Delete(SeatModel Seat)
