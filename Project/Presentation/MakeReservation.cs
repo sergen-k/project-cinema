@@ -23,7 +23,7 @@ public static class MakeReservation
             // makes sure there are no duplicates and that it get turned into a list
 
         List<DateTime> dates = timetables
-        .Select(t => t.HumanReadableShowtime.Date)
+        .Select(t => t.HumanReadableStartTime.Date)
         .Distinct()
         .ToList();
 
@@ -37,12 +37,12 @@ public static class MakeReservation
 
         // Get all timetables for the selected date
         List<TimetableModel> dayTimetables = timetables
-            .Where(t => t.HumanReadableShowtime.Date == selectedDate.Date)
+            .Where(t => t.HumanReadableStartTime.Date == selectedDate.Date)
             .ToList();
 
         // Format start and end times
         List<string> formattedTimes = dayTimetables
-            .Select(t => $"{t.HumanReadableShowtime:HH:mm} - {t.HumanReadableEndtime:HH:mm}")
+            .Select(t => $"{t.HumanReadableStartTime:HH:mm} - {t.HumanReadableEndtime:HH:mm}")
             .ToList();
 
         // Timetable selection screen

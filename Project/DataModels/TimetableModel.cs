@@ -16,7 +16,7 @@ public class TimetableModel
     public Int64 StartTime { get; set; }
     public Int64 EndTime { get; set; }
 
-    public DateTime HumanReadableShowtime
+    public DateTime HumanReadableStartTime
     {
         get => DateTimeOffset.FromUnixTimeSeconds(StartTime).LocalDateTime;
         set => StartTime = ((DateTimeOffset)value).ToUnixTimeSeconds();
