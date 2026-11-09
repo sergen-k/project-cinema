@@ -30,11 +30,12 @@ static class Menu
                 case "View Reservations":
                     ViewReservation viewReservation = new();
                     viewReservation.Start();
-
                     break;
                 case "Add Movie":
                     AdminAddMovie.Start();
                     break;
+
+
             }
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
@@ -61,6 +62,7 @@ static class Menu
             if (AccountsLogic.CurrentAccount?.Role == "admin")
             {
                 _options.Add("Add Movie");
+                _options.Add("change users settings");
             }
         }
         _options.Add("About Us");

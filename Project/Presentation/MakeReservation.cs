@@ -5,12 +5,12 @@ public static class MakeReservation
 
   public static readonly ReservationLogic reservationLogic = new();
 
-    public static void Start()
+    public static void Start(MovieModel movie)
     {
 
         // tijdelijke suser id en movie id, we gaan er vanuit dat iemand is ingelogd en een movie heeft gekozen
         int user_id = 1;
-        MovieModel movie = new(0, "The Lord of the Rings: Fellowship of the ring", "It's a movie about a lord who wants rings", "Peter Jackson ", "Fantasy", 13, 178.0);
+       // MovieModel movie = new(0, "The Lord of the Rings: Fellowship of the ring", "It's a movie about a lord who wants rings", "Peter Jackson ", "Fantasy", 13, 178.0);
         TimetableAccess timetableAccess = new();
         List<TimetableModel> timetables = timetableAccess.SelectByMovieId(movie);
         ConsoleMenu<string> menu = new ConsoleMenu<string>();
