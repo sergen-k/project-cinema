@@ -6,6 +6,8 @@ public static class FoodsAndDrinks
 
         List<ConsumableModel> consumables = logic.GetAll();
 
+        int finishOption = consumables.Count + 1;
+
         if (consumables.Count == 0)
         {
             Console.WriteLine("No food or drinks available.");
@@ -27,7 +29,7 @@ public static class FoodsAndDrinks
             }
 
             Console.WriteLine("0. Skip / Cancel Foods and Drinks");
-            Console.WriteLine("7. Finish selecting");
+            Console.WriteLine($"{finishOption}. Finish selecting");
 
             Console.Write("Choose an option: ");
 
@@ -45,7 +47,7 @@ public static class FoodsAndDrinks
                 return new List<ConsumableOrderModel>();
             }
 
-            if (choice == 7)
+            if (choice == finishOption)
             {
                 if (logic.GetSelectedItems().Count == 0)
                 {
@@ -57,9 +59,7 @@ public static class FoodsAndDrinks
 
                 if (result == 1)
                 {
-                    return new List<ConsumableOrderModel>(
-                        logic.GetSelectedItems()
-                    );
+                    return new List<ConsumableOrderModel>(logic.GetSelectedItems());
                 }
 
                 if (result == 2)
