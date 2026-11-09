@@ -27,7 +27,7 @@ public class AccountsLogic
         return null;
     }
 
-        // Source - https://stackoverflow.com/a/17001289
+     // Source - https://stackoverflow.com/a/17001289
     // Posted by Dmitrii Bychenko, modified by community. See post 'Timeline' for change history
     // Retrieved 2026-10-27, License - CC BY-SA 4.0
 
