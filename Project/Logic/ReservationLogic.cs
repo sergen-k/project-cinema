@@ -24,4 +24,12 @@ public class ReservationLogic
         _reservationAccess.Write(reservation);
     }
 
+    public bool checkDuplicateReservation(TimetableModel timetable, UserModel user)
+    {
+        List<ReservationModel> reservations = GetByUser(user);
+
+        return reservations.Any(x => x.MovieShowingId == timetable.Id);
+    }
+
+
 }
