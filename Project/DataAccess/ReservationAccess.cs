@@ -14,7 +14,16 @@ public class ReservationAccess : IDataAccess<ReservationModel>
         _connection.Execute(sql, reservation);
     }
 
+    public long WriteAndGetId(ReservationModel reservation)
+    {
+        string sql = $@"INSERT INTO {Table}
+                        (movieShowingId, userId, people)
+                        VALUES (@MovieShowingId, @UserId, @People)
+                        RETURNING id";
 
+        return _connection.Query<long>(sql, reservation).First();
+    }
+    
     public long getNextReservationId()
     {
         string sql = $"SELECT COALESCE(MAX(id), 0) + 1 FROM {Table}";

@@ -86,26 +86,44 @@ public static class MakeReservation
         List<SeatModel> toReserveSeats = seatSelection.Start(selectedTimetable, numberOfSeats);
         Console.Clear();
 
+        double totalPrice = toReserveSeats.Sum(x => x.SeatCost);
+
         Console.CursorVisible = true;
-        Console.WriteLine("Are you sure you wanna reserve at this time? (Y/N)");
+
+        // Select Foods and Drinks
+        List<ConsumableOrderModel> selectedItems = FoodsAndDrinks.Start();
+        Console.Clear();
+
+        Console.WriteLine("=== Confirm Your Reservation ===");
+        Console.WriteLine($"Movie: {movie.Title}");
+        Console.WriteLine($"Date: {selectedTimetable.HumanReadableShowtime:dd/MM/yyyy}");
+        Console.WriteLine($"Time: {selectedTimetable.HumanReadableShowtime:HH:mm} - {selectedTimetable.HumanReadableEndtime:HH:mm}");
+        Console.WriteLine($"Seats: {numberOfSeats}");
+        Console.WriteLine($"Food and Drink items: {selectedItems.Count}");
+
+        Console.WriteLine();
+        Console.WriteLine("Do you want to confirm your reservation? (Y/N)");
+
         var userAnswer = Console.ReadKey().Key;
         if (userAnswer == ConsoleKey.Y)
         {
             // says yes finish reservation  if confirmed send them back to the movie catalogue,
             Console.Clear();
-            Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimeString} on {selectedDateString}");
+            Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimetable.HumanReadableShowtime:HH:mm} on {selectedTimetable.HumanReadableShowtime:dd/MM/yyyy}");
             ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
             ReservationAccess reservationAccess = new();
 
-            reservationAccess.Write(reservation);
-            ReservationModel reservationRefreshed = reservationLogic.GetByUser(AccountsLogic.CurrentAccount).Last();
-
-
+            long reservationId = reservationAccess.WriteAndGetId(reservation);
+            ReservationModel reservationRefreshed = new(reservationId, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
+            
             foreach (SeatModel seat in toReserveSeats)
             {
 
                 seatOrderLogic.Write(reservationRefreshed, seat);
             }
+
+            ConsumableOrderAccess consumableOrderAccess = new();
+            consumableOrderAccess.SaveForReservation(reservationId, selectedItems);
 
 
             Console.WriteLine("Press enter to return!");

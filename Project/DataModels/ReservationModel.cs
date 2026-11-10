@@ -5,6 +5,7 @@
         Id = id;
         MovieShowingId = movieShowingId;
         UserId = userId;
+        People = people;
     }
 
     public ReservationModel() { }
