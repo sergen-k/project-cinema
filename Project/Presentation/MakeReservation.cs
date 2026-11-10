@@ -67,7 +67,21 @@ public static class MakeReservation
         Console.Clear();
 
         Console.CursorVisible = true;
-        Console.WriteLine("Are you sure you wanna reserve at this time? (Y/N)");
+
+        // Select Foods and Drinks
+        List<ConsumableOrderModel> selectedItems = FoodsAndDrinks.Start();
+        Console.Clear();
+
+        Console.WriteLine("=== Confirm Your Reservation ===");
+        Console.WriteLine($"Movie: {movie.Title}");
+        Console.WriteLine($"Date: {formatteddates[selectedDateIndex]}");
+        Console.WriteLine($"Time: {formattedTimes[selectedStartTimeIndex]}");
+        Console.WriteLine($"Seats: {numberOfSeats}");
+        Console.WriteLine($"Food and Drink items: {selectedItems.Count}");
+
+        Console.WriteLine();
+        Console.WriteLine("Do you want to confirm your reservation? (Y/N)");
+
         var userAnswer = Console.ReadKey().Key;
         if (userAnswer == ConsoleKey.Y)
         {
@@ -77,13 +91,16 @@ public static class MakeReservation
             ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
             ReservationAccess reservationAccess = new();
 
-            reservationAccess.Write(reservation);
-            ReservationModel reservationRefreshed = reservationLogic.GetByUser(AccountsLogic.CurrentAccount).Last();
+            long reservationId = reservationAccess.WriteAndGetId(reservation);
+            ReservationModel reservationRefreshed = new(reservationId, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
             
             foreach (SeatModel seat in toReserveSeats)
             {
                 seatOrderLogic.Write(reservationRefreshed, seat);
             }
+
+            ConsumableOrderAccess consumableOrderAccess = new();
+            consumableOrderAccess.SaveForReservation(reservationId, selectedItems);
 
 
             Console.WriteLine("Press enter to return!");
