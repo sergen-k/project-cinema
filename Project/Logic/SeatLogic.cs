@@ -16,6 +16,17 @@ class SeatLogic
         return _SeatAccess.SelectFromSeatOrder(model);
     }
 
+    public List<SeatModel> SelectByRoom(int model)
+    {
+        return _SeatAccess.SelectByRoom(model);
+    }
+
+
+    public List<SeatModel> SelectOrderedSeatsForViewing(TimetableModel model)
+    {
+        return _SeatAccess.SelectOrderedSeatsForViewing(model);
+    }
+
 
 
 }

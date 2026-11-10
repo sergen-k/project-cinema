@@ -1,17 +1,16 @@
 
     public class ReservationModel {
-    public ReservationModel(long id, long movieShowingId, long userId, long peaple)
+    public ReservationModel(long id, long movieShowingId, long userId, long people)
     {
         Id = id;
         MovieShowingId = movieShowingId;
         UserId = userId;
-        Peaple = peaple;
-
     }
 
-    public  Int64   Id {get; set;}
-    public  Int64   MovieShowingId {get; set;}
-    public  Int64   UserId {get; set;}
+    public ReservationModel() { }
 
-    public Int64    Peaple{get; set;}
+    public long Id { get; set; }
+    public long MovieShowingId { get; set; }
+    public long UserId { get; set; }
+    public long People { get; set; }
  }

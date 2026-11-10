@@ -1,45 +1,38 @@
+using System.Text;
+
 public static class InspectMovie
 {
     public static void Start(MovieModel movie)
     {
-        DisplayInfo(movie);
-        string option = Options(InspectMovieLogic.IsOfAge(movie));
-        if(option == "1")
-        {
-            return;
-        }
-        else
-        {
-            MakeReservation.Start(movie);
-        }
-
+        ConsoleMenu menu = new(MovieInfo(movie).ToString());
+        List<string> options = [];
+        if (InspectMovieLogic.IsOfAge(movie)) {options.Add("Reserve");}
+        options.Add("Return");
+        string option = menu.SelectOption(options);
+        if (option == "Reserve") {MakeReservation.Start(movie);}
     }
 
-    private static void DisplayInfo(MovieModel movie)
+    private static StringBuilder MovieInfo(MovieModel movie)
     {
-        Console.WriteLine(movie.Title);
+        StringBuilder movieInfo = new();
 
-        Console.WriteLine($"Genre: {movie.Genre}");
-
-        Console.WriteLine($"Directed by: {movie.Director}");
-        Console.WriteLine($"Must be at least {movie.AgeLimit} years old");
-        Console.WriteLine($"Duration: {movie.Duration} minutes");
-        Console.WriteLine();
-        Console.WriteLine(movie.Description);
-        Console.WriteLine();
-    }
-
-    private static string Options(bool isOfAge)
-    {
-        string answer;
-        do
+        movieInfo.AppendLine(movie.Title);
+        movieInfo.AppendLine($"Genre: {movie.Genre}");
+        movieInfo.AppendLine($"Directed by: {movie.Director}");
+        movieInfo.AppendLine($"Must be at least {movie.AgeLimit} years old");
+        movieInfo.AppendLine($"Duration: {movie.Duration} minutes");
+        movieInfo.AppendLine();
+        movieInfo.AppendLine(movie.Description);
+        if (!InspectMovieLogic.IsLoggedIn())
         {
-            Console.WriteLine("1. Return to Menu");
-            if (isOfAge)
-                Console.WriteLine("2. Reserve Movie");
-            answer = Console.ReadLine()!;
-        } while (!(answer == "1" || (answer == "2" && isOfAge)));
-        return answer;
+            movieInfo.AppendLine();
+            movieInfo.AppendLine($"To reserve you need to be logged in.");
+        }
+        else if (!InspectMovieLogic.IsOfAge(movie))
+        {
+            movieInfo.AppendLine();
+            movieInfo.AppendLine($"To reserve you need to be at least {movie.AgeLimit}!");
+        }
+        return movieInfo;
     }
-
 }

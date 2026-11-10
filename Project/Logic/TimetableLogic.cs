@@ -1,4 +1,4 @@
-class TimetableLogic
+public class TimetableLogic
 {
     private readonly TimetableAccess _timeTableAccess = new();
 

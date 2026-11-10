@@ -26,6 +26,14 @@ public class SeatOrderAccess: IDataAccess<SeatOrderModel>
         return _connection.Query<SeatOrderModel>(sql, reservation).ToList();
     }
 
+    public long GetNextSeatOrderId()
+    {
+        string sql = $"SELECT COALESCE(MAX(id), 0) + 1 FROM {Table}";
+
+        return _connection.ExecuteScalar<long>(sql);
+    }
+
+
 
     public void Update(SeatOrderModel SeatOrder)
     {
