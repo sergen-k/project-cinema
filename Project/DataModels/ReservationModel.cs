@@ -1,6 +1,6 @@
 
     public class ReservationModel {
-    public ReservationModel(long id, long movieShowingId, long userId)
+    public ReservationModel(long id, long movieShowingId, long userId, long people)
     {
         Id = id;
         MovieShowingId = movieShowingId;

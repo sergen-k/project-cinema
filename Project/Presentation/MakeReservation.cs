@@ -74,7 +74,7 @@ public static class MakeReservation
             // says yes finish reservation  if confirmed send them back to the movie catalogue,
             Console.Clear();
             Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {formattedTimes[selectedStartTimeIndex]} on {formatteddates[selectedDateIndex]}");
-            ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id);
+            ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
             ReservationAccess reservationAccess = new();
 
             reservationAccess.Write(reservation);
