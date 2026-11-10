@@ -86,6 +86,8 @@ public static class MakeReservation
         List<SeatModel> toReserveSeats = seatSelection.Start(selectedTimetable, numberOfSeats);
         Console.Clear();
 
+        double totalPrice = toReserveSeats.Sum(x => x.SeatCost);
+
         Console.CursorVisible = true;
 
         // Select Foods and Drinks
