@@ -1,13 +1,51 @@
 using Dapper;
 using Microsoft.Data.Sqlite;
 
-public class ConsumableOrderAccess
+public class ConsumableOrderAccess : IDataAccess<ConsumableOrderModel>
 {
+    private SqliteConnection _connection = new SqliteConnection("Data Source=DataSources/project.db");
+
+    public void Write(ConsumableOrderModel model)
+    {
+        List<ConsumableOrderModel> items = new List<ConsumableOrderModel>();
+
+        items.Add(model);
+
+        SaveForReservation(model.ReservationId, items);
+    }
+
+    public ConsumableOrderModel Select(int id)
+    {
+        string sql = "SELECT * FROM ConsumableOrder WHERE id = @Id";
+
+        return _connection.Query<ConsumableOrderModel>(
+            sql, new { Id = id }).First();
+    }
+
+    public void Update(ConsumableOrderModel model)
+    {
+        string sql = @"UPDATE ConsumableOrder
+                    SET reservationId = @ReservationId,
+                        consumableId = @ConsumableId,
+                        quantity = @Quantity,
+                        unitPrice = @UnitPrice
+                    WHERE id = @Id";
+
+        _connection.Execute(sql, model);
+    }
+
+    public void Delete(ConsumableOrderModel model)
+    {
+        string sql = "DELETE FROM ConsumableOrder WHERE id = @Id";
+
+        _connection.Execute(sql, model);
+    }
+
     public void SaveForReservation(long reservationId, List<ConsumableOrderModel> selectedItems)
     {
         if (reservationId <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(reservationId));
+            throw new ArgumentException("Invalid reservation ID.");
         }
 
         foreach (ConsumableOrderModel item in selectedItems)
@@ -18,32 +56,20 @@ public class ConsumableOrderAccess
             }
         }
 
-        using (SqliteConnection connection = new SqliteConnection("Data Source=DataSources/project.db"))
-        {
-            connection.Open();
-            connection.Execute("PRAGMA foreign_keys = ON");
-
-            using (SqliteTransaction transaction = connection.BeginTransaction())
-            {
-                string sql = @"
-                    INSERT INTO ConsumableOrder
+        string sql = @"INSERT INTO ConsumableOrder
                     (reservationId, consumableId, quantity, unitPrice)
                     VALUES
                     (@ReservationId, @ConsumableId, @Quantity, @UnitPrice)";
 
-                foreach (ConsumableOrderModel item in selectedItems)
-                {
-                    connection.Execute(sql, new
-                    {
-                        ReservationId = reservationId,
-                        ConsumableId = item.ConsumableId,
-                        Quantity = item.Quantity,
-                        UnitPrice = item.UnitPrice
-                    }, transaction);
-                }
-
-                transaction.Commit();
-            }
+        foreach (ConsumableOrderModel item in selectedItems)
+        {
+            _connection.Execute(sql, new
+            {
+                ReservationId = reservationId,
+                ConsumableId = item.ConsumableId,
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice
+            });
         }
     }
 }
