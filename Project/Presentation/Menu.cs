@@ -55,7 +55,9 @@ static class Menu
                 case "Add Movie":
                     AdminAddMovie.Start();
                     break;
-
+                
+                case "User Settings":
+                     
                 case "Auto Log (Test)":
                     UserAccess userAccess = new();
                     AccountsLogic.ChangeAccount(userAccess.Select(1));
@@ -86,6 +88,7 @@ static class Menu
             if (AccountsLogic.CurrentAccount?.Role == "admin")
             {
                 _options.Add("Add Movie");
+                _options.Add("User Settings");
             }
         }
         _options.Add("About Us");

@@ -19,7 +19,7 @@ public static class MakeReservation
             return;
         }
 
-        ConsoleMenu menu = new();
+        ConsoleMenu<string> menu = new();
 
         // makes sure there are no duplicates and that it get turned into a list
         TimetableModel selectedTimetable;
