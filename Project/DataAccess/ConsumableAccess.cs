@@ -43,4 +43,8 @@ public class ConsumableAccess : IDataAccess<ConsumableModel>
 
         _connection.Execute(sql, model);
     }
-}
+
+public ConsumableModel SelectAllById(int id)
+{
+    return null;
+} }

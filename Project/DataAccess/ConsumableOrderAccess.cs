@@ -41,6 +41,11 @@ public class ConsumableOrderAccess : IDataAccess<ConsumableOrderModel>
         _connection.Execute(sql, model);
     }
 
+ public ConsumableOrderModel SelectAllById(int id)
+{
+    return null;
+}
+
     public void SaveForReservation(long reservationId, List<ConsumableOrderModel> selectedItems)
     {
         if (reservationId <= 0)
