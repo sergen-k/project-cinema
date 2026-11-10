@@ -86,8 +86,14 @@ public static class MakeReservation
         List<SeatModel> toReserveSeats = seatSelection.Start(selectedTimetable, numberOfSeats);
         Console.Clear();
 
+        double totalPrice = toReserveSeats.Sum(x => x.SeatCost);
+
         Console.CursorVisible = true;
-        Console.WriteLine("Are you sure you wanna reserve at this time? (Y/N)");
+        Console.WriteLine($"Are you sure you want to reserve \n{movie.Title} \nat {selectedTimeString} on {selectedDateString} for €{totalPrice}");
+        Console.WriteLine("Press Y to confirm or N to cancel");
+
+
+
         var userAnswer = Console.ReadKey().Key;
         if (userAnswer == ConsoleKey.Y)
         {
