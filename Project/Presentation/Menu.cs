@@ -35,6 +35,10 @@ static class Menu
                     AdminAddMovie.Start();
                     break;
 
+                case "change users settings":
+                     AdminChangeUserSettings.Start();
+                     break;    
+
 
             }
             Console.WriteLine("Press any key to continue...");
@@ -59,7 +63,7 @@ static class Menu
             _options.Add("Log Out");
             _options.Add("View Reservations");
 
-            if (AccountsLogic.CurrentAccount?.Role == "admin")
+            if (AccountsLogic.CurrentAccount?.Role == "Admin")
             {
                 _options.Add("Add Movie");
                 _options.Add("change users settings");

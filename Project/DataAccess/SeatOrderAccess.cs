@@ -14,7 +14,7 @@ public class SeatOrderAccess: IDataAccess<SeatOrderModel>
         _connection.Execute(sql, reservation);
     }
 
-    public  SeatOrderModel Select(int id )
+    public  SeatOrderModel SelectAllById(int id )
     {
         string sql = $"SELECT * FROM {Table} WHERE  id = @Id";
         return _connection.QueryFirstOrDefault<SeatOrderModel>(sql, new {Id = id});

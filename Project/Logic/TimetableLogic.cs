@@ -8,6 +8,6 @@ class TimetableLogic
 
     public TimetableModel Select(int id)
     {
-        return _timeTableAccess.Select(id);
+        return _timeTableAccess.SelectAllById(id);
     }
 }

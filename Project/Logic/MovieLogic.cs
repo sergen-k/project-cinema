@@ -8,6 +8,6 @@ class MovieLogic
 
     public MovieModel Select(int id)
     {
-        return _MovieAccess.Select(id);
+        return _MovieAccess.SelectAllById(id);
     }
 }

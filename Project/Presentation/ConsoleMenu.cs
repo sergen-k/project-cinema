@@ -2,6 +2,8 @@ public class ConsoleMenu<T>
 
 {
 
+   
+
     public int SelectOption(List<T> options, bool isMainMenu = false)
     {
         if (options == null || options.Count() == 0)

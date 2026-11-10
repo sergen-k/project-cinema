@@ -8,7 +8,7 @@ class SeatLogic
 
     public SeatModel Select(int id)
     {
-        return _SeatAccess.Select(id);
+        return _SeatAccess.SelectAllById(id);
     }
 
     public SeatModel SelectFromSeatOrder(SeatOrderModel model)

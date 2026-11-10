@@ -36,7 +36,7 @@ public class MovieAccess : IDataAccess<MovieModel>
         AddMovie(movie);
     }
 
-    public MovieModel Select(int id)
+    public MovieModel SelectAllById(int id)
     {
         string sql = $"SELECT * FROM {Table} WHERE id = @Id";
 

@@ -23,7 +23,7 @@ public class ReservationAccess : IDataAccess<ReservationModel>
     }
 
 
-    public ReservationModel Select(int id )
+    public ReservationModel SelectAllById(int id )
     {
         string sql = $"SELECT * FROM {Table} WHERE  id = @Id";
         return _connection.QueryFirstOrDefault<ReservationModel>(sql, new {Id = id});

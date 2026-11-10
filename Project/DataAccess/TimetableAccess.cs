@@ -14,7 +14,7 @@ public class TimetableAccess: IDataAccess<TimetableModel>
         _connection.Execute(sql, reservation);
     }
 
-    public  TimetableModel Select(int id )
+    public  TimetableModel SelectAllById(int id )
     {
         string sql = $"SELECT * FROM {Table} WHERE  id = @Id";
         return _connection.QueryFirstOrDefault<TimetableModel>(sql, new {Id = id});

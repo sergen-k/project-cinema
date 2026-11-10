@@ -8,7 +8,7 @@ class SeatOrderLogic
 
     public SeatOrderModel Select(int id)
     {
-        return _SeatOrderAccess.Select(id);
+        return _SeatOrderAccess.SelectAllById(id);
     }
 
     public List<SeatOrderModel> SelectForReservation(ReservationModel reservation)
