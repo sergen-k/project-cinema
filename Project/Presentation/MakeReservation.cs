@@ -22,48 +22,68 @@ public static class MakeReservation
         ConsoleMenu menu = new();
 
         // makes sure there are no duplicates and that it get turned into a list
+        TimetableModel selectedTimetable;
+        string selectedDateString;
+        string selectedTimeString;
 
-        List<DateTime> dates = timetables
-        .Select(t => t.HumanReadableStartTime.Date)
-        .Distinct()
-        .ToList();
+        while (true)
+        {
+            List<DateTime> dates = timetables
+                .Select(t => t.HumanReadableStartTime.Date)
+                .Distinct()
+                .ToList();
 
-        List<string> formatteddates = dates
-        .Select(d => d.ToString("dd/MM/yyyy"))
-        .ToList();
-
-        // date selection screen
-        int selectedDateIndex = formatteddates.IndexOf(menu.SelectOption(formatteddates));
-        DateTime selectedDate = dates[selectedDateIndex];
-
-        // Get all timetables for the selected date
-        List<TimetableModel> dayTimetables = timetables
-            .Where(t => t.HumanReadableStartTime.Date == selectedDate.Date)
+            List<string> formatteddates = dates
+            .Select(d => d.ToString("dd/MM/yyyy"))
             .ToList();
 
-        // Format start and end times
-        List<string> formattedTimes = dayTimetables
-            .Select(t => $"{t.HumanReadableStartTime:HH:mm} - {t.HumanReadableEndtime:HH:mm}")
-            .ToList();
+            // date selection screen
+            int selectedDateIndex = formatteddates.IndexOf(menu.SelectOption(formatteddates));
+            DateTime selectedDate = dates[selectedDateIndex];
 
-        // Timetable selection screen
-        int selectedStartTimeIndex = formattedTimes.IndexOf(menu.SelectOption(formattedTimes));
+            // Get all timetables for the selected date
+            List<TimetableModel> dayTimetables = timetables
+                .Where(t => t.HumanReadableStartTime.Date == selectedDate.Date)
+                .ToList();
 
-        // if (selectedStartTimeIndex == -1)
-        // {
-        //     break;
-        // }
+            // Format start and end times
+            List<string> formattedTimes = dayTimetables
+                .Select(t => $"{t.HumanReadableStartTime:HH:mm} - {t.HumanReadableEndtime:HH:mm}")
+                .ToList();
 
+            // Timetable selection screen
+            int selectedStartTimeIndex = formattedTimes.IndexOf(menu.SelectOption(formattedTimes));
 
-        // Get the selected timetable
-        TimetableModel selectedTimetable = dayTimetables[selectedStartTimeIndex];
+            // if (selectedStartTimeIndex == -1)
+            // {
+            //     break;
+            // }
+
+            var timeslot = dayTimetables[selectedStartTimeIndex];
+
+            bool hasDuplicate = reservationLogic.checkDuplicateReservation(timeslot, AccountsLogic.CurrentAccount);
+
+            if (hasDuplicate)
+            {
+                Console.WriteLine("You already have a reservation for this timeslot, please select a different time");
+                Console.ReadLine();
+            } else
+            {
+                // Get the selected timetable
+                selectedTimetable = dayTimetables[selectedStartTimeIndex];
+                selectedTimeString = formattedTimes[selectedStartTimeIndex];
+                selectedDateString = formatteddates[selectedDateIndex];
+                break;
+            }
+        }
+
         Console.Clear();
         Console.WriteLine("How many seats would you like to reserve for?");
         int numberOfSeats = AmountOfSeats();
 
         Console.Clear();
         SeatSelection seatSelection = new();
-        List<SeatModel> toReserveSeats =  seatSelection.Start(selectedTimetable, numberOfSeats);
+        List<SeatModel> toReserveSeats = seatSelection.Start(selectedTimetable, numberOfSeats);
         Console.Clear();
 
         Console.CursorVisible = true;
@@ -73,15 +93,17 @@ public static class MakeReservation
         {
             // says yes finish reservation  if confirmed send them back to the movie catalogue,
             Console.Clear();
-            Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {formattedTimes[selectedStartTimeIndex]} on {formatteddates[selectedDateIndex]}");
+            Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimeString} on {selectedDateString}");
             ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
             ReservationAccess reservationAccess = new();
 
             reservationAccess.Write(reservation);
             ReservationModel reservationRefreshed = reservationLogic.GetByUser(AccountsLogic.CurrentAccount).Last();
-            
+
+
             foreach (SeatModel seat in toReserveSeats)
             {
+
                 seatOrderLogic.Write(reservationRefreshed, seat);
             }
 
@@ -106,14 +128,14 @@ public static class MakeReservation
 
 
     public static int AmountOfSeats()
-    {   
+    {
         int attempts = 0;
 
         while (true)
         {
-            if(attempts >0) Console.WriteLine("Please enter a valid number.");
+            if (attempts > 0) Console.WriteLine("Please enter a valid number.");
             string userInput = Console.ReadLine();
-            if(int.TryParse(userInput, out int val)) return val;
+            if (int.TryParse(userInput, out int val)) return val;
             attempts++;
         }
     }
