@@ -41,19 +41,24 @@ public class SeatRoomA : MovieRoom
     public override void ConstructAuditoriumRoom()
     {
         List<SeatModel> seatModels = _seatLogic.SelectByRoom(1);
-        int seatsAdded = 0;
-        for(int i = 0; i < 14; i++) {
-            int final = 12-pattern[i]*2;
-            int start_offset = final + seatsAdded;
+        Queue<SeatModel> ordered = new(seatModels);
+    
+        int[] num_seats = [8, 10, 10, 12, 12, 12, 12, 12, 12, 12, 12, 10, 8, 8];
+        List<List<SeatModel>> result = new();
 
-            List<SeatModel> row = seatModels[seatsAdded..start_offset];
+        foreach (int row in num_seats)
+        {
+            List<SeatModel> seat_row = new();
 
-            seatArrangements.Add(row);
+            for (int i = 0; i < row; i++)
+            {
+                seat_row.Add(ordered.Dequeue());
+            }
 
-            seatsAdded += row.Count;
+            result.Add(seat_row);
         }
 
-
+        seatArrangements = result;
     }
 
 }
