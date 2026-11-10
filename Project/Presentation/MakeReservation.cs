@@ -18,7 +18,7 @@ public static class MakeReservation
             return;
         }
 
-        ConsoleMenu menu = new();
+        ConsoleMenu<int> menu = new();
 
             // makes sure there are no duplicates and that it get turned into a list
 
@@ -32,7 +32,9 @@ public static class MakeReservation
         .ToList();
 
         // date selection screen
-        int selectedDateIndex = formatteddates.IndexOf(menu.SelectOption(formatteddates));
+        foreach(string formatteddate in formatteddates)
+            menu.AddOption(new SelectOption<int>(formatteddate, formatteddates.IndexOf(formatteddate)));
+        int selectedDateIndex = menu.SelectOption();
         DateTime selectedDate = dates[selectedDateIndex];
 
         // Get all timetables for the selected date
@@ -46,13 +48,10 @@ public static class MakeReservation
             .ToList();
 
         // Timetable selection screen
-        int selectedStartTimeIndex = formattedTimes.IndexOf(menu.SelectOption(formattedTimes));
-
-        // if (selectedStartTimeIndex == -1)
-        // {
-        //     break;
-        // }
-
+        menu.ResetOptions();
+        foreach(string formattedTime in formattedTimes)
+            menu.AddOption(new SelectOption<int>(formattedTime, formattedTimes.IndexOf(formattedTime)));
+        int selectedStartTimeIndex = menu.SelectOption();
 
         // Get the selected timetable
         TimetableModel selectedTimetable = dayTimetables[selectedStartTimeIndex];
@@ -71,7 +70,6 @@ public static class MakeReservation
             Console.WriteLine("Press enter to return!");
             Console.ReadLine();
             Console.CursorVisible = false;
-            //Moviecatalogue.Start();
 
         }
 
