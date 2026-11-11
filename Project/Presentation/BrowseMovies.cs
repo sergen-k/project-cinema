@@ -15,10 +15,11 @@ public static class BrowseMovies
             else if (answer.AgeLimit >= 18)
             {
                 Console.CursorVisible = true;
+                Console.Clear();
                 Console.WriteLine("This move is 18+");
                 Console.WriteLine("Are you sure you want to continue? (Y/N)");
                 Console.CursorVisible = false;
-                if (Console.ReadKey().Key != ConsoleKey.Y) {break;}
+                if (Console.ReadKey().Key != ConsoleKey.Y) {Start();}
             }
             InspectMovie.Start(answer);
         }

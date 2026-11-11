@@ -54,8 +54,8 @@ public static class AdminChangeUserSettings{
             
           } 
           break;
-         case "Select user by email":
-         break;
+        case "Select user by email":
+          break;
        
       }
     }
