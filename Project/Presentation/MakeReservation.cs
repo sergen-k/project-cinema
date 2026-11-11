@@ -19,7 +19,7 @@ public static class MakeReservation
             return;
         }
 
-        ConsoleMenu menu = new();
+        ConsoleMenu<int> menu = new();
 
         // makes sure there are no duplicates and that it get turned into a list
         TimetableModel selectedTimetable;
@@ -33,13 +33,17 @@ public static class MakeReservation
                 .Distinct()
                 .ToList();
 
-            List<string> formatteddates = dates
-            .Select(d => d.ToString("dd/MM/yyyy"))
-            .ToList();
+        List<string> formatteddates = dates
+        .Select(d => d.ToString("dd/MM/yyyy"))
+        .ToList();
+
+        // date selection screen
+        foreach(string formatteddate in formatteddates)
+            menu.AddOption(new SelectOption<int>(formatteddate, formatteddates.IndexOf(formatteddate)));
+        int selectedDateIndex = menu.SelectOption();
+        DateTime selectedDate = dates[selectedDateIndex];
 
             // date selection screen
-            int selectedDateIndex = formatteddates.IndexOf(menu.SelectOption(formatteddates));
-            DateTime selectedDate = dates[selectedDateIndex];
 
             // Get all timetables for the selected date
             List<TimetableModel> dayTimetables = timetables
@@ -52,7 +56,11 @@ public static class MakeReservation
                 .ToList();
 
             // Timetable selection screen
-            int selectedStartTimeIndex = formattedTimes.IndexOf(menu.SelectOption(formattedTimes));
+            
+            menu.ResetOptions();
+            foreach(string formattedTime in formattedTimes)
+                menu.AddOption(new SelectOption<int>(formattedTime, formattedTimes.IndexOf(formattedTime)));
+            int selectedStartTimeIndex = menu.SelectOption();
 
             // if (selectedStartTimeIndex == -1)
             // {
@@ -87,6 +95,7 @@ public static class MakeReservation
         Console.Clear();
 
         double totalPrice = toReserveSeats.Sum(x => x.SeatCost);
+        // Timetable selection screen
 
         Console.CursorVisible = true;
 
@@ -129,7 +138,6 @@ public static class MakeReservation
             Console.WriteLine("Press enter to return!");
             Console.ReadLine();
             Console.CursorVisible = false;
-            //Moviecatalogue.Start();
 
         }
 
