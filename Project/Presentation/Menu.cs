@@ -40,6 +40,8 @@ static class Menu
                     break;
                 case "Register":
                     Register.Start();
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
                     break;
                 case "Log In":
                     UserLogin.Start();
@@ -51,6 +53,13 @@ static class Menu
                     Console.CursorVisible = true;
                     ViewReservation viewReservation = new();
                     viewReservation.Start();
+                    Console.CursorVisible = false;
+                    break;
+                case "Edit Profile":
+                    Console.CursorVisible = true;
+                    EditProfile.Start();
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
                     Console.CursorVisible = false;
                     break;
                 case "Add Movie":
@@ -78,6 +87,7 @@ static class Menu
         {
             options.Add("Log Out");
             options.Add("View Reservations");
+            options.Add("Edit Profile");
 
             if (AccountsLogic.CurrentAccount?.Role == "admin")
             {
