@@ -13,9 +13,11 @@ public class UserAccess : IDataAccess<UserModel>
 
     public void Write(UserModel model)
     {
+        model.Id = GetNextUserId();
+
         string sql = $@"INSERT INTO {Table} 
-                        (FirstName, LastName, Email, phoneNumber, Password, DateOfBirth, Role) 
-                        VALUES (@FirstName, @LastName, @Email, @PhoneNumber, @Password, @DateOfBirth, @Role)";
+                        (Id, FirstName, LastName, Email, phoneNumber, Password, DateOfBirth, Role) 
+                        VALUES (@Id, @FirstName, @LastName, @Email, @PhoneNumber, @Password, @DateOfBirth, @Role)";
         _connection.Execute(sql, model);
     }
 

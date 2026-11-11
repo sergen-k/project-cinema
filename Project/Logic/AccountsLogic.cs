@@ -123,10 +123,19 @@ public class AccountsLogic
         UserModel existing = _userAccess.SelectByEmail(email);
         return existing != null;
     }
+        public bool EmailAlreadyExistsForDifferentUser(string email, long currentUserId)
+    {
+        UserModel existing = _userAccess.SelectByEmail(email);
+        return existing != null && existing.Id != currentUserId;
+    }
 
     public void AddUser(UserModel user)
     {
         _userAccess.Write(user);
+    }
+        public void UpdateUser(UserModel user)
+    {
+        _userAccess.Update(user);
     }
     public bool IsValidFirstName(string firstName)
     {
