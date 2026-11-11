@@ -21,6 +21,13 @@ public class UserAccess : IDataAccess<UserModel>
         _connection.Execute(sql, model);
     }
 
+    public long GetNextUserId()
+    {
+        string sql = $"SELECT COALESCE(MAX(id), 0) + 1 FROM {Table}";
+
+        return _connection.ExecuteScalar<long>(sql);
+    }
+
     public UserModel SelectAllById(int id)
     {
         string sql = $"SELECT * FROM {Table} WHERE Id = @Id";

@@ -38,6 +38,7 @@ public static class MakeReservation
         .ToList();
 
         // date selection screen
+        menu.ResetOptions();
         foreach(string formatteddate in formatteddates)
             menu.AddOption(new SelectOption<int>(formatteddate, formatteddates.IndexOf(formatteddate)));
         int selectedDateIndex = menu.SelectOption();
@@ -105,8 +106,8 @@ public static class MakeReservation
 
         Console.WriteLine("=== Confirm Your Reservation ===");
         Console.WriteLine($"Movie: {movie.Title}");
-        Console.WriteLine($"Date: {selectedTimetable.HumanReadableShowtime:dd/MM/yyyy}");
-        Console.WriteLine($"Time: {selectedTimetable.HumanReadableShowtime:HH:mm} - {selectedTimetable.HumanReadableEndtime:HH:mm}");
+        Console.WriteLine($"Date: {selectedTimetable.HumanReadableStartTime:dd/MM/yyyy}");
+        Console.WriteLine($"Time: {selectedTimetable.HumanReadableStartTime:HH:mm} - {selectedTimetable.HumanReadableEndtime:HH:mm}");
         Console.WriteLine($"Seats: {numberOfSeats}");
         Console.WriteLine($"Food and Drink items: {selectedItems.Count}");
 
@@ -118,7 +119,7 @@ public static class MakeReservation
         {
             // says yes finish reservation  if confirmed send them back to the movie catalogue,
             Console.Clear();
-            Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimetable.HumanReadableShowtime:HH:mm} on {selectedTimetable.HumanReadableShowtime:dd/MM/yyyy}");
+            Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimetable.HumanReadableStartTime:HH:mm} on {selectedTimetable.HumanReadableEndtime:dd/MM/yyyy}");
             ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
             ReservationAccess reservationAccess = new();
 
