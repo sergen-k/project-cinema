@@ -5,9 +5,6 @@ public static class AdminChangeUserSettings{
     
   public static List<string> MainUserOptions = ["Change user roles","Change user info", "Return"];
 
-  
-
-
   public static void ChangeUserRoles()
   {
     List<string> userRoleViewingOptions = ["Show all users","Select user by email", "Return"];
@@ -28,16 +25,17 @@ public static class AdminChangeUserSettings{
           while (true)
           {
             // converts the user models and the first name and last name and role into a list
-            List<string> userOptions = allUsers
-            .Select(user => $"{user.FirstName} {user.LastName} - {user.Role}")
-            .ToList();
 
-           ConsoleMenu allUserOptions = new();
-           allUserOptions.AddOption(new SelectOption("Return"));
-           allUserOptions.PopulateOptions(userOptions);
-           string selectedUserOption = allUserOptions.SelectOption();
+           ConsoleMenu<UserModel> allUserOptions = new();
+           allUserOptions.AddOption(new SelectOption<UserModel>("Return", null));
+           allUsers.Remove(allUsers.Find(user => user.Id == AccountsLogic.CurrentAccount.Id));
+           foreach (var user in allUsers)
+            {
+              allUserOptions.AddOption(new SelectOption<UserModel>($"{user.FirstName} {user.LastName}, {user.Role}",user));
+            }
+           UserModel selectedUser = allUserOptions.SelectOption();
 
-            if(selectedUserOption == "Return")
+            if(selectedUser == null)
             {
               break;
             } 
@@ -51,6 +49,9 @@ public static class AdminChangeUserSettings{
               allRoleOptions.AddOption(new SelectOption<Roles>(role.ToString(), role));
             }
             Roles selectedRole = allRoleOptions.SelectOption();
+            selectedUser.Role = selectedRole.ToString();
+            userAccess.Update(selectedUser);
+
             
           } 
           break;
