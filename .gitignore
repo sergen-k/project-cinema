@@ -427,3 +427,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+# Database file (generated via create_db.py)
+Project/DataSources/project.db
