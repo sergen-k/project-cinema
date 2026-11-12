@@ -46,7 +46,7 @@ public class ViewReservation
 
         foreach (var x in _reservations[min..max])
         {
-            Console.WriteLine($"{x.Item1}; {x.Item2}; {x.Item3}; {x.Item4}");
+            Console.WriteLine($"{x.Item1}; {x.Item2}; {x.Item3:dd/MM - HH:mm}; {x.Item4}");
         }
     }
 

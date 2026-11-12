@@ -4,15 +4,17 @@ public static class InspectMovie
 {
     public static void Start(MovieModel movie)
     {
-        ConsoleMenu menu = new(MovieInfo(movie).ToString());
+        ConsoleMenu menu = new();
+        menu.AddOption(new InfoOption(MovieInfo(movie)));
         List<string> options = [];
         if (InspectMovieLogic.IsOfAge(movie)) {options.Add("Reserve");}
         options.Add("Return");
-        string option = menu.SelectOption(options);
+        menu.PopulateOptions(options);
+        string option = menu.SelectOption();
         if (option == "Reserve") {MakeReservation.Start(movie);}
     }
 
-    private static StringBuilder MovieInfo(MovieModel movie)
+    private static string MovieInfo(MovieModel movie)
     {
         StringBuilder movieInfo = new();
 
@@ -33,6 +35,6 @@ public static class InspectMovie
             movieInfo.AppendLine();
             movieInfo.AppendLine($"To reserve you need to be at least {movie.AgeLimit}!");
         }
-        return movieInfo;
+        return movieInfo.ToString();
     }
 }

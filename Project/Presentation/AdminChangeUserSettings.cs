@@ -3,40 +3,39 @@ using System.Security.Cryptography.X509Certificates;
 
 public static class AdminChangeUserSettings{
     
-  public static List<string> MainUserOptions = ["Change user roles","Change user info","test2"];
-
-  
-
+  public static List<string> MainUserOptions = ["Change user roles","Change user info", "Return"];
 
   public static void ChangeUserRoles()
   {
-    List<string> userRoleViewingOptions = ["show all users","select user by email"];
+    List<string> userRoleViewingOptions = ["Show all users","Select user by email", "Return"];
     while (true)
     {
-      ConsoleMenu<string> userRoleOptions = new();
-      int selectedOption = userRoleOptions.SelectOption(userRoleViewingOptions);
+      ConsoleMenu userRoleOptions = new();
+      userRoleOptions.PopulateOptions(userRoleViewingOptions);
+      string selectedOption = userRoleOptions.SelectOption();
 
       switch (selectedOption)
       {
-        
-        case -1:
-        return;
-
-        case 0:
+        case "Return":
+          return;
+        case "Show all users":
         // print out a list with all the users.
         UserAccess userAccess = new();
         List<UserModel> allUsers = userAccess.SelectAll();
           while (true)
           {
             // converts the user models and the first name and last name and role into a list
-            List<string> userOptions = allUsers
-            .Select(user => $"{user.FirstName} {user.LastName} - {user.Role}")
-            .ToList();
 
-           ConsoleMenu<string> allUserOptions = new();
-           int selectedUserOption = allUserOptions.SelectOption(userOptions);
+           ConsoleMenu<UserModel> allUserOptions = new();
+           allUserOptions.AddOption(new SelectOption<UserModel>("Return", null));
+           allUsers.Remove(allUsers.Find(user => user.Id == AccountsLogic.CurrentAccount.Id));
+           foreach (var user in allUsers)
+            {
+              allUserOptions.AddOption(new SelectOption<UserModel>($"{user.FirstName} {user.LastName}, {user.Role}",user));
+            }
+           UserModel selectedUser = allUserOptions.SelectOption();
 
-            if(selectedUserOption == -1)
+            if(selectedUser == null)
             {
               break;
             } 
@@ -45,12 +44,19 @@ public static class AdminChangeUserSettings{
                         .Cast<Roles>()
                         .ToList();
             ConsoleMenu<Roles> allRoleOptions = new();
-            int selectedRole = allRoleOptions.SelectOption(roleList);
+            foreach(var role in roleList)
+            {
+              allRoleOptions.AddOption(new SelectOption<Roles>(role.ToString(), role));
+            }
+            Roles selectedRole = allRoleOptions.SelectOption();
+            selectedUser.Role = selectedRole.ToString();
+            userAccess.Update(selectedUser);
+
             
           } 
           break;
-         case 1:
-         break;
+        case "Select user by email":
+          break;
        
       }
     }
@@ -66,23 +72,24 @@ public static void Start()
         {
 
                        
-             ConsoleMenu<string> userOptions = new();
-            int selectedOption = userOptions.SelectOption(MainUserOptions);
+            ConsoleMenu userOptions = new();
+            userOptions.PopulateOptions(MainUserOptions);
+            string selectedOption = userOptions.SelectOption();
 
       // pressed escapekey 
 
       switch (selectedOption)
       {
         // pressed escape key
-        case -1:
+        case "Return":
         return;
 
-        case 0:
+        case "Change user roles":
         // change user roles 
         ChangeUserRoles();
         break;
 
-        case 1:
+        case "Change user info":
         //change user info
         break;
       }

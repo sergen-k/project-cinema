@@ -20,17 +20,18 @@ static class Menu
         ══════════════════════════════════════════════════════════════════════════════
         
         """;
-    private static List<string> _options = new();
     public static void Start()
     {
         while (true)
         {
-            LoadOptions(); 
-            ConsoleMenu menu = new(Banner);
-            string chosenMenu = menu.SelectOption(_options);
+            ConsoleMenu menu = new();
+            menu.AddOption(new InfoOption(Banner));
+            menu.PopulateOptions(GetOptions());
+
+            string chosenOption = menu.SelectOption();
 
             Console.Clear();
-            switch (chosenMenu) // Got to give each option a body
+            switch (chosenOption) // Got to give each option a body
             {
                 case "About Us":
                     break;
@@ -39,6 +40,8 @@ static class Menu
                     break;
                 case "Register":
                     Register.Start();
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
                     break;
                 case "Log In":
                     UserLogin.Start();
@@ -52,48 +55,59 @@ static class Menu
                     viewReservation.Start();
                     Console.CursorVisible = false;
                     break;
+                case "Edit Profile":
+                    Console.CursorVisible = true;
+                    EditProfile.Start();
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                    Console.CursorVisible = false;
+                    break;
                 case "Add Movie":
                     AdminAddMovie.Start();
                     break;
 
-                case "change users settings":
+                case "Auto Log (Test)":
+                    UserAccess userAccess = new();
+                    AccountsLogic.ChangeAccount(userAccess.SelectAllById(1));
+                    break;
+
+                case "Change users settings":
                      AdminChangeUserSettings.Start();
                      break;    
 
 
             }
-            // Console.WriteLine("Press any key to continue...");
-            // Console.ReadKey();
-
-            Console.Clear();
         }
     }
 
-    private static void LoadOptions()
+    private static List<string> GetOptions()
     {
-        _options.Clear();
-        int indexer = 0;
-        _options.Add("Browse Movies");
+        List<string> options = [];
+        options.Add("Browse Movies");
         if (AccountsLogic.CurrentAccount == null)
         {
-            _options.Add("Log In");
-            _options.Add("Register");
+            options.Add("Log In");
+            options.Add("Register");
         }
         else
         {
-            _options.Add("Log Out");
-            _options.Add("View Reservations");
-
-            if (AccountsLogic.CurrentAccount?.Role == "Admin")
-            {
-                _options.Add("Add Movie");
-                _options.Add("change users settings");
-            }
+            options.Add("Log Out");
+            options.Add("View Reservations");
+            options.Add("Edit Profile");
         }
-        _options.Add("About Us");
+        options.Add("About Us");
         if (!InspectMovieLogic.IsLoggedIn())
         {
-        _options.Add("Auto Log (Test)");
+        options.Add("Auto Log (Test)");
         }
+
+        
+        if (AccountsLogic.CurrentAccount?.Role == "Admin")
+        {
+            options.Add("Add Movie");
+            options.Add("Change users settings");
+        }
+
+        return options;
     }
 }
