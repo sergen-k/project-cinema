@@ -24,6 +24,11 @@ public class UserAccess : IDataAccess<UserModel>
         string sql = $"SELECT * FROM {Table} WHERE Id = @Id";
         return _connection.QueryFirstOrDefault<UserModel>(sql, new { Id = id });
     }
+public List<UserModel> SelectAll()
+{
+    string sql = $"SELECT * FROM {Table}";
+    return _connection.Query<UserModel>(sql).ToList();
+}
 
 
 public List<UserModel> SelectAll()
