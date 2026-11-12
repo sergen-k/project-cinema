@@ -160,9 +160,9 @@ public static class MakeReservation
 
         while (true)
         {
-            if (attempts > 0) Console.WriteLine("Please enter a valid number.");
+            if (attempts > 0) Console.WriteLine("Please enter a valid number of at least 1.");
             string userInput = Console.ReadLine();
-            if (int.TryParse(userInput, out int val)) return val;
+            if (int.TryParse(userInput, out int val) && val >= 1) return val;
             attempts++;
         }
     }

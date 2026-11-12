@@ -32,8 +32,8 @@ public class SeatSelection
         while (true)
         {
             Console.WriteLine("Please select the correct amount of seats.");
-            Console.WriteLine("Use arrow keys to navigate through the menu. Press enter to select a seat or remove selection with backspace");
-            Console.WriteLine("When the correct amount of seats has been selected press y to continu");
+            Console.WriteLine("Navigate with arrows keys, press enter to select seat");
+            Console.WriteLine("Press y to continue");
 
             Console.WriteLine(DrawAuditorium(roomA, filledSeats, toReserve));
 
