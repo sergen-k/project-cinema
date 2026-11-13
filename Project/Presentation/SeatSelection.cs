@@ -110,18 +110,21 @@ public class SeatSelection
                 switch(item.SeatType)
                 {
                     case 1: 
-                        confirmationMessage += $"normal: row {row} seat {col}\n";
+                        confirmationMessage += $"normal: row {row} seat {col}, price {item.SeatCost} \n";
                     break;
                     case 2: 
-                        confirmationMessage += $"premium: row {row} seat {col}\n";
+                        confirmationMessage += $"premium: row {row} seat {col}, price {item.SeatCost}\n";
                     break;
                     case 3: 
-                        confirmationMessage += $"deluxe: row {row} seat {col}\n";
+                        confirmationMessage += $"deluxe: row {row} seat {col}, price {item.SeatCost}\n";
                     break;
                 }
                 
             }
         }
+
+        double totalPrice = toReserve.Sum(x => x.SeatCost);
+        confirmationMessage += $"total price {totalPrice}";
 
 
         consoleMenu.AddOption(new InfoOption(confirmationMessage));
