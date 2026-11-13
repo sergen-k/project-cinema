@@ -1,11 +1,10 @@
 public class SeatSelection
 {
-
     const string Red = "\u001b[31m";
-    const string Normal = "\u001b[38;2;0;100;0m";
-    const string Premium = "\u001b[38;2;20;160;0m";
+    const string Normal = "\u001b[38;2;80;128;191m";
+    const string Premium = "\u001b[38;2;240;153;80m";
 
-    const string Deluxe = "\u001b[38;2;50;255;0m";
+    const string Deluxe = "\u001b[38;2;191;0;0m";
     const string Grey = "\u001b[90m";
 
     const string Reset = "\u001b[0m";
@@ -108,7 +107,12 @@ public class SeatSelection
             int seatNumber = 0;
             foreach (SeatModel seatModel in row)
             {
+                if (seatNumber == cursorX - rowOffset && rowNumber == cursorY)
+                {
+                    mainSeat += $"  {Grey}█{Reset}  ";
+                    chair += $"  {Grey}-{Reset}  ";
 
+                } else
                 if (filledSeats.Any(x => x.Id == seatModel.Id))
                 {
                     mainSeat += $"  {Red}█{Reset}  ";
@@ -119,14 +123,7 @@ public class SeatSelection
                 {
                     mainSeat += $"  {Yellow}█{Reset}  ";
                     chair += $"  {Yellow}-{Reset}  ";
-                }
-                else if (seatNumber == cursorX - rowOffset && rowNumber == cursorY)
-                {
-                    mainSeat += $"  {Grey}█{Reset}  ";
-                    chair += $"  {Grey}-{Reset}  ";
-
-                }
-                else
+                } else
                 {
                     switch (seatModel.SeatType)
                     {
