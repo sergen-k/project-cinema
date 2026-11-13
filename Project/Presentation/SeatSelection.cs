@@ -17,6 +17,7 @@ public class SeatSelection
     private int cursorX = 2;
     private int cursorY = 0;
 
+    private List<SeatModel> toReserve = [];
 
     public List<SeatModel> Start(TimetableModel timetableModel, int amountToReserve)
     {
@@ -25,9 +26,7 @@ public class SeatSelection
         SeatRoomA roomA = new();
         // get the already reserved seats
         List<SeatModel> filledSeats = _seatLogic.SelectOrderedSeatsForViewing(timetableModel);
-        List<SeatModel> toReserve = [];
-
-
+        
         while (true)
         {
             Console.WriteLine("Please select the correct amount of seats.");
@@ -78,7 +77,13 @@ public class SeatSelection
                 case ConsoleKey.Y:
                     if (toReserve.Count == amountToReserve)
                     {
-                       return toReserve;
+                        Console.Clear();
+                        bool confirmed = ConfirmationMenu(roomA);
+                        if (confirmed)
+                        {
+                            return toReserve;
+                        }
+                        continue;
                     }
                 break;
             }
@@ -88,6 +93,45 @@ public class SeatSelection
 
         }
     }
+
+
+
+    public bool ConfirmationMenu(SeatRoomA seatRoomA)
+    {
+        ConsoleMenu consoleMenu = new();
+
+        string confirmationMessage = "Are you sure you want to reserve the seats:\n";
+        foreach (var item in toReserve)
+        {
+            var result = seatRoomA.GetSeatInfo(item);
+            if (result != null)
+            {
+                (int row, int col) = ((int, int))result;
+                switch(item.SeatType)
+                {
+                    case 1: 
+                        confirmationMessage += $"normal: row {row} seat {col}\n";
+                    break;
+                    case 2: 
+                        confirmationMessage += $"premium: row {row} seat {col}\n";
+                    break;
+                    case 3: 
+                        confirmationMessage += $"deluxe: row {row} seat {col}\n";
+                    break;
+                }
+                
+            }
+        }
+
+
+        consoleMenu.AddOption(new InfoOption(confirmationMessage));
+        consoleMenu.PopulateOptions(["Yes", "No"]);
+
+        string userSelected = consoleMenu.SelectOption();
+        return userSelected == "Yes";
+    }
+
+
 
     public string DrawAuditorium(SeatRoomA roomA, List<SeatModel> filledSeats, List<SeatModel> toReserve)
     {
@@ -150,7 +194,6 @@ public class SeatSelection
 
             rowNumber++;
         }
-
 
         // draw screen 
         

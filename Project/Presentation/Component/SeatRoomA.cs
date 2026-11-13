@@ -61,4 +61,17 @@ public class SeatRoomA : MovieRoom
         seatArrangements = result;
     }
 
+    public (int, int)? GetSeatInfo(SeatModel model)
+    {
+        for (int row = 0; row < seatArrangements.Count; row++)
+        {
+            for (int j = 0; j < seatArrangements[row].Count; j++)
+            {
+                if (seatArrangements[row][j].Id == model.Id) return (14-row, j+1); 
+            }
+        }
+
+        return null;
+    }
+
 }
