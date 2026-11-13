@@ -1,13 +1,14 @@
 using System.Security.Authentication.ExtendedProtection;
 using System.Security.Cryptography.X509Certificates;
 
-public static class AdminChangeUserSettings{
-    
-  public static List<string> MainUserOptions = ["Change user roles","Change user info", "Return"];
+public static class AdminChangeUserSettings
+{
+
+  public static List<string> MainUserOptions = ["Change user roles", "Change user info", "Return"];
 
   public static void ChangeUserRoles()
   {
-    List<string> userRoleViewingOptions = ["Show all users","Select user by email", "Return"];
+    List<string> userRoleViewingOptions = ["Show all users", "Select user by email", "Return"];
     while (true)
     {
       ConsoleMenu userRoleOptions = new();
@@ -19,32 +20,32 @@ public static class AdminChangeUserSettings{
         case "Return":
           return;
         case "Show all users":
-        // print out a list with all the users.
-        UserAccess userAccess = new();
-        List<UserModel> allUsers = userAccess.SelectAll();
+          // print out a list with all the users.
+          UserAccess userAccess = new();
+          List<UserModel> allUsers = userAccess.SelectAll();
           while (true)
           {
             // converts the user models and the first name and last name and role into a list
 
-           ConsoleMenu<UserModel> allUserOptions = new();
-           allUserOptions.AddOption(new SelectOption<UserModel>("Return", null));
-           allUsers.Remove(allUsers.Find(user => user.Id == AccountsLogic.CurrentAccount.Id));
-           foreach (var user in allUsers)
+            ConsoleMenu<UserModel> allUserOptions = new();
+            allUserOptions.AddOption(new SelectOption<UserModel>("Return", null));
+            allUsers.Remove(allUsers.Find(user => user.Id == AccountsLogic.CurrentAccount.Id));
+            foreach (var user in allUsers)
             {
-              allUserOptions.AddOption(new SelectOption<UserModel>($"{user.FirstName} {user.LastName}, {user.Role}",user));
+              allUserOptions.AddOption(new SelectOption<UserModel>($"{user.FirstName} {user.LastName}, {user.Role}", user));
             }
-           UserModel selectedUser = allUserOptions.SelectOption();
+            UserModel selectedUser = allUserOptions.SelectOption();
 
-            if(selectedUser == null)
+            if (selectedUser == null)
             {
               break;
-            } 
+            }
             // todo put all the roles into a list and from there let them select what role they want the user to be in
             List<Roles> roleList = Enum.GetValues(typeof(Roles))
                         .Cast<Roles>()
                         .ToList();
             ConsoleMenu<Roles> allRoleOptions = new();
-            foreach(var role in roleList)
+            foreach (var role in roleList)
             {
               allRoleOptions.AddOption(new SelectOption<Roles>(role.ToString(), role));
             }
@@ -52,29 +53,25 @@ public static class AdminChangeUserSettings{
             selectedUser.Role = selectedRole.ToString();
             userAccess.Update(selectedUser);
 
-            
-          } 
+
+          }
           break;
         case "Select user by email":
           break;
-       
+
       }
     }
   }
 
 
 
-public static void Start()
+  public static void Start()
+  {
+    while (true)
     {
-
-
-        while (true)
-        {
-
-                       
-            ConsoleMenu userOptions = new();
-            userOptions.PopulateOptions(MainUserOptions);
-            string selectedOption = userOptions.SelectOption();
+      ConsoleMenu userOptions = new();
+      userOptions.PopulateOptions(MainUserOptions);
+      string selectedOption = userOptions.SelectOption();
 
       // pressed escapekey 
 
@@ -82,21 +79,18 @@ public static void Start()
       {
         // pressed escape key
         case "Return":
-        return;
+          return;
 
         case "Change user roles":
-        // change user roles 
-        ChangeUserRoles();
-        break;
+          // change user roles 
+          ChangeUserRoles();
+          break;
 
         case "Change user info":
-        //change user info
-        break;
+          //change user info
+          break;
       }
-        
-        
-             
-        }
-        }
-       
+    }
+  }
+
 }
