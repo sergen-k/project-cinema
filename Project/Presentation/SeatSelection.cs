@@ -23,7 +23,6 @@ public class SeatSelection
     {
 
         // make a roomA
-        SeatRoomA roomA = new();
         // get the already reserved seats
         List<SeatModel> filledSeats = _seatLogic.SelectOrderedSeatsForViewing(timetableModel);
         
@@ -33,7 +32,7 @@ public class SeatSelection
             Console.WriteLine("Navigate with arrows keys, press enter to select seat");
             Console.WriteLine("Press y to continue");
 
-            Console.WriteLine(DrawAuditorium(roomA, filledSeats, toReserve));
+            Console.WriteLine(DrawAuditorium(filledSeats, toReserve));
 
             double totalPrice = toReserve.Sum(x => x.SeatCost);
             Console.WriteLine($"Total price: {totalPrice}");
@@ -42,11 +41,11 @@ public class SeatSelection
 
             // values to clamp the cursor in
             int rowOffset = SeatRoomA.pattern[cursorY];
-            int amountOfSeatsInRow = roomA.seatArrangements[cursorY].Count;
+            int amountOfSeatsInRow = SeatRoomA.seatArrangements[cursorY].Count;
             (int yMin, int yMax) = SeatRoomA.yClamps[cursorX];
 
             // TODO: move this code for the cusor into the SeatRoomA class an move auditorium there
-            SeatModel? model = getSeat(roomA.seatArrangements);
+            SeatModel? model = getSeat(SeatRoomA.seatArrangements);
             switch (keypress)
             {
                 case ConsoleKey.RightArrow:
@@ -78,7 +77,7 @@ public class SeatSelection
                     if (toReserve.Count == amountToReserve)
                     {
                         Console.Clear();
-                        bool confirmed = ConfirmationMenu(roomA);
+                        bool confirmed = ConfirmationMenu();
                         if (confirmed)
                         {
                             return toReserve;
@@ -96,35 +95,34 @@ public class SeatSelection
 
 
 
-    public bool ConfirmationMenu(SeatRoomA seatRoomA)
+    public bool ConfirmationMenu()
     {
         ConsoleMenu consoleMenu = new();
 
         string confirmationMessage = "Are you sure you want to reserve the seats:\n";
         foreach (var item in toReserve)
         {
-            var result = seatRoomA.GetSeatInfo(item);
+            var result = SeatRoomA.GetSeatInfo(item);
             if (result != null)
             {
                 (int row, int col) = ((int, int))result;
                 switch(item.SeatType)
                 {
                     case 1: 
-                        confirmationMessage += $"normal: row {row} seat {col}, price {item.SeatCost} \n";
+                        confirmationMessage += $"normal seat: row {row} seat {col}, price {item.SeatCost} \n";
                     break;
                     case 2: 
-                        confirmationMessage += $"premium: row {row} seat {col}, price {item.SeatCost}\n";
+                        confirmationMessage += $"premium seat: row {row} seat {col}, price {item.SeatCost}\n";
                     break;
                     case 3: 
-                        confirmationMessage += $"deluxe: row {row} seat {col}, price {item.SeatCost}\n";
+                        confirmationMessage += $"deluxe seat: row {row} seat {col}, price {item.SeatCost}\n";
                     break;
                 }
-                
             }
         }
 
         double totalPrice = toReserve.Sum(x => x.SeatCost);
-        confirmationMessage += $"total price {totalPrice}";
+        confirmationMessage += $"total price: {totalPrice}";
 
 
         consoleMenu.AddOption(new InfoOption(confirmationMessage));
@@ -136,11 +134,11 @@ public class SeatSelection
 
 
 
-    public string DrawAuditorium(SeatRoomA roomA, List<SeatModel> filledSeats, List<SeatModel> toReserve)
+    public string DrawAuditorium(List<SeatModel> filledSeats, List<SeatModel> toReserve)
     {
         string finalResult = "";
         int rowNumber = 0;
-        foreach (List<SeatModel> row in roomA.seatArrangements)
+        foreach (List<SeatModel> row in SeatRoomA.seatArrangements)
         {
             string mainSeat = "";
             string chair = "";
