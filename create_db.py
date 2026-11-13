@@ -33,6 +33,7 @@ create_timetable_table = """
 CREATE TABLE IF NOT EXISTS "Timetable" (
   `id` INT NOT NULL ,
   `startTime` INT,
+  `endTime` INT,
   `movieId` INT,
   `roomNumber` INT,
   PRIMARY KEY (`id`),
