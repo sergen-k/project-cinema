@@ -5,7 +5,7 @@ public static class BrowseMovies
     public static void Start()
     {
         MovieModel answer;
-        Movies = BrowseMovieLogic.SelectAll();
+        Movies = BrowseMovieLogic.SelectNextTwoWeeks();
         while(true)
         {
             Console.Clear();
@@ -27,7 +27,7 @@ public static class BrowseMovies
 
     private static string MovieInfoLine(MovieModel movie)
     { 
-        return $"{movie.Title}; {movie.Genre}; {movie.AgeLimit}+";
+        return $"{movie.Title}; {movie.AgeLimit}+";
     }
 
     private static MovieModel? ChooseMovie()
