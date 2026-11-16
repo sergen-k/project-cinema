@@ -1,11 +1,14 @@
 public static class BrowseMovies
 {
+
+    public static readonly MovieLogic _movieLogic = new();
+
     private static List<MovieModel> Movies;
 
     public static void Start()
     {
         MovieModel answer;
-        Movies = BrowseMovieLogic.SelectNextTwoWeeks();
+        Movies = _movieLogic.SelectNextTwoWeeks();
         while(true)
         {
             Console.Clear();
