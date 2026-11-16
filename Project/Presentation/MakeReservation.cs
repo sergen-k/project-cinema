@@ -33,16 +33,16 @@ public static class MakeReservation
                 .Distinct()
                 .ToList();
 
-        List<string> formatteddates = dates
-        .Select(d => d.ToString("dd/MM/yyyy"))
-        .ToList();
+            List<string> formatteddates = dates
+            .Select(d => d.ToString("dd/MM/yyyy"))
+            .ToList();
 
-        // date selection screen
-        menu.ResetOptions();
-        foreach(string formatteddate in formatteddates)
-            menu.AddOption(new SelectOption<int>(formatteddate, formatteddates.IndexOf(formatteddate)));
-        int selectedDateIndex = menu.SelectOption();
-        DateTime selectedDate = dates[selectedDateIndex];
+            // date selection screen
+            menu.ResetOptions();
+            foreach (string formatteddate in formatteddates)
+                menu.AddOption(new SelectOption<int>(formatteddate, formatteddates.IndexOf(formatteddate)));
+            int selectedDateIndex = menu.SelectOption();
+            DateTime selectedDate = dates[selectedDateIndex];
 
             // date selection screen
 
@@ -53,13 +53,13 @@ public static class MakeReservation
 
             // Format start and end times
             List<string> formattedTimes = dayTimetables
-                .Select(t => $"{t.HumanReadableStartTime:HH:mm} - {t.HumanReadableEndtime:HH:mm}")
+                .Select(t => $"room: {t.RoomNumber}, {t.HumanReadableStartTime:HH:mm} - {t.HumanReadableEndtime:HH:mm} ")
                 .ToList();
 
             // Timetable selection screen
-            
+
             menu.ResetOptions();
-            foreach(string formattedTime in formattedTimes)
+            foreach (string formattedTime in formattedTimes)
                 menu.AddOption(new SelectOption<int>(formattedTime, formattedTimes.IndexOf(formattedTime)));
             int selectedStartTimeIndex = menu.SelectOption();
 
@@ -76,7 +76,8 @@ public static class MakeReservation
             {
                 Console.WriteLine("You already have a reservation for this timeslot, please select a different time");
                 Console.ReadLine();
-            } else
+            }
+            else
             {
                 // Get the selected timetable
                 selectedTimetable = dayTimetables[selectedStartTimeIndex];
@@ -125,7 +126,7 @@ public static class MakeReservation
 
             long reservationId = reservationAccess.WriteAndGetId(reservation);
             ReservationModel reservationRefreshed = new(reservationId, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
-            
+
             foreach (SeatModel seat in toReserveSeats)
             {
 
