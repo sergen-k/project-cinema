@@ -270,7 +270,7 @@ CREATE TABLE ConsumableOrder (
 """
 
 import sqlite3
-con = sqlite3.connect("./Project/DataSources/project.db")
+con = sqlite3.connect("./project.db")
 con.execute(create_movie)
 con.executescript(insert_default_movies)
 con.execute(create_timetable_table)
