@@ -96,7 +96,7 @@ static class Menu
             options.Add("Edit Profile");
         }
         options.Add("About Us");
-        if (!InspectMovieLogic.IsLoggedIn())
+        if (!AccountsLogic.IsLoggedIn())
         {
         options.Add("Auto Log (Test)");
         }
