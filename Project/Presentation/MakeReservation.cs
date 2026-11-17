@@ -109,7 +109,35 @@ public static class MakeReservation
         Console.WriteLine($"Movie: {movie.Title}");
         Console.WriteLine($"Date: {selectedTimetable.HumanReadableStartTime:dd/MM/yyyy}");
         Console.WriteLine($"Time: {selectedTimetable.HumanReadableStartTime:HH:mm} - {selectedTimetable.HumanReadableEndtime:HH:mm}");
-        Console.WriteLine($"Seats: {numberOfSeats}");
+
+        Console.WriteLine("== Seats == ");
+       string seatInfo = ""; 
+        foreach (var item in toReserveSeats)
+        {
+            var result = SeatRoomA.GetSeatInfo(item);
+            if (result != null)
+            {
+                (int row, int col) = ((int, int))result;
+                switch(item.SeatType)
+                {
+                    case 1: 
+                        seatInfo += $"normal seat: row {row} seat {col}, price {item.SeatCost} \n";
+                    break;
+                    case 2: 
+                        seatInfo += $"premium seat: row {row} seat {col}, price {item.SeatCost}\n";
+                    break;
+                    case 3: 
+                        seatInfo += $"deluxe seat: row {row} seat {col}, price {item.SeatCost}\n";
+                    break;
+                }
+                
+            }
+        }
+
+        seatInfo += $"total price {totalPrice}";
+        Console.WriteLine(seatInfo);
+
+
         Console.WriteLine($"Food and Drink items: {selectedItems.Count}");
 
         Console.WriteLine();
@@ -161,9 +189,9 @@ public static class MakeReservation
 
         while (true)
         {
-            if (attempts > 0) Console.WriteLine("Please enter a valid number.");
+            if (attempts > 0) Console.WriteLine("Please enter a valid number of at least 1.");
             string userInput = Console.ReadLine();
-            if (int.TryParse(userInput, out int val)) return val;
+            if (int.TryParse(userInput, out int val) && val >= 1) return val;
             attempts++;
         }
     }
