@@ -2,13 +2,12 @@ import sqlite3
 
 create_movie = """
 CREATE TABLE IF NOT EXISTS "Movie" (
-  `id` INT NOT NULL,
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   `title` TEXT,
   `description` TEXT,
   `director` TEXT, genre TEXT,
   `ageLimit` INT ,
-  `duration` REAL,
-  PRIMARY KEY (`id`)
+  `duration` REAL
 );
 """
 
@@ -31,11 +30,10 @@ INSERT INTO Movie VALUES(14,'Shaun of the Dead','A slacker in London tries to wi
 """
 create_timetable_table = """
 CREATE TABLE IF NOT EXISTS "Timetable" (
-  `id` INT NOT NULL ,
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
   `startTime` INT,
   `movieId` INT,
   `roomNumber` INT,
-  PRIMARY KEY (`id`),
   FOREIGN KEY (`movieId`)
       REFERENCES `Movie`(`id`)
 );"""
@@ -270,7 +268,7 @@ CREATE TABLE ConsumableOrder (
 """
 
 import sqlite3
-con = sqlite3.connect("./project.db")
+con = sqlite3.connect("Project/DataSources/project.db")
 con.execute(create_movie)
 con.executescript(insert_default_movies)
 con.execute(create_timetable_table)
