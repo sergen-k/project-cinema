@@ -151,5 +151,8 @@ public class AccountsLogic
         return !string.IsNullOrWhiteSpace(lastName) && lastName.Trim().Length >= 2 && !double.TryParse(lastName, out output_parse);
     }
 
-
+    public List<UserModel> SelectAll()
+    {
+        return _userAccess.SelectAll();
+    }
 }

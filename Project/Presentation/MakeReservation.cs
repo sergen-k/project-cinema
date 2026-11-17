@@ -4,14 +4,15 @@ public static class MakeReservation
 
     public static readonly ReservationLogic reservationLogic = new();
     public static readonly SeatOrderLogic seatOrderLogic = new();
+    public static readonly TimetableLogic timetableLogic = new();
+    public static readonly ConsumableOrderLogic ConsumableOrderLogic = new();
 
     public static void Start(MovieModel movie)
     {
 
         // tijdelijke suser id en movie id, we gaan er vanuit dat iemand is ingelogd en een movie heeft gekozen
         Console.Clear();
-        TimetableAccess timetableAccess = new();
-        List<TimetableModel> timetables = timetableAccess.SelectByMovieId(movie);
+        List<TimetableModel> timetables = timetableLogic.SelectByMovieId(movie);
         if (timetables.Count == 0)
         {
             Console.WriteLine("Currently there are no planned viewings of this movie. Try again later, press enter to return");
@@ -122,9 +123,8 @@ public static class MakeReservation
             Console.Clear();
             Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimetable.HumanReadableStartTime:HH:mm} on {selectedTimetable.HumanReadableEndtime:dd/MM/yyyy}");
             ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
-            ReservationAccess reservationAccess = new();
-
-            long reservationId = reservationAccess.WriteAndGetId(reservation);
+            
+            long reservationId = reservationLogic.WriteAndGetId(reservation);
             ReservationModel reservationRefreshed = new(reservationId, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
 
             foreach (SeatModel seat in toReserveSeats)
@@ -133,8 +133,7 @@ public static class MakeReservation
                 seatOrderLogic.Write(reservationRefreshed, seat);
             }
 
-            ConsumableOrderAccess consumableOrderAccess = new();
-            consumableOrderAccess.SaveForReservation(reservationId, selectedItems);
+            ConsumableOrderLogic.SaveForReservation(reservationId, selectedItems);
 
 
             Console.WriteLine("Press enter to return!");

@@ -2,7 +2,8 @@ using System.Security.Authentication.ExtendedProtection;
 using System.Security.Cryptography.X509Certificates;
 
 public static class AdminChangeUserSettings{
-    
+
+  public static readonly AccountsLogic accountsLogic = new();
   public static List<string> MainUserOptions = ["Change user roles","Change user info", "Return"];
 
   public static void ChangeUserRoles()
@@ -20,8 +21,7 @@ public static class AdminChangeUserSettings{
           return;
         case "Show all users":
         // print out a list with all the users.
-        UserAccess userAccess = new();
-        List<UserModel> allUsers = userAccess.SelectAll();
+        List<UserModel> allUsers = accountsLogic.SelectAll();
           while (true)
           {
             // converts the user models and the first name and last name and role into a list
@@ -50,9 +50,7 @@ public static class AdminChangeUserSettings{
             }
             Roles selectedRole = allRoleOptions.SelectOption();
             selectedUser.Role = selectedRole.ToString();
-            userAccess.Update(selectedUser);
-
-            
+            accountsLogic.UpdateUser(selectedUser);
           } 
           break;
         case "Select user by email":
