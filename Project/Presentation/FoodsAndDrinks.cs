@@ -1,10 +1,27 @@
+
 public static class FoodsAndDrinks
 {
     public static List<ConsumableOrderModel> Start()
     {
         ConsumablesLogic logic = new ConsumablesLogic();
 
-        List<ConsumableModel> consumables = logic.GetAll();
+        List<ConsumableModel> allConsumables = logic.GetAll();
+
+        // Organise products by category
+        List<ConsumableModel> consumables = new List<ConsumableModel>();
+
+        string[] categories = { "Food", "Drinks", "Combos" };
+
+        foreach (string category in categories)
+        {
+            foreach (ConsumableModel item in allConsumables)
+            {
+                if (IsInCategory(item.Category, category))
+                {
+                    consumables.Add(item);
+                }
+            }
+        }
 
         int finishOption = consumables.Count + 1;
 
@@ -19,15 +36,35 @@ public static class FoodsAndDrinks
             Console.WriteLine();
             Console.WriteLine("=== Foods and Drinks ===");
 
-            for (int i = 0; i < consumables.Count; i++)
-            {
-                ConsumableModel item = consumables[i];
+            int number = 1;
 
-                Console.WriteLine(
-                    $"{i + 1}. {item.Name} ({item.Category}) - €{item.Price:F2}"
-                );
+            foreach (string category in categories)
+            {
+                Console.WriteLine();
+                Console.WriteLine("=== " + category.ToUpper() + " ===");
+
+                bool hasProducts = false;
+
+                foreach (ConsumableModel item in consumables)
+                {
+                    if (IsInCategory(item.Category, category))
+                    {
+                        Console.WriteLine(
+                            $"{number}. {item.Name} - €{item.Price:F2}"
+                        );
+
+                        number++;
+                        hasProducts = true;
+                    }
+                }
+
+                if (!hasProducts)
+                {
+                    Console.WriteLine("No products available.");
+                }
             }
 
+            Console.WriteLine();
             Console.WriteLine("0. Skip / Cancel Foods and Drinks");
             Console.WriteLine($"{finishOption}. Finish selecting");
 
@@ -96,13 +133,36 @@ public static class FoodsAndDrinks
         }
     }
 
+    // Check if a product belongs to a category
+    private static bool IsInCategory(string itemCategory, string category)
+    {
+        string value = itemCategory.Trim().ToLower();
+
+        if (category == "Food")
+        {
+            return value == "food" || value == "foods";
+        }
+
+        if (category == "Drinks")
+        {
+            return value == "drink" || value == "drinks";
+        }
+
+        if (category == "Combos")
+        {
+            return value == "combo" || value == "combos";
+        }
+
+        return false;
+    }
+
     private static void ShowSummary(ConsumablesLogic logic, List<ConsumableModel> consumables)
     {
         Console.WriteLine();
         Console.WriteLine("=== Order Summary ===");
 
         List<ConsumableOrderModel> selectedItems = logic.GetSelectedItems();
-        
+
         int number = 1;
 
         if (selectedItems.Count == 0)
