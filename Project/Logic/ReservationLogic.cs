@@ -31,5 +31,8 @@ public class ReservationLogic
         return reservations.Any(x => x.MovieShowingId == timetable.Id);
     }
 
-
+    public long WriteAndGetId(ReservationModel reservation)
+    {
+        return _reservationAccess.WriteAndGetId(reservation);
+    }
 }
