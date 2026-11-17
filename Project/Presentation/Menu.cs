@@ -65,6 +65,11 @@ static class Menu
                 case "Add Movie":
                     AdminAddMovie.Start();
                     break;
+                case "Manage Screenings":
+                    AdminManageScreenings.Start();
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                    break;
 
                 case "Auto Log (Test)":
                     UserAccess userAccess = new();
@@ -102,10 +107,11 @@ static class Menu
         }
 
         
-        if (AccountsLogic.CurrentAccount?.Role == "Admin")
+        if (AccountsLogic.CurrentAccount?.Role == "admin")
         {
             options.Add("Add Movie");
             options.Add("Change users settings");
+            options.Add("Manage Screenings");
         }
 
         return options;
