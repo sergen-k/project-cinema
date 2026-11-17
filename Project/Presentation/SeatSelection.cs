@@ -82,6 +82,8 @@ public class SeatSelection
                         {
                             return toReserve;
                         }
+
+                        Console.Clear();
                         continue;
                     }
                 break;
