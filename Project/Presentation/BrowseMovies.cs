@@ -8,7 +8,8 @@ public static class BrowseMovies
     public static void Start()
     {
         MovieModel answer;
-        Movies = _movieLogic.SelectNextTwoWeeks();
+        //Movies = _movieLogic.SelectNextTwoWeeks();
+        Movies = _movieLogic.SelectAll();
         while(true)
         {
             Console.Clear();
@@ -40,8 +41,6 @@ public static class BrowseMovies
         {
             menu.AddScrollOption(new SelectOption<MovieModel>(MovieInfoLine(movie), movie));
         }
-        menu.AddOption(new SelectOption<MovieModel>("Return", null));
-        
         return menu.SelectOption();
     }
 }

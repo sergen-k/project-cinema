@@ -7,11 +7,19 @@ public static class InspectMovie
         ConsoleMenu menu = new();
         menu.AddOption(new InfoOption(MovieInfo(movie)));
         List<string> options = [];
-        if (MovieLogic.IsOfAge(movie)) {options.Add("Reserve");}
-        options.Add("Return");
+
+        if (MovieLogic.IsOfAge(movie)) 
+        {
+            options.Add("Reserve");
+        }
+
         menu.PopulateOptions(options);
+
         string option = menu.SelectOption();
-        if (option == "Reserve") {MakeReservation.Start(movie);}
+        if (option == "Reserve") 
+        {
+            MakeReservation.Start(movie);
+        }
     }
 
     private static string MovieInfo(MovieModel movie)

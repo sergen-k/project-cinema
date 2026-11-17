@@ -43,6 +43,7 @@ public static class MakeReservation
             foreach (string formatteddate in formatteddates)
                 menu.AddOption(new SelectOption<int>(formatteddate, formatteddates.IndexOf(formatteddate)));
             int selectedDateIndex = menu.SelectOption();
+            if (selectedDateIndex == -1) {return;}
             DateTime selectedDate = dates[selectedDateIndex];
 
             // date selection screen
@@ -63,6 +64,7 @@ public static class MakeReservation
             foreach (string formattedTime in formattedTimes)
                 menu.AddOption(new SelectOption<int>(formattedTime, formattedTimes.IndexOf(formattedTime)));
             int selectedStartTimeIndex = menu.SelectOption();
+            if (selectedStartTimeIndex == -1) {return;}
 
             // if (selectedStartTimeIndex == -1)
             // {
@@ -172,8 +174,6 @@ public static class MakeReservation
 
         else
         {
-            //says no return back to info page of the movie 
-            //  MovieInfo.Start(movie);
             Console.CursorVisible = false;
             return;
         }

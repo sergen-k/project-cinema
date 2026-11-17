@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS "User" (
 );"""
 
 insert_admin  = """
-    INSERT INTO User VALUES(1,'Yessin','Zoundri','admin@cinema.nl',612345678,'240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',19900101,'admin');"""
+    INSERT INTO User VALUES(1,'Yessin','Zoundri','admin@cinema.nl',612345678,'240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',19900101,'Admin');"""
 create_consumable_table = """
 CREATE TABLE Consumable (
     id INTEGER PRIMARY KEY,
@@ -268,7 +268,7 @@ CREATE TABLE ConsumableOrder (
 """
 
 import sqlite3
-con = sqlite3.connect("Project/DataSources/project.db")
+con = sqlite3.connect("DataSources/project.db")
 con.execute(create_movie)
 con.executescript(insert_default_movies)
 con.execute(create_timetable_table)

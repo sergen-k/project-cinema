@@ -4,6 +4,7 @@ public class ConsoleMenu<T>
     protected int _selectedIndex;
     protected List<OptionBase<T>> _options = new();
     protected List<OptionBase<T>> _displayOptions = new();
+    public bool IsMainMenu;
     public virtual T SelectOption()
     {
         FillOptionsList();
@@ -21,7 +22,14 @@ public class ConsoleMenu<T>
             if (InputKey(key)) 
             {
                 if (CheckOption())
+                    if (key.Key == ConsoleKey.Escape)
+                    {
+                        return _displayOptions[^1].ReturnInfo;
+                    }
+                    else
+                    {
                     return _displayOptions[_selectedIndex].ReturnInfo;
+                    }
             }
         }
 
@@ -33,7 +41,7 @@ public class ConsoleMenu<T>
     protected bool InputKey(ConsoleKeyInfo keyInfo)
     {
         
-        if (_displayOptions[_selectedIndex] is SearchOption<T> searchOption && keyInfo.Key != ConsoleKey.UpArrow && keyInfo.Key != ConsoleKey.DownArrow)
+        if (_displayOptions[_selectedIndex] is SearchOption<T> searchOption && keyInfo.Key != ConsoleKey.UpArrow && keyInfo.Key != ConsoleKey.DownArrow && keyInfo.Key != ConsoleKey.Escape)
         {
             if (keyInfo.Key != ConsoleKey.Enter)
             {
@@ -63,6 +71,7 @@ public class ConsoleMenu<T>
                     return false;
 
                 case ConsoleKey.Enter:
+                case ConsoleKey.Escape:
                     return true;
                 default:
                     return false;
@@ -93,6 +102,17 @@ public class ConsoleMenu<T>
     {
         _displayOptions.Clear();
         _displayOptions.AddRange(_options);
+        if (IsMainMenu)
+        {
+        _displayOptions.Add(new SelectOption<T>("Exit", default));    
+        }
+        else
+        {
+            if (typeof(T) == typeof(int))
+                _displayOptions.Add(new SelectOption<T>("Return", (T)(object)-1));
+            else
+                _displayOptions.Add(new SelectOption<T>("Return", default));
+        }
     }
 }
 
