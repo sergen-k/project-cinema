@@ -1,11 +1,10 @@
 public class SeatSelection
 {
-
     const string Red = "\u001b[31m";
-    const string Normal = "\u001b[38;2;0;100;0m";
-    const string Premium = "\u001b[38;2;20;160;0m";
+    const string Normal = "\u001b[38;2;80;128;191m";
+    const string Premium = "\u001b[38;2;240;153;80m";
 
-    const string Deluxe = "\u001b[38;2;50;255;0m";
+    const string Deluxe = "\u001b[38;2;191;0;0m";
     const string Grey = "\u001b[90m";
 
     const string Reset = "\u001b[0m";
@@ -18,24 +17,22 @@ public class SeatSelection
     private int cursorX = 2;
     private int cursorY = 0;
 
+    private List<SeatModel> toReserve = [];
 
     public List<SeatModel> Start(TimetableModel timetableModel, int amountToReserve)
     {
 
         // make a roomA
-        SeatRoomA roomA = new();
         // get the already reserved seats
         List<SeatModel> filledSeats = _seatLogic.SelectOrderedSeatsForViewing(timetableModel);
-        List<SeatModel> toReserve = [];
-
-
+        
         while (true)
         {
             Console.WriteLine("Please select the correct amount of seats.");
-            Console.WriteLine("Use arrow keys to navigate through the menu. Press enter to select a seat or remove selection with backspace");
-            Console.WriteLine("When the correct amount of seats has been selected press y to continu");
+            Console.WriteLine("Navigate with arrows keys, press enter to select seat");
+            Console.WriteLine("Press y to continue");
 
-            Console.WriteLine(DrawAuditorium(roomA, filledSeats, toReserve));
+            Console.WriteLine(DrawAuditorium(filledSeats, toReserve));
 
             double totalPrice = toReserve.Sum(x => x.SeatCost);
             Console.WriteLine($"Total price: {totalPrice}");
@@ -44,11 +41,11 @@ public class SeatSelection
 
             // values to clamp the cursor in
             int rowOffset = SeatRoomA.pattern[cursorY];
-            int amountOfSeatsInRow = roomA.seatArrangements[cursorY].Count;
+            int amountOfSeatsInRow = SeatRoomA.seatArrangements[cursorY].Count;
             (int yMin, int yMax) = SeatRoomA.yClamps[cursorX];
 
             // TODO: move this code for the cusor into the SeatRoomA class an move auditorium there
-            SeatModel? model = getSeat(roomA.seatArrangements);
+            SeatModel? model = getSeat(SeatRoomA.seatArrangements);
             switch (keypress)
             {
                 case ConsoleKey.RightArrow:
@@ -79,7 +76,15 @@ public class SeatSelection
                 case ConsoleKey.Y:
                     if (toReserve.Count == amountToReserve)
                     {
-                       return toReserve;
+                        Console.Clear();
+                        bool confirmed = ConfirmationMenu();
+                        if (confirmed)
+                        {
+                            return toReserve;
+                        }
+
+                        Console.Clear();
+                        continue;
                     }
                 break;
             }
@@ -90,11 +95,52 @@ public class SeatSelection
         }
     }
 
-    public string DrawAuditorium(SeatRoomA roomA, List<SeatModel> filledSeats, List<SeatModel> toReserve)
+
+
+    public bool ConfirmationMenu()
+    {
+        ConsoleMenu consoleMenu = new();
+
+        string confirmationMessage = "Are you sure you want to reserve the seats:\n";
+        foreach (var item in toReserve)
+        {
+            var result = SeatRoomA.GetSeatInfo(item);
+            if (result != null)
+            {
+                (int row, int col) = ((int, int))result;
+                switch(item.SeatType)
+                {
+                    case 1: 
+                        confirmationMessage += $"normal seat: row {row} seat {col}, price {item.SeatCost} \n";
+                    break;
+                    case 2: 
+                        confirmationMessage += $"premium seat: row {row} seat {col}, price {item.SeatCost}\n";
+                    break;
+                    case 3: 
+                        confirmationMessage += $"deluxe seat: row {row} seat {col}, price {item.SeatCost}\n";
+                    break;
+                }
+            }
+        }
+
+        double totalPrice = toReserve.Sum(x => x.SeatCost);
+        confirmationMessage += $"total price: {totalPrice}";
+
+
+        consoleMenu.AddOption(new InfoOption(confirmationMessage));
+        consoleMenu.PopulateOptions(["Yes", "No"]);
+
+        string userSelected = consoleMenu.SelectOption();
+        return userSelected == "Yes";
+    }
+
+
+
+    public string DrawAuditorium(List<SeatModel> filledSeats, List<SeatModel> toReserve)
     {
         string finalResult = "";
         int rowNumber = 0;
-        foreach (List<SeatModel> row in roomA.seatArrangements)
+        foreach (List<SeatModel> row in SeatRoomA.seatArrangements)
         {
             string mainSeat = "";
             string chair = "";
@@ -108,7 +154,12 @@ public class SeatSelection
             int seatNumber = 0;
             foreach (SeatModel seatModel in row)
             {
+                if (seatNumber == cursorX - rowOffset && rowNumber == cursorY)
+                {
+                    mainSeat += $"  {Grey}█{Reset}  ";
+                    chair += $"  {Grey}-{Reset}  ";
 
+                } else
                 if (filledSeats.Any(x => x.Id == seatModel.Id))
                 {
                     mainSeat += $"  {Red}█{Reset}  ";
@@ -119,14 +170,7 @@ public class SeatSelection
                 {
                     mainSeat += $"  {Yellow}█{Reset}  ";
                     chair += $"  {Yellow}-{Reset}  ";
-                }
-                else if (seatNumber == cursorX - rowOffset && rowNumber == cursorY)
-                {
-                    mainSeat += $"  {Grey}█{Reset}  ";
-                    chair += $"  {Grey}-{Reset}  ";
-
-                }
-                else
+                } else
                 {
                     switch (seatModel.SeatType)
                     {
@@ -153,7 +197,6 @@ public class SeatSelection
 
             rowNumber++;
         }
-
 
         // draw screen 
         

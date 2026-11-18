@@ -59,5 +59,8 @@ public class SearchableMenu<T> : ScrollableMenu<T>
         }
         foreach(var option in _options)
             _displayOptions.Add(option);
+            
+        _displayOptions.Add(new InfoOption<T>(""));
+        _displayOptions.Add(new SelectOption<T>("Return", default));
     }
 }

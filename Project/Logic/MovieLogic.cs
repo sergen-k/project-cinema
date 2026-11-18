@@ -83,6 +83,11 @@ public class MovieLogic
         return _movieAccess.SelectAllById(id);
     }
 
+    public List<MovieModel> SelectAll()
+    {
+        return _movieAccess.SelectAll();
+    }
+
     public List<MovieModel> SelectNextTwoWeeks()
     {
         return _movieAccess.SelectNextTwoWeeks();
