@@ -106,6 +106,14 @@ public static class MakeReservation
 
         // Select Foods and Drinks
         List<ConsumableOrderModel> selectedItems = FoodsAndDrinks.Start();
+        double foodTotal = 0;
+
+        foreach (ConsumableOrderModel item in selectedItems)
+        {
+            foodTotal += item.Quantity * item.UnitPrice;
+        }
+
+        double totalAmount = totalPrice + foodTotal;
         Console.Clear();
 
         Console.WriteLine("=== Confirm Your Reservation ===");
@@ -142,16 +150,33 @@ public static class MakeReservation
 
 
         Console.WriteLine($"Food and Drink items: {selectedItems.Count}");
+        Console.WriteLine();
+        Console.WriteLine($"Tickets: €{totalPrice:F2}");
+        Console.WriteLine($"Foods and Drinks: €{foodTotal:F2}");
+        Console.WriteLine("-------------------------");
+        Console.WriteLine($"Total Amount: €{totalAmount:F2}");
 
         Console.WriteLine();
         Console.WriteLine("Do you want to confirm your reservation? (Y/N)");
 
         var userAnswer = Console.ReadKey().Key;
+
         if (userAnswer == ConsoleKey.Y)
         {
-            // says yes finish reservation  if confirmed send them back to the movie catalogue,
             Console.Clear();
-            Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimetable.HumanReadableStartTime:HH:mm} on {selectedTimetable.HumanReadableEndtime:dd/MM/yyyy}");
+
+            // Start simulated payment
+            string? paymentNumber = ProcessPayment.Start(totalAmount);
+
+            if (paymentNumber == null)
+            {
+                Console.WriteLine("Payment cancelled.");
+                Console.WriteLine("Reservation was not saved.");
+                Console.CursorVisible = false;
+                return;
+            }
+
+            // Save reservation
             ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
             
             long reservationId = reservationLogic.WriteAndGetId(reservation);
@@ -159,18 +184,23 @@ public static class MakeReservation
 
             foreach (SeatModel seat in toReserveSeats)
             {
-
                 seatOrderLogic.Write(reservationRefreshed, seat);
             }
 
             ConsumableOrderLogic.SaveForReservation(reservationId, selectedItems);
 
+            // Display payment success
+            Console.Clear();
 
-            Console.WriteLine("Press enter to return!");
+            ProcessPayment.ShowPaymentSuccess(paymentNumber, totalAmount);
+
+            Console.WriteLine();
+            Console.WriteLine("Press enter to return.");
             Console.ReadLine();
-            Console.CursorVisible = false;
 
+            Console.CursorVisible = false;
         }
+
 
         else
         {
