@@ -6,71 +6,31 @@ public class ViewReservation
     private readonly SeatLogic _seatLogic = new();
     private readonly MovieLogic _movieLogic = new();
 
-    private List<(Int64, string, DateTime, double)> _reservations = [];
+    private List<(ReservationModel, string, DateTime, double)> _reservations = [];
     private int _pageNumber = 0;
 
     public void Start()
     {
         
         FetchData(AccountsLogic.CurrentAccount);
-
-        Console.WriteLine("overview of your reservations:");
-        while (true)
+        ScrollableMenu<ReservationModel> menu = new();
+        foreach (var item in _reservations) 
         {
-            Console.Clear();
-            PrintTable();
-            PrintMenu();
-            string userInput = MenuInput();
-            switch (userInput)
-            {
-                case "Q":
-                Console.Clear();
-                return;
-                case "+":
-                    if (10 * (_pageNumber + 1) <= _reservations.Count) _pageNumber++;
-                    break;
-                case "-": if (_pageNumber - 1 >= 0) _pageNumber--; break;
-            }
-
+            (ReservationModel model, string title, DateTime time, double price) = item;
+            string infoline = $"{model.Id}, {title}, {time}, {price}";
+            menu.AddScrollOption(new SelectOption<ReservationModel>(infoline, model));
         }
 
-    }
-
-
-    public void PrintTable()
-    {
-        int min = Math.Min(Math.Max(0, _pageNumber * 10), _reservations.Count);
-        int max = Math.Min(_pageNumber * 10 + 9, _reservations.Count);
-
-        Console.WriteLine("ReservationNumber; Movie title; Date; Price ");
-
-        foreach (var x in _reservations[min..max])
+        ReservationModel selectedReservation = menu.SelectOption();
+        System.Console.WriteLine(selectedReservation);
+        if (selectedReservation is null) return;
+        else
         {
-            Console.WriteLine($"{x.Item1}; {x.Item2}; {x.Item3:dd/MM - HH:mm}; {x.Item4}");
+            InspectReservation inspectReservation = new();
+            inspectReservation.Start(selectedReservation);
         }
-    }
+        
 
-    public void PrintMenu()
-    {
-        Console.WriteLine(" Press +/- to swap pages. Press Q to exit. ");
-    }
-
-
-    public string MenuInput()
-    {
-        string[] validOptions = { "Q", "+", "-" };
-        while (true)
-        {
-            string userInput = Console.ReadLine()!;
-            if (validOptions.Contains(userInput))
-            {
-                return userInput;
-            }
-            else
-            {
-                Console.WriteLine("Please enter one of the valid options: Q, +, - to continue");
-            }
-        }
     }
 
     public void FetchData(UserModel user)
@@ -100,7 +60,7 @@ public class ViewReservation
             }
 
 
-            _reservations.Add((reservation.Id, movie.Title, timetable.HumanReadableStartTime, totalCost));
+            _reservations.Add((reservation, movie.Title, timetable.HumanReadableStartTime, totalCost));
         }
     }
 }

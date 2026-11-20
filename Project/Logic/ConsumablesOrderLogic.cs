@@ -6,4 +6,9 @@ public class ConsumableOrderLogic
     {   consumableOrderAccess.SaveForReservation(reservationId, selectedItems);
         
     }
+
+    public  List<ConsumableOrderModel> GetByReservation(ReservationModel reservation)
+    {
+       return consumableOrderAccess.GetByReservation(reservation);
+    }
 }

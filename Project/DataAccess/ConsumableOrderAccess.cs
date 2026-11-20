@@ -41,10 +41,10 @@ public class ConsumableOrderAccess : IDataAccess<ConsumableOrderModel>
         _connection.Execute(sql, model);
     }
 
- public ConsumableOrderModel SelectAllById(int id)
-{
-    return null;
-}
+    public ConsumableOrderModel SelectAllById(int id)
+    {
+        return null;
+    }
 
     public void SaveForReservation(long reservationId, List<ConsumableOrderModel> selectedItems)
     {
@@ -76,5 +76,12 @@ public class ConsumableOrderAccess : IDataAccess<ConsumableOrderModel>
                 UnitPrice = item.UnitPrice
             });
         }
+    }
+
+    public List<ConsumableOrderModel> GetByReservation(ReservationModel reservation)
+    {
+        string sql = "SELECT * FROM ConsumableOrder WHERE reservationId = @Id";
+
+        return _connection.Query<ConsumableOrderModel>( sql, reservation).ToList();
     }
 }
