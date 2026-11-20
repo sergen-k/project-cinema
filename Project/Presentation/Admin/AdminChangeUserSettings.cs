@@ -4,11 +4,11 @@ using System.Security.Cryptography.X509Certificates;
 public static class AdminChangeUserSettings
 {
 
-  public static List<string> MainUserOptions = ["Change user roles", "Change user info", "Return"];
+  public static List<string> MainUserOptions = ["Change user roles", "Change user info"];
 
   public static void ChangeUserRoles()
   {
-    List<string> userRoleViewingOptions = ["Show all users", "Select user by email", "Return"];
+    List<string> userRoleViewingOptions = ["Show all users", "Select user by email"];
     while (true)
     {
       ConsoleMenu userRoleOptions = new();
@@ -17,7 +17,7 @@ public static class AdminChangeUserSettings
 
       switch (selectedOption)
       {
-        case "Return":
+        case null:
           return;
         case "Show all users":
           // print out a list with all the users.
@@ -28,8 +28,7 @@ public static class AdminChangeUserSettings
             // converts the user models and the first name and last name and role into a list
 
             ConsoleMenu<UserModel> allUserOptions = new();
-            allUserOptions.AddOption(new SelectOption<UserModel>("Return", null));
-            allUsers.Remove(allUsers.Find(user => user.Id == AccountsLogic.CurrentAccount.Id));
+            allUsers.Remove(allUsers.Find(user => user.Id == UserLogic.CurrentAccount.Id));
             foreach (var user in allUsers)
             {
               allUserOptions.AddOption(new SelectOption<UserModel>($"{user.FirstName} {user.LastName}, {user.Role}", user));
@@ -78,7 +77,7 @@ public static class AdminChangeUserSettings
       switch (selectedOption)
       {
         // pressed escape key
-        case "Return":
+        case null:
           return;
 
         case "Change user roles":

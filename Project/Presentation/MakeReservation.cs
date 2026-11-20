@@ -73,7 +73,7 @@ public static class MakeReservation
 
             var timeslot = dayTimetables[selectedStartTimeIndex];
 
-            bool hasDuplicate = reservationLogic.checkDuplicateReservation(timeslot, AccountsLogic.CurrentAccount);
+            bool hasDuplicate = reservationLogic.checkDuplicateReservation(timeslot, UserLogic.CurrentAccount);
 
             if (hasDuplicate)
             {
@@ -89,7 +89,7 @@ public static class MakeReservation
                 break;
             }
         }
-
+        SeatOrdering:
         Console.Clear();
         Console.WriteLine("How many seats would you like to reserve for?");
         int numberOfSeats = AmountOfSeats();
@@ -97,6 +97,7 @@ public static class MakeReservation
         Console.Clear();
         SeatSelection seatSelection = new();
         List<SeatModel> toReserveSeats = seatSelection.Start(selectedTimetable, numberOfSeats);
+        if (toReserveSeats == null) {return;}
         Console.Clear();
 
         double totalPrice = toReserveSeats.Sum(x => x.SeatCost);
@@ -106,6 +107,7 @@ public static class MakeReservation
 
         // Select Foods and Drinks
         List<ConsumableOrderModel> selectedItems = FoodsAndDrinks.Start();
+        if (selectedItems?[0].Id == -1) {goto SeatOrdering;}
         Console.Clear();
 
         Console.WriteLine("=== Confirm Your Reservation ===");
@@ -140,8 +142,8 @@ public static class MakeReservation
         seatInfo += $"total price {totalPrice}";
         Console.WriteLine(seatInfo);
 
-
-        Console.WriteLine($"Food and Drink items: {selectedItems.Count}");
+        if (selectedItems != null)
+            Console.WriteLine($"Food and Drink items: {selectedItems.Count}");
 
         Console.WriteLine();
         Console.WriteLine("Do you want to confirm your reservation? (Y/N)");
@@ -152,18 +154,18 @@ public static class MakeReservation
             // says yes finish reservation  if confirmed send them back to the movie catalogue,
             Console.Clear();
             Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimetable.HumanReadableStartTime:HH:mm} on {selectedTimetable.HumanReadableEndtime:dd/MM/yyyy}");
-            ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
+            ReservationModel reservation = new(0, selectedTimetable.Id, UserLogic.CurrentAccount.Id, numberOfSeats);
             
             long reservationId = reservationLogic.WriteAndGetId(reservation);
-            ReservationModel reservationRefreshed = new(reservationId, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
+            ReservationModel reservationRefreshed = new(reservationId, selectedTimetable.Id, UserLogic.CurrentAccount.Id, numberOfSeats);
 
             foreach (SeatModel seat in toReserveSeats)
             {
 
                 seatOrderLogic.Write(reservationRefreshed, seat);
             }
-
-            ConsumableOrderLogic.SaveForReservation(reservationId, selectedItems);
+            if (selectedItems != null)
+                ConsumableOrderLogic.SaveForReservation(reservationId, selectedItems);
 
 
             Console.WriteLine("Press enter to return!");

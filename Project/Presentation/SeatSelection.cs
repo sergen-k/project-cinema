@@ -25,11 +25,12 @@ public class SeatSelection
         // make a roomA
         // get the already reserved seats
         List<SeatModel> filledSeats = _seatLogic.SelectOrderedSeatsForViewing(timetableModel);
-        
+
         while (true)
         {
             Console.WriteLine("Please select the correct amount of seats.");
             Console.WriteLine("Navigate with arrows keys, press enter to select seat");
+            Console.WriteLine("Press escape to quit your reservation.");
             Console.WriteLine("Press y to continue");
 
             Console.WriteLine(DrawAuditorium(filledSeats, toReserve));
@@ -61,10 +62,10 @@ public class SeatSelection
                     cursorY = Math.Clamp(cursorY + 1, yMin, yMax);
                     break;
                 case ConsoleKey.Enter:
-                        if (model is SeatModel model1 && !filledSeats.Any(x => x.Id == model1.Id) && !toReserve.Any(x => x.Id == model1.Id) && toReserve.Count < amountToReserve)
-                        {
-                            toReserve.Add(model1);
-                        }
+                    if (model is SeatModel model1 && !filledSeats.Any(x => x.Id == model1.Id) && !toReserve.Any(x => x.Id == model1.Id) && toReserve.Count < amountToReserve)
+                    {
+                        toReserve.Add(model1);
+                    }
 
                     break;
                 case ConsoleKey.Backspace:
@@ -86,7 +87,9 @@ public class SeatSelection
                         Console.Clear();
                         continue;
                     }
-                break;
+                    break;
+                case ConsoleKey.Escape:
+                    return null;
             }
 
 
@@ -108,17 +111,17 @@ public class SeatSelection
             if (result != null)
             {
                 (int row, int col) = ((int, int))result;
-                switch(item.SeatType)
+                switch (item.SeatType)
                 {
-                    case 1: 
+                    case 1:
                         confirmationMessage += $"normal seat: row {row} seat {col}, price {item.SeatCost} \n";
-                    break;
-                    case 2: 
+                        break;
+                    case 2:
                         confirmationMessage += $"premium seat: row {row} seat {col}, price {item.SeatCost}\n";
-                    break;
-                    case 3: 
+                        break;
+                    case 3:
                         confirmationMessage += $"deluxe seat: row {row} seat {col}, price {item.SeatCost}\n";
-                    break;
+                        break;
                 }
             }
         }
@@ -159,35 +162,37 @@ public class SeatSelection
                     mainSeat += $"  {Grey}█{Reset}  ";
                     chair += $"  {Grey}-{Reset}  ";
 
-                } else
-                if (filledSeats.Any(x => x.Id == seatModel.Id))
-                {
-                    mainSeat += $"  {Red}█{Reset}  ";
-                    chair += $"  {Red}-{Reset}  ";
-
                 }
-                else if (toReserve.Any(x => x.Id == seatModel.Id))
-                {
-                    mainSeat += $"  {Yellow}█{Reset}  ";
-                    chair += $"  {Yellow}-{Reset}  ";
-                } else
-                {
-                    switch (seatModel.SeatType)
+                else
+                    if (filledSeats.Any(x => x.Id == seatModel.Id))
                     {
-                        case 1:
-                            mainSeat += $"  {Normal}█{Reset}  ";
-                            chair += $"  {Normal}-{Reset}  ";
-                            break;
-                        case 2:
-                            mainSeat += $"  {Premium}█{Reset}  ";
-                            chair += $"  {Premium}-{Reset}  ";
-                            break;
-                        case 3:
-                            mainSeat += $"  {Deluxe}█{Reset}  ";
-                            chair += $"  {Deluxe}-{Reset}  ";
-                            break;
+                        mainSeat += $"  {Red}█{Reset}  ";
+                        chair += $"  {Red}-{Reset}  ";
+
                     }
-                }
+                    else if (toReserve.Any(x => x.Id == seatModel.Id))
+                    {
+                        mainSeat += $"  {Yellow}█{Reset}  ";
+                        chair += $"  {Yellow}-{Reset}  ";
+                    }
+                    else
+                    {
+                        switch (seatModel.SeatType)
+                        {
+                            case 1:
+                                mainSeat += $"  {Normal}█{Reset}  ";
+                                chair += $"  {Normal}-{Reset}  ";
+                                break;
+                            case 2:
+                                mainSeat += $"  {Premium}█{Reset}  ";
+                                chair += $"  {Premium}-{Reset}  ";
+                                break;
+                            case 3:
+                                mainSeat += $"  {Deluxe}█{Reset}  ";
+                                chair += $"  {Deluxe}-{Reset}  ";
+                                break;
+                        }
+                    }
 
                 seatNumber++;
             }
@@ -199,14 +204,14 @@ public class SeatSelection
         }
 
         // draw screen 
-        
+
         string screen = "\n \n \n|";
-        for (int i = 0; i < 14*4.25; i++)
+        for (int i = 0; i < 14 * 4.25; i++)
         {
             screen += "-";
         }
         screen += "|";
-    
+
         finalResult += screen;
 
         return finalResult;
