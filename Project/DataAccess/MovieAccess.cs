@@ -80,4 +80,17 @@ public class MovieAccess : IDataAccess<MovieModel>
 
         return _connection.Query<MovieModel>(sql).ToList();
     }
+
+    internal List<MovieModel> SelectNextTwoWeeks()
+    {
+        string sql = $@"SELECT Movie.* FROM {Table} 
+            INNER JOIN Timetable on movieId = Movie.id
+            WHERE 
+            startTime >= strftime('%s' , 'now')
+            AND
+            startTime <=  strftime('%s' , 'now', '+14 days')
+        ";
+
+        return _connection.Query<MovieModel>(sql).ToList();
+    }
 }

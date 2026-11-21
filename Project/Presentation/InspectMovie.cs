@@ -7,11 +7,26 @@ public static class InspectMovie
         ConsoleMenu menu = new();
         menu.AddOption(new InfoOption(MovieInfo(movie)));
         List<string> options = [];
-        if (InspectMovieLogic.IsOfAge(movie)) {options.Add("Reserve");}
-        options.Add("Return");
+
+        if (MovieLogic.IsOfAge(movie))
+        {
+            options.Add("Reserve");
+        }
+
         menu.PopulateOptions(options);
-        string option = menu.SelectOption();
-        if (option == "Reserve") {MakeReservation.Start(movie);}
+
+        while (true)
+        {
+            string option = menu.SelectOption();
+            if (option == "Reserve")
+            {
+                MakeReservation.Start(movie);
+            }
+            else
+            {
+                break;
+            }
+        }
     }
 
     private static string MovieInfo(MovieModel movie)
@@ -25,12 +40,12 @@ public static class InspectMovie
         movieInfo.AppendLine($"Duration: {movie.Duration} minutes");
         movieInfo.AppendLine();
         movieInfo.AppendLine(movie.Description);
-        if (!InspectMovieLogic.IsLoggedIn())
+        if (!UserLogic.IsLoggedIn())
         {
             movieInfo.AppendLine();
             movieInfo.AppendLine($"To reserve you need to be logged in.");
         }
-        else if (!InspectMovieLogic.IsOfAge(movie))
+        else if (!MovieLogic.IsOfAge(movie))
         {
             movieInfo.AppendLine();
             movieInfo.AppendLine($"To reserve you need to be at least {movie.AgeLimit}!");

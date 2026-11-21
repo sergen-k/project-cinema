@@ -1,6 +1,6 @@
 public static class AdminAddMovie
 {
-    private static MoviesLogic moviesLogic = new MoviesLogic();
+    private static MovieLogic moviesLogic = new MovieLogic();
 
     public static void Start()
     {
@@ -14,7 +14,7 @@ public static class AdminAddMovie
         string duration = AskForDuration();
 
         bool success = moviesLogic.AddMovie(
-            AccountsLogic.CurrentAccount,
+            UserLogic.CurrentAccount,
             title,
             genre,
             director,

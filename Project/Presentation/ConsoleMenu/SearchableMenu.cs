@@ -34,6 +34,12 @@ public class SearchableMenu<T> : ScrollableMenu<T>
     {
         _displayOptions.Clear();
         _displayOptions.Add(new InfoOption<T>($"Page ({_currentPage}/{_amountOfPages})"));
+
+        // search field
+        _displayOptions.Add(new InfoOption<T>(""));
+        _displayOptions.Add(_searchOption);
+        _displayOptions.Add(new InfoOption<T>(""));
+
         if (_queriedList.Count == 0) 
             _displayOptions.Add(new InfoOption<T>("Nothing found!"));
         else
@@ -51,10 +57,10 @@ public class SearchableMenu<T> : ScrollableMenu<T>
                 _displayOptions.Add(new SelectOption<T>("↓ Scroll Down ↓", default));
             }
         }
-        _displayOptions.Add(new InfoOption<T>(""));
-        _displayOptions.Add(_searchOption);
-        _displayOptions.Add(new InfoOption<T>(""));
         foreach(var option in _options)
             _displayOptions.Add(option);
+            
+        _displayOptions.Add(new InfoOption<T>(""));
+        _displayOptions.Add(new SelectOption<T>("Return", default));
     }
 }

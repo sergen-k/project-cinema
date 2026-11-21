@@ -4,26 +4,28 @@ using System.Text;
 
 static class UserLogin
 {
-    private static AccountsLogic accountsLogic = new AccountsLogic();
+    private static UserLogic _userLogic = new();
 
     public static void Start()
     {
-        Console.CursorVisible = true;
-        Console.WriteLine("Welcome to the login page");
 
         int attempts = 0;
 
+        
+
+        string email = AskForEmail();
+        if (email == null) {return;}
+        Console.Clear();
         while (attempts < 3)
-        { 
-
-            string email = AskForEmail();
+        {
             string password = AskForPassword();
+            if (password == null) {return;}
 
-            UserModel? acc = accountsLogic.CheckLogin(email, password);
+            UserModel? acc = _userLogic.CheckLogin(email, password);
 
             if (acc != null)
             {
-                AccountsLogic.ChangeAccount(acc);
+                UserLogic.ChangeAccount(acc);
 
                 Console.WriteLine("Welcome back " + acc.FirstName + " " + acc.LastName);
                 Console.WriteLine("Login successful!");
@@ -52,22 +54,35 @@ static class UserLogin
 
     private static string AskForEmail()
     {
-        Console.WriteLine("Please enter your email address:");
-
-        string? email = Console.ReadLine();
-
-        while (string.IsNullOrEmpty(email))
+        Console.Clear();
+        Console.WriteLine("Please enter your email address, enter 'Q' to return to menu:");
+        while (true)
         {
-            Console.WriteLine("Email cannot be empty. Please try again:");
-            email = Console.ReadLine();
+            string? email = Console.ReadLine().ToLower();
+            if (email == "q")
+            {
+                return null;
+            }
+            else if (string.IsNullOrEmpty(email))
+            {
+                Console.Clear();
+                Console.WriteLine("Email cannot be empty. Please try again:");
+            }
+            else if (!_userLogic.EmailAlreadyExists(email))
+            {
+                Console.Clear();
+                Console.WriteLine("No account with this email exists. Please try again:");
+            }
+            else
+            {
+                return email;
+            }
         }
-
-        return email;
     }
 
     private static string AskForPassword()
     {
-        Console.WriteLine("Please enter your password:");
+        Console.WriteLine("Please enter your password, press Escape to return to menu:");
 
         string password = "";
 
@@ -81,6 +96,7 @@ static class UserLogin
 
                 if (string.IsNullOrEmpty(password))
                 {
+                    Console.Clear();
                     Console.WriteLine("Password cannot be empty. Please try again:");
                 }
                 else
@@ -95,6 +111,10 @@ static class UserLogin
                     password = password.Substring(0, password.Length - 1);
                     Console.Write("\b \b");
                 }
+            }            
+            else if (key.Key == ConsoleKey.Escape)
+            {
+                return null;
             }
             else if (!char.IsControl(key.KeyChar))
             {
