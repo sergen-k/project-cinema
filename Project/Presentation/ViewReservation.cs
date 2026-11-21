@@ -12,7 +12,7 @@ public class ViewReservation
     public void Start()
     {
         
-        FetchData(AccountsLogic.CurrentAccount);
+        FetchData(UserLogic.CurrentAccount);
         ScrollableMenu<ReservationModel> menu = new();
         foreach (var item in _reservations) 
         {

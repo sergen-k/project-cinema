@@ -8,17 +8,24 @@ public static class InspectMovie
         menu.AddOption(new InfoOption(MovieInfo(movie)));
         List<string> options = [];
 
-        if (MovieLogic.IsOfAge(movie)) 
+        if (MovieLogic.IsOfAge(movie))
         {
             options.Add("Reserve");
         }
 
         menu.PopulateOptions(options);
 
-        string option = menu.SelectOption();
-        if (option == "Reserve") 
+        while (true)
         {
-            MakeReservation.Start(movie);
+            string option = menu.SelectOption();
+            if (option == "Reserve")
+            {
+                MakeReservation.Start(movie);
+            }
+            else
+            {
+                break;
+            }
         }
     }
 
@@ -33,7 +40,7 @@ public static class InspectMovie
         movieInfo.AppendLine($"Duration: {movie.Duration} minutes");
         movieInfo.AppendLine();
         movieInfo.AppendLine(movie.Description);
-        if (!AccountsLogic.IsLoggedIn())
+        if (!UserLogic.IsLoggedIn())
         {
             movieInfo.AppendLine();
             movieInfo.AppendLine($"To reserve you need to be logged in.");
