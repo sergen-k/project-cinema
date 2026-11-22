@@ -40,12 +40,6 @@ public List<UserModel> SelectAll()
 }
 
 
-public List<UserModel> SelectAll()
-{
-    string sql = $"SELECT * FROM {Table}";
-    return _connection.Query<UserModel>(sql).ToList();
-}
-
     public void Update(UserModel model)
     {
         string sql = $@"UPDATE {Table} 

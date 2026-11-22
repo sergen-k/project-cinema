@@ -1,13 +1,16 @@
 public class EventModel
 {
-    
-   public Int64 Id;
+    public Int64 Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public double Cost { get; set; }
 
-   public string Name;
-
-   public string Description;
-
-   public double Cost; }
-   
-
-
+    public EventModel(int id, string name,
+        string description, double cost)
+    {
+        Id = id;
+        Name = name;
+        Description = description;
+        Cost = cost;
+    }
+}

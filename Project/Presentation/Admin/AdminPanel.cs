@@ -11,8 +11,8 @@ static class AdminPanel
         ╚═╝  ╚═╝╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝
 
         ══════════════════════════════════════════════════════════════════════════════
-        
         """;
+
     public static void Start()
     {
         while (true)
@@ -25,19 +25,25 @@ static class AdminPanel
             string chosenOption = menu.SelectOption();
 
             Console.Clear();
+
             switch (chosenOption)
             {
                 case "Change User Settings":
                     AdminChangeUserSettings.Start();
                     break;
-                    
+
                 case "Add Movies":
                     AdminAddMovie.Start();
+                    break;
+
+                case "Events Panel":
+                    AdminEventsPanel.Start();
                     break;
 
                 case null:
                     break;
             }
+
             if (chosenOption == null)
             {
                 break;
@@ -49,7 +55,9 @@ static class AdminPanel
     {
         List<string> options = [];
         options.Add("Change User Settings");
-        options.Add("Add Movie");
+        options.Add("Add Movies");
+        options.Add("Events Panel");
+
         return options;
     }
 }
