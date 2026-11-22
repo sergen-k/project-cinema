@@ -20,6 +20,10 @@ public class TimetableLogic
 
         return false;
     }
+    public bool IsWithinAllowedSchedulingWindow(DateTime startTime)
+    {
+        return startTime >= DateTime.Now && startTime <= DateTime.Now.AddDays(14);
+    }
 
     public void ScheduleScreening(TimetableModel timetable)
     {
@@ -39,5 +43,9 @@ public class TimetableLogic
     public List<TimetableModel> SelectByMovieId(MovieModel movie)
     {
         return _timeTableAccess.SelectByMovieId(movie);
+    }
+    public List<TimetableModel> SelectAll()
+    {
+        return _timeTableAccess.SelectAll();
     }
 }

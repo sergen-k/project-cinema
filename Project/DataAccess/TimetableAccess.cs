@@ -31,10 +31,15 @@ public class TimetableAccess: IDataAccess<TimetableModel>
         return _connection.Query<TimetableModel>(sql, new {Id = movie.Id}).ToList();
 
     }
-        public List<TimetableModel> SelectByRoom(int roomNumber)
+    public List<TimetableModel> SelectByRoom(int roomNumber)
     {
         string sql = $"SELECT * FROM {Table} WHERE roomNumber = @RoomNumber";
         return _connection.Query<TimetableModel>(sql, new { RoomNumber = roomNumber }).ToList();
+    }
+    public List<TimetableModel> SelectAll()
+    {
+        string sql = $"SELECT * FROM {Table}";
+        return _connection.Query<TimetableModel>(sql).ToList();
     }
 
     public void Update(TimetableModel timetable)

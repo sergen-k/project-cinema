@@ -125,6 +125,11 @@ public class UserLogic
         UserModel existing = _userAccess.SelectByEmail(email);
         return existing != null;
     }
+    public bool EmailAlreadyExistsForDifferentUser(string email, long currentUserId)
+    {
+        UserModel existing = _userAccess.SelectByEmail(email);
+        return existing != null && existing.Id != currentUserId;
+    }
 
     public void AddUser(UserModel user)
     {
