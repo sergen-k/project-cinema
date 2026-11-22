@@ -1,6 +1,6 @@
 public class EventTimetableModel
 {
-    public EventTimetableModel(long id, long eventId, string timetableId)
+    public EventTimetableModel(long id, long eventId, long timetableId)
     {
         Id = id;
         EventId = eventId;
@@ -9,5 +9,5 @@ public class EventTimetableModel
 
     public Int64 Id { get; set; }
     public Int64 EventId { get; set; }
-    public string TimetableId { get; set; }
+    public long TimetableId { get; set; }
 }

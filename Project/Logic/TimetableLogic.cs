@@ -10,4 +10,10 @@ public class TimetableLogic
     {
         return _timeTableAccess.SelectByMovieId(movie);
     }
+
+
+    public List<TimetableModel> SelectAllTimeTables()
+    {
+        return _timeTableAccess.SelectAllTimeTables();
+    }
 }

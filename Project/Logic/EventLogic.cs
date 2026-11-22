@@ -1,28 +1,28 @@
-public static class EventLogic
+public  class EventLogic
 {
-    private static EventAccess _eventAccess = new();
+    private  EventAccess _eventAccess = new();
 
-    public static void CreateEvent(EventModel model)
+    public  void CreateEvent(EventModel model)
     {
         _eventAccess.Write(model);
     }
 
-    public static List<EventModel> GetAllEvents()
+    public  List<EventModel> GetAllEvents()
     {
         return _eventAccess.SelectAll();
     }
 
-    public static EventModel GetEventById(int id)
+    public  EventModel GetEventById(int id)
     {
         return _eventAccess.SelectAllById(id);
     }
 
-    public static void UpdateEvent(EventModel model)
+    public  void UpdateEvent(EventModel model)
     {
         _eventAccess.Update(model);
     }
 
-    public static void DeleteEvent(EventModel model)
+    public  void DeleteEvent(EventModel model)
     {
         _eventAccess.Delete(model);
     }

@@ -1,7 +1,7 @@
 using Dapper;
 using Microsoft.Data.Sqlite;
 
-public class TimetableAccess: IDataAccess<TimetableModel>
+public class TimetableAccess : IDataAccess<TimetableModel>
 {
 
     private SqliteConnection _connection = new SqliteConnection($"Data Source=DataSources/project.db");
@@ -14,18 +14,24 @@ public class TimetableAccess: IDataAccess<TimetableModel>
         _connection.Execute(sql, reservation);
     }
 
-    public  TimetableModel SelectAllById(int id )
+    public TimetableModel SelectAllById(int id)
     {
         string sql = $"SELECT * FROM {Table} WHERE  id = @Id";
-        return _connection.QueryFirstOrDefault<TimetableModel>(sql, new {Id = id});
+        return _connection.QueryFirstOrDefault<TimetableModel>(sql, new { Id = id });
     }
 
     public List<TimetableModel> SelectByMovieId(MovieModel movie)
     {
         string sql = $"SELECT * FROM {Table} WHERE  movieId = @Id";
-        return _connection.Query<TimetableModel>(sql, new {Id = movie.Id}).ToList();
+        return _connection.Query<TimetableModel>(sql, new { Id = movie.Id }).ToList();
 
     }
+  public List<TimetableModel> SelectAllTimeTables()
+{
+    string sql = $"SELECT * FROM {Table}";
+
+    return _connection.Query<TimetableModel>(sql).ToList();
+}
 
     public void Update(TimetableModel timetable)
     {
