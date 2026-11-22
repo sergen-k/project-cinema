@@ -8,6 +8,25 @@ public class TimetableLogic
 
     public List<TimetableModel> SelectByMovieId(MovieModel movie)
     {
-        return _timeTableAccess.SelectByMovieId(movie);
+        List<TimetableModel> models = _timeTableAccess.SelectByMovieId(movie);;
+
+        List<TimetableModel> modelsToReturn = [];
+
+        foreach (TimetableModel model in models)
+        {
+            int reservationCount = _timeTableAccess.ReservationCount(model);
+            switch (model.RoomNumber)
+            {
+                case 1: 
+                    if (reservationCount < 150)
+                    {
+                        modelsToReturn.Add(model);
+                    }
+                break;
+            }
+
+        }
+
+        return modelsToReturn;
     }
 }

@@ -128,7 +128,7 @@ public static class MakeReservation
         Console.WriteLine($"Time: {selectedTimetable.HumanReadableStartTime:HH:mm} - {selectedTimetable.HumanReadableEndtime:HH:mm}");
 
         Console.WriteLine("== Seats == ");
-       string seatInfo = ""; 
+        string seatInfo = ""; 
         foreach (var item in toReserveSeats)
         {
             var result = SeatRoomA.GetSeatInfo(item);
