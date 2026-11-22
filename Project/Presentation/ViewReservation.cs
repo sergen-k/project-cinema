@@ -12,7 +12,7 @@ public class ViewReservation
     public void Start()
     {
         
-        FetchData(AccountsLogic.CurrentAccount);
+        FetchData(UserLogic.CurrentAccount);
 
         Console.WriteLine("overview of your reservations:");
         while (true)

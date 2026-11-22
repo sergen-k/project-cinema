@@ -9,17 +9,17 @@ public class ConsoleMenu<T>
     {
         FillOptionsList();
         _selectedIndex = 0;
-        foreach(var option in _displayOptions)
+        foreach (var option in _displayOptions)
             if (!option.IsSelectable)
                 _selectedIndex++;
             else
                 break;
-        
+
         while (true)
         {
             PrintAll();
             ConsoleKeyInfo key = Console.ReadKey(true);
-            if (InputKey(key)) 
+            if (InputKey(key))
             {
                 if (CheckOption())
                     if (key.Key == ConsoleKey.Escape)
@@ -28,7 +28,7 @@ public class ConsoleMenu<T>
                     }
                     else
                     {
-                    return _displayOptions[_selectedIndex].ReturnInfo;
+                        return _displayOptions[_selectedIndex].ReturnInfo;
                     }
             }
         }
@@ -36,17 +36,20 @@ public class ConsoleMenu<T>
     }
 
     protected virtual bool CheckOption() => true;
-    protected virtual void QueryList(){}
+    protected virtual void QueryList() { }
 
     protected bool InputKey(ConsoleKeyInfo keyInfo)
     {
-        
-        if (_displayOptions[_selectedIndex] is SearchOption<T> searchOption && keyInfo.Key != ConsoleKey.UpArrow && keyInfo.Key != ConsoleKey.DownArrow && keyInfo.Key != ConsoleKey.Escape)
+
+        if (_displayOptions[_selectedIndex] is SearchOption<T> searchOption
+            && keyInfo.Key != ConsoleKey.UpArrow
+            && keyInfo.Key != ConsoleKey.DownArrow
+            && keyInfo.Key != ConsoleKey.Escape)
         {
             if (keyInfo.Key != ConsoleKey.Enter)
             {
                 searchOption.SetQuery(keyInfo);
-                QueryList(); 
+                QueryList();
             }
             return false;
         }
@@ -57,20 +60,21 @@ public class ConsoleMenu<T>
                 case ConsoleKey.UpArrow:
                     do
                     {
-                    _selectedIndex = (_selectedIndex - 1 + _displayOptions.Count) % _displayOptions.Count;
-                    if (_displayOptions[_selectedIndex] == null) {_selectedIndex--;}
+                        _selectedIndex = (_selectedIndex - 1 + _displayOptions.Count) % _displayOptions.Count;
+                        if (_displayOptions[_selectedIndex] == null) { _selectedIndex--; }
                     } while (!_displayOptions[_selectedIndex].IsSelectable);
                     return false;
 
                 case ConsoleKey.DownArrow:
                     do
                     {
-                    _selectedIndex = (_selectedIndex + 1) % _displayOptions.Count;
-                    if (_displayOptions[_selectedIndex] == null) {_selectedIndex++;}
+                        _selectedIndex = (_selectedIndex + 1) % _displayOptions.Count;
+                        if (_displayOptions[_selectedIndex] == null) { _selectedIndex++; }
                     } while (!_displayOptions[_selectedIndex].IsSelectable);
                     return false;
 
                 case ConsoleKey.Enter:
+                case ConsoleKey.Spacebar:
                 case ConsoleKey.Escape:
                     return true;
                 default:
@@ -104,7 +108,7 @@ public class ConsoleMenu<T>
         _displayOptions.AddRange(_options);
         if (IsMainMenu)
         {
-        _displayOptions.Add(new SelectOption<T>("Exit", default));    
+            _displayOptions.Add(new SelectOption<T>("Exit", default));
         }
         else
         {
