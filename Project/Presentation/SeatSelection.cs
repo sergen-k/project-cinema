@@ -19,6 +19,14 @@ public class SeatSelection
 
     private List<SeatModel> toReserve = [];
 
+    private readonly MovieRoom MovieRoom;
+
+    public SeatSelection(MovieRoom movieRoom)
+    {
+        MovieRoom = movieRoom;
+    }
+
+
     public List<SeatModel> Start(TimetableModel timetableModel, int amountToReserve)
     {
 
@@ -40,12 +48,11 @@ public class SeatSelection
             var keypress = Console.ReadKey().Key;
 
             // values to clamp the cursor in
-            int rowOffset = SeatRoomA.pattern[cursorY];
-            int amountOfSeatsInRow = SeatRoomA.seatArrangements[cursorY].Count;
-            (int yMin, int yMax) = SeatRoomA.yClamps[cursorX];
+            int rowOffset = MovieRoom.pattern[cursorY];
+            int amountOfSeatsInRow = MovieRoom.seatArrangements[cursorY].Length;
+            (int yMin, int yMax) = MovieRoom.yClamps[cursorX];
 
-            // TODO: move this code for the cusor into the SeatRoomA class an move auditorium there
-            SeatModel? model = getSeat(SeatRoomA.seatArrangements);
+            SeatModel? model = getSeat();
             switch (keypress)
             {
                 case ConsoleKey.RightArrow:
@@ -104,7 +111,7 @@ public class SeatSelection
         string confirmationMessage = "Are you sure you want to reserve the seats:\n";
         foreach (var item in toReserve)
         {
-            var result = SeatRoomA.GetSeatInfo(item);
+            var result = MovieRoom.GetSeatInfo(item);
             if (result != null)
             {
                 (int row, int col) = ((int, int))result;
@@ -140,12 +147,12 @@ public class SeatSelection
     {
         string finalResult = "";
         int rowNumber = 0;
-        foreach (List<SeatModel> row in SeatRoomA.seatArrangements)
+        foreach ( SeatModel[] row in MovieRoom.seatArrangements)
         {
             string mainSeat = "";
             string chair = "";
 
-            int rowOffset = SeatRoomA.pattern[rowNumber];
+            int rowOffset = MovieRoom.pattern[rowNumber];
 
 
             for (int i = 0; i < rowOffset; i++) mainSeat += "     ";
@@ -212,11 +219,11 @@ public class SeatSelection
         return finalResult;
     }
 
-    private SeatModel? getSeat(List<List<SeatModel>> seats)
+    private SeatModel? getSeat()
     {
         try
         {
-            return seats[cursorY][cursorX - SeatRoomA.pattern[cursorY]];
+            return MovieRoom.seatArrangements[cursorY][cursorX - MovieRoom.pattern[cursorY]];
         }
         catch (ArgumentOutOfRangeException)
         {

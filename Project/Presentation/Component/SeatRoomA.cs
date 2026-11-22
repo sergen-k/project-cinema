@@ -1,10 +1,10 @@
-public static class SeatRoomA 
+public class SeatRoomA: MovieRoom 
 {
     private static readonly SeatLogic _seatLogic = new();
 
-    public static  List<List<SeatModel>> seatArrangements { set; get; } = [];
+    public override SeatModel[][] seatArrangements { set; get; } = [];
 
-    public static readonly (int, int)[] yClamps = [
+    public override (int, int)[] yClamps {get;} = [
         (3, 10),
         (1, 11),
         (0, 13),
@@ -19,13 +19,13 @@ public static class SeatRoomA
         (3, 10)
     ];
     
-    static SeatRoomA()
+    public SeatRoomA()
     {
         ConstructAuditoriumRoom();
     }
 
 
-    public static readonly int[] pattern = [
+    public override int[] pattern {get; }= [
         2,
         1,
         1,
@@ -43,13 +43,13 @@ public static class SeatRoomA
     ];
 
 
-    private static void ConstructAuditoriumRoom()
+    public override void ConstructAuditoriumRoom()
     {
         List<SeatModel> seatModels = _seatLogic.SelectByRoom(1);
         Queue<SeatModel> ordered = new(seatModels);
     
         int[] num_seats = [8, 10, 10, 12, 12, 12, 12, 12, 12, 12, 12, 10, 8, 8];
-        List<List<SeatModel>> result = new();
+        List<SeatModel[]> result = new();
 
         foreach (int row in num_seats)
         {
@@ -60,17 +60,17 @@ public static class SeatRoomA
                 seat_row.Add(ordered.Dequeue());
             }
 
-            result.Add(seat_row);
+            result.Add(seat_row.ToArray());
         }
 
-        seatArrangements = result;
+        seatArrangements = result.ToArray();
     }
 
-    public static (int, int)? GetSeatInfo(SeatModel model)
+    public override (int, int)? GetSeatInfo(SeatModel model)
     {
-        for (int row = 0; row < seatArrangements.Count; row++)
+        for (int row = 0; row < seatArrangements.Length; row++)
         {
-            for (int j = 0; j < seatArrangements[row].Count; j++)
+            for (int j = 0; j < seatArrangements[row].Length; j++)
             {
                 if (seatArrangements[row][j].Id == model.Id) return (14-row, j+1); 
             }

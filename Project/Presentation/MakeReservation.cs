@@ -95,7 +95,14 @@ public static class MakeReservation
         int numberOfSeats = AmountOfSeats();
 
         Console.Clear();
-        SeatSelection seatSelection = new();
+
+        MovieRoom movieRoom = selectedTimetable.RoomNumber switch
+        {
+           1 => new SeatRoomA(),
+           2 => new SeatRoomB(),
+        };
+
+        SeatSelection seatSelection = new(movieRoom);
         List<SeatModel> toReserveSeats = seatSelection.Start(selectedTimetable, numberOfSeats);
         Console.Clear();
 
@@ -117,7 +124,7 @@ public static class MakeReservation
        string seatInfo = ""; 
         foreach (var item in toReserveSeats)
         {
-            var result = SeatRoomA.GetSeatInfo(item);
+            var result = movieRoom.GetSeatInfo(item);
             if (result != null)
             {
                 (int row, int col) = ((int, int))result;
