@@ -19,5 +19,5 @@ public class SearchOption<T> : OptionBase<T>
             Query += keyInfo.KeyChar;
         }
     }
-
 }
+

@@ -2,4 +2,4 @@
 Console.CursorVisible = false;
 Console.Clear();
 
-Menu.Start();
+MainMenu.Start();

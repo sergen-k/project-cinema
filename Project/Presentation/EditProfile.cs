@@ -2,125 +2,163 @@ using System;
 
 public static class EditProfile
 {
-    private static AccountsLogic _userLogic = new();
+    private static UserLogic _userLogic = new();
 
     public static void Start()
     {
-        UserModel currentUser = AccountsLogic.CurrentAccount;
+        UserModel currentUser = UserLogic.CurrentAccount;
 
         while (true)
         {
-            Console.WriteLine();
-            Console.WriteLine("Current profile information:");
-            Console.WriteLine($"1. First name: {currentUser.FirstName}");
-            Console.WriteLine($"2. Last name: {currentUser.LastName}");
-            Console.WriteLine($"3. Email: {currentUser.Email}");
-            Console.WriteLine($"4. Phone number: {currentUser.PhoneNumber}");
-            Console.WriteLine("Type 1-4 to edit a field, or type \"Q\" to save and exit.");
+            ConsoleMenu menu = new();
+            menu.AddOption(new InfoOption("Select to change your profile information!"));
+            menu.AddOption(new SelectOption<string>($"First Name: {currentUser.FirstName}", "First Name"));
+            menu.AddOption(new SelectOption<string>($"Last Name: {currentUser.LastName}", "Last Name"));
+            menu.AddOption(new SelectOption<string>($"Email: {currentUser.Email}", "Email"));
+            menu.AddOption(new SelectOption<string>($"Phone Number: {currentUser.PhoneNumber}", "Phone Number"));
+            string choice = menu.SelectOption();
 
-            string choice = Console.ReadLine()?.Trim().ToUpper();
-
-            if (choice == "Q")
+            if (choice == null)
             {
                 break;
             }
-
             switch (choice)
             {
-                case "1":
-                    currentUser.FirstName = AskFirstName();
+                case "First Name":
+                    string newFirstName = AskFirstName();
+                    if (newFirstName != null)
+                        currentUser.FirstName = newFirstName;
                     break;
-                case "2":
-                    currentUser.LastName = AskLastName();
+                case "Last Name":
+                    string newLastName = AskLastName();
+                    if (newLastName != null)
+                        currentUser.LastName = newLastName;
                     break;
-                case "3":
-                    currentUser.Email = AskEmail(currentUser.Id);
+                case "Email":
+                    string newEmail = AskEmail();
+                    if (newEmail != null)
+                        currentUser.Email = newEmail;
                     break;
-                case "4":
-                    currentUser.PhoneNumber = AskPhoneNumber();
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice. Please type 1, 2, 3, 4, or \"Q\".");
+                case "Phone Number":
+                    string newPhoneNumber = AskPhoneNumber();
+                    if (newPhoneNumber != null)
+                        currentUser.PhoneNumber = newPhoneNumber;
                     break;
             }
+            _userLogic.UpdateUser(currentUser);
         }
-        
-        _userLogic.UpdateUser(currentUser);
         Console.WriteLine("Profile updated successfully!");
     }
 
-
     private static string AskFirstName()
     {
+        string errorMessage = "";
         string input;
-        bool firstAttempt = true;
-        do
+        while (true)
         {
-            if (!firstAttempt)
-            {
-                Console.WriteLine("First name must be at least 2 characters long.");
-            }
-            Console.WriteLine("Enter your new first name:");
+            Console.Clear();
+            Console.WriteLine("Enter your new first name");
+            Console.WriteLine("- Must be at least 2 characters long");
+            Console.WriteLine("- Enter \"Q\" to quit editing");
+            Console.Write(errorMessage);
             input = Console.ReadLine();
-            firstAttempt = false;
-        } while (!_userLogic.IsValidFirstName(input));
-
-        return input;
+            if (_userLogic.IsValidFirstName(input))
+            {
+                return input;
+            }
+            else if (input.ToLower() == "q")
+            {
+                return null;
+            }
+            else
+            {
+                errorMessage = "ERROR: Input was invalid!\n";
+            }
+        }
     }
 
     private static string AskLastName()
     {
+        string errorMessage = "";
         string input;
-        bool firstAttempt = true;
-        do
+        while (true)
         {
-            if (!firstAttempt)
-            {
-                Console.WriteLine("Last name must be at least 2 characters long.");
-            }
-            Console.WriteLine("Enter your new last name:");
+            Console.Clear();
+            Console.WriteLine("Enter your new last name");
+            Console.WriteLine("- Must be at least 2 characters long");
+            Console.WriteLine("- Enter \"Q\" to quit editing");
+            Console.Write(errorMessage);
             input = Console.ReadLine();
-            firstAttempt = false;
-        } while (!_userLogic.IsValidLastName(input));
-
-        return input;
+            if (_userLogic.IsValidLastName(input))
+            {
+                return input;
+            }
+            else if (input.ToLower() == "q")
+            {
+                return null;
+            }
+            else
+            {
+                errorMessage = "ERROR: Input was invalid!\n";
+            }
+        }
     }
 
-    private static string AskEmail(long currentUserId)
+    private static string AskEmail()
     {
+        string errorMessage = "";
         string input;
-        bool firstAttempt = true;
-        do
+        while (true)
         {
-            if (!firstAttempt)
+            Console.Clear();
+            Console.WriteLine("Enter your new email");
+            Console.WriteLine("- Needs to be a valid email");
+            Console.WriteLine("- Has to be unused");
+            Console.WriteLine("- Enter \"Q\" to quit editing");
+            Console.Write(errorMessage);
+            input = Console.ReadLine().ToLower();
+            if (!string.IsNullOrWhiteSpace(input)
+               && _userLogic.IsValidEmail(input)
+               && !_userLogic.EmailAlreadyExists(input))
             {
-                Console.WriteLine("Please enter a valid, unused email address.");
+                return input;
             }
-            Console.WriteLine("Enter your new email:");
-            input = Console.ReadLine();
-            firstAttempt = false;
-        } while (string.IsNullOrWhiteSpace(input)
-               || !_userLogic.IsValidEmail(input)
-               || _userLogic.EmailAlreadyExistsForDifferentUser(input, currentUserId));
-
-        return input;
+            else if (input.ToLower() == "q")
+            {
+                return null;
+            }
+            else
+            {
+                errorMessage = "ERROR: Input was invalid!\n";
+            }
+        }
     }
 
     private static string AskPhoneNumber()
     {
+        string errorMessage = "";
         string input;
-        bool firstAttempt = true;
-        do
+        while (true)
         {
-            if (!firstAttempt)
-            {
-                Console.WriteLine("Please enter a valid phone number (10-15 digits, optionally starting with +).");
-            }
-            Console.WriteLine("Enter your new phone number:");
+            Console.Clear();
+            Console.WriteLine("Enter your new phone number");
+            Console.WriteLine("- Has to be a valid phone number");
+            Console.WriteLine("- Optionally starting with +");
+            Console.WriteLine("- Enter \"Q\" to quit editing");
+            Console.Write(errorMessage);
             input = Console.ReadLine();
-            firstAttempt = false;
-        } while (string.IsNullOrWhiteSpace(input) || !_userLogic.IsValidPhoneNumber(input));
-
-        return input;
+            if (!string.IsNullOrWhiteSpace(input) && _userLogic.IsValidPhoneNumber(input))
+            {
+                return input;
+            }
+            else if (input.ToLower() == "q")
+            {
+                return null;
+            }
+            else
+            {
+                errorMessage = "ERROR: Input was invalid!\n";
+            }
+        }
     }
 }

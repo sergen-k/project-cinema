@@ -65,10 +65,10 @@ public class MovieLogic
 
     public static bool IsOfAge(MovieModel movie)
     {
-        if (AccountsLogic.IsLoggedIn())
+        if (UserLogic.IsLoggedIn())
         {
             DateTime today = DateTime.Today;
-            DateTime birthdate = AccountsLogic.CurrentAccount.HumanReadableDateOfBirth;
+            DateTime birthdate = UserLogic.CurrentAccount.HumanReadableDateOfBirth;
 
             int age = DateTime.Today.Year-birthdate.Year;
             if (today < birthdate.AddYears(age)) {age--;}
