@@ -4,14 +4,15 @@ public static class MakeReservation
 
     public static readonly ReservationLogic reservationLogic = new();
     public static readonly SeatOrderLogic seatOrderLogic = new();
+    public static readonly TimetableLogic timetableLogic = new();
+    public static readonly ConsumableOrderLogic ConsumableOrderLogic = new();
 
     public static void Start(MovieModel movie)
     {
 
         // tijdelijke suser id en movie id, we gaan er vanuit dat iemand is ingelogd en een movie heeft gekozen
         Console.Clear();
-        TimetableAccess timetableAccess = new();
-        List<TimetableModel> timetables = timetableAccess.SelectByMovieId(movie);
+        List<TimetableModel> timetables = timetableLogic.SelectByMovieId(movie);
         if (timetables.Count == 0)
         {
             Console.WriteLine("Currently there are no planned viewings of this movie. Try again later, press enter to return");
@@ -33,16 +34,17 @@ public static class MakeReservation
                 .Distinct()
                 .ToList();
 
-        List<string> formatteddates = dates
-        .Select(d => d.ToString("dd/MM/yyyy"))
-        .ToList();
+            List<string> formatteddates = dates
+            .Select(d => d.ToString("dd/MM/yyyy"))
+            .ToList();
 
-        // date selection screen
-        menu.ResetOptions();
-        foreach(string formatteddate in formatteddates)
-            menu.AddOption(new SelectOption<int>(formatteddate, formatteddates.IndexOf(formatteddate)));
-        int selectedDateIndex = menu.SelectOption();
-        DateTime selectedDate = dates[selectedDateIndex];
+            // date selection screen
+            menu.ResetOptions();
+            foreach (string formatteddate in formatteddates)
+                menu.AddOption(new SelectOption<int>(formatteddate, formatteddates.IndexOf(formatteddate)));
+            int selectedDateIndex = menu.SelectOption();
+            if (selectedDateIndex == -1) {return;}
+            DateTime selectedDate = dates[selectedDateIndex];
 
             // date selection screen
 
@@ -53,15 +55,16 @@ public static class MakeReservation
 
             // Format start and end times
             List<string> formattedTimes = dayTimetables
-                .Select(t => $"{t.HumanReadableStartTime:HH:mm} - {t.HumanReadableEndtime:HH:mm}")
+                .Select(t => $"room: {t.RoomNumber}, {t.HumanReadableStartTime:HH:mm} - {t.HumanReadableEndtime:HH:mm} ")
                 .ToList();
 
             // Timetable selection screen
-            
+
             menu.ResetOptions();
-            foreach(string formattedTime in formattedTimes)
+            foreach (string formattedTime in formattedTimes)
                 menu.AddOption(new SelectOption<int>(formattedTime, formattedTimes.IndexOf(formattedTime)));
             int selectedStartTimeIndex = menu.SelectOption();
+            if (selectedStartTimeIndex == -1) {return;}
 
             // if (selectedStartTimeIndex == -1)
             // {
@@ -76,7 +79,8 @@ public static class MakeReservation
             {
                 Console.WriteLine("You already have a reservation for this timeslot, please select a different time");
                 Console.ReadLine();
-            } else
+            }
+            else
             {
                 // Get the selected timetable
                 selectedTimetable = dayTimetables[selectedStartTimeIndex];
@@ -108,7 +112,35 @@ public static class MakeReservation
         Console.WriteLine($"Movie: {movie.Title}");
         Console.WriteLine($"Date: {selectedTimetable.HumanReadableStartTime:dd/MM/yyyy}");
         Console.WriteLine($"Time: {selectedTimetable.HumanReadableStartTime:HH:mm} - {selectedTimetable.HumanReadableEndtime:HH:mm}");
-        Console.WriteLine($"Seats: {numberOfSeats}");
+
+        Console.WriteLine("== Seats == ");
+       string seatInfo = ""; 
+        foreach (var item in toReserveSeats)
+        {
+            var result = SeatRoomA.GetSeatInfo(item);
+            if (result != null)
+            {
+                (int row, int col) = ((int, int))result;
+                switch(item.SeatType)
+                {
+                    case 1: 
+                        seatInfo += $"normal seat: row {row} seat {col}, price {item.SeatCost} \n";
+                    break;
+                    case 2: 
+                        seatInfo += $"premium seat: row {row} seat {col}, price {item.SeatCost}\n";
+                    break;
+                    case 3: 
+                        seatInfo += $"deluxe seat: row {row} seat {col}, price {item.SeatCost}\n";
+                    break;
+                }
+                
+            }
+        }
+
+        seatInfo += $"total price {totalPrice}";
+        Console.WriteLine(seatInfo);
+
+
         Console.WriteLine($"Food and Drink items: {selectedItems.Count}");
 
         Console.WriteLine();
@@ -121,19 +153,17 @@ public static class MakeReservation
             Console.Clear();
             Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimetable.HumanReadableStartTime:HH:mm} on {selectedTimetable.HumanReadableEndtime:dd/MM/yyyy}");
             ReservationModel reservation = new(0, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
-            ReservationAccess reservationAccess = new();
-
-            long reservationId = reservationAccess.WriteAndGetId(reservation);
-            ReservationModel reservationRefreshed = new(reservationId, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
             
+            long reservationId = reservationLogic.WriteAndGetId(reservation);
+            ReservationModel reservationRefreshed = new(reservationId, selectedTimetable.Id, AccountsLogic.CurrentAccount.Id, numberOfSeats);
+
             foreach (SeatModel seat in toReserveSeats)
             {
 
                 seatOrderLogic.Write(reservationRefreshed, seat);
             }
 
-            ConsumableOrderAccess consumableOrderAccess = new();
-            consumableOrderAccess.SaveForReservation(reservationId, selectedItems);
+            ConsumableOrderLogic.SaveForReservation(reservationId, selectedItems);
 
 
             Console.WriteLine("Press enter to return!");
@@ -144,8 +174,6 @@ public static class MakeReservation
 
         else
         {
-            //says no return back to info page of the movie 
-            //  MovieInfo.Start(movie);
             Console.CursorVisible = false;
             return;
         }
@@ -160,9 +188,9 @@ public static class MakeReservation
 
         while (true)
         {
-            if (attempts > 0) Console.WriteLine("Please enter a valid number.");
+            if (attempts > 0) Console.WriteLine("Please enter a valid number of at least 1.");
             string userInput = Console.ReadLine();
-            if (int.TryParse(userInput, out int val)) return val;
+            if (int.TryParse(userInput, out int val) && val >= 1) return val;
             attempts++;
         }
     }

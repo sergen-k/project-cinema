@@ -2,10 +2,6 @@ public class SeatOrderLogic
 {
     private readonly SeatOrderAccess _SeatOrderAccess = new();
 
-    public SeatOrderLogic()
-    {
-    }
-
     public void Write(ReservationModel reservation, SeatModel seat)
     {
         Int64 nextId = _SeatOrderAccess.GetNextSeatOrderId();

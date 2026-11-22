@@ -14,6 +14,8 @@ public class AccountsLogic
     //private set, so this can only be set by the class itself
     public static UserModel? CurrentAccount { get; private set; }
     private UserAccess _userAccess = new UserAccess();
+    
+    public static bool IsLoggedIn() => CurrentAccount != null;
 
     public UserModel? CheckLogin(string email, string password)
     {
@@ -149,5 +151,8 @@ public class AccountsLogic
         return !string.IsNullOrWhiteSpace(lastName) && lastName.Trim().Length >= 2 && !double.TryParse(lastName, out output_parse);
     }
 
-
+    public List<UserModel> SelectAll()
+    {
+        return _userAccess.SelectAll();
+    }
 }

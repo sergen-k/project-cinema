@@ -25,6 +25,7 @@ static class Menu
         while (true)
         {
             ConsoleMenu menu = new();
+            menu.IsMainMenu = true;
             menu.AddOption(new InfoOption(Banner));
             menu.PopulateOptions(GetOptions());
 
@@ -79,8 +80,12 @@ static class Menu
                 case "Change users settings":
                      AdminChangeUserSettings.Start();
                      break;    
-
-
+                case null:
+                    break;
+            }
+            if (chosenOption == null)
+            {
+                break;
             }
         }
     }
@@ -101,7 +106,7 @@ static class Menu
             options.Add("Edit Profile");
         }
         options.Add("About Us");
-        if (!InspectMovieLogic.IsLoggedIn())
+        if (!AccountsLogic.IsLoggedIn())
         {
         options.Add("Auto Log (Test)");
         }

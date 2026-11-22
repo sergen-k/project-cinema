@@ -1,8 +1,8 @@
-public class SeatRoomA : MovieRoom
+public static class SeatRoomA 
 {
     private static readonly SeatLogic _seatLogic = new();
 
-    public override List<List<SeatModel>> seatArrangements { set; get; } = [];
+    public static  List<List<SeatModel>> seatArrangements { set; get; } = [];
 
     public static readonly (int, int)[] yClamps = [
         (3, 10),
@@ -19,6 +19,11 @@ public class SeatRoomA : MovieRoom
         (3, 10)
     ];
     
+    static SeatRoomA()
+    {
+        ConstructAuditoriumRoom();
+    }
+
 
     public static readonly int[] pattern = [
         2,
@@ -38,7 +43,7 @@ public class SeatRoomA : MovieRoom
     ];
 
 
-    public override void ConstructAuditoriumRoom()
+    private static void ConstructAuditoriumRoom()
     {
         List<SeatModel> seatModels = _seatLogic.SelectByRoom(1);
         Queue<SeatModel> ordered = new(seatModels);
@@ -59,6 +64,19 @@ public class SeatRoomA : MovieRoom
         }
 
         seatArrangements = result;
+    }
+
+    public static (int, int)? GetSeatInfo(SeatModel model)
+    {
+        for (int row = 0; row < seatArrangements.Count; row++)
+        {
+            for (int j = 0; j < seatArrangements[row].Count; j++)
+            {
+                if (seatArrangements[row][j].Id == model.Id) return (14-row, j+1); 
+            }
+        }
+
+        return null;
     }
 
 }

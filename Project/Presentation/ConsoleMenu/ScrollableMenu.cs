@@ -5,9 +5,8 @@ public class ScrollableMenu<T> : ConsoleMenu<T>
     public const int MaxItemsPerPage = 10;
     protected virtual int _amountOfPages {get => (int)Math.Ceiling((double)_scrollOptions.Count/MaxItemsPerPage);}
     protected int _currentPage {get; set => field = Math.Clamp(value, 1, Math.Max(1, _amountOfPages));} = 1; 
-    protected virtual int _scrollableOptionsOnScreen {get => _amountOfPages == _currentPage ? _scrollOptions.Count - (_amountOfPages-1)*10 : 10;}
+    protected virtual int _scrollableOptionsOnScreen {get => _amountOfPages == _currentPage ? _scrollOptions.Count - (_amountOfPages-1)*MaxItemsPerPage : MaxItemsPerPage;}
 
-    protected List<SelectOption> _scrollableButtons {get;} = [new("↑ Scroll Up ↑"), new("↓ Scroll Down ↓")];
     protected List<OptionBase<T>> _scrollOptions = [];
     
 
@@ -47,7 +46,7 @@ public class ScrollableMenu<T> : ConsoleMenu<T>
             _displayOptions.Add(new InfoOption<T>("Nothing found!"));
         else
         {
-            for (int i = (_currentPage-1)*MaxItemsPerPage; i < (_currentPage-1)*10+_scrollableOptionsOnScreen; i++)
+            for (int i = (_currentPage-1)*MaxItemsPerPage; i < (_currentPage-1)*MaxItemsPerPage+_scrollableOptionsOnScreen; i++)
                 _displayOptions.Add(_scrollOptions[i]);
             if (_currentPage > 1)
             {
@@ -63,5 +62,7 @@ public class ScrollableMenu<T> : ConsoleMenu<T>
         _displayOptions.Add(new InfoOption<T>(""));
         foreach(var option in _options)
             _displayOptions.Add(option);
+        _displayOptions.Add(new InfoOption<T>(""));
+        _displayOptions.Add(new SelectOption<T>("Return", default));
     }
 }
