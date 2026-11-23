@@ -27,6 +27,12 @@ public class TimetableAccess: IDataAccess<TimetableModel>
 
     }
 
+    public int ReservationCount(TimetableModel model)
+    {
+        string sql = $"SELECT sum(People) FROM Reservation where movieShowingId = @Id";
+        return _connection.QueryFirstOrDefault<int>(sql, model);
+    }
+
     public void Update(TimetableModel timetable)
     {
         string sql = $"UPDATE {Table} SET startTime = @StartTime, endTime = @EndTime, movieId = @MovieId, roomNumber = @RoomNumber WHERE id = @Id";
