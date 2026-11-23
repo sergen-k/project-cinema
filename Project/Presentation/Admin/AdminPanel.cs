@@ -30,8 +30,7 @@ static class AdminPanel
                 case "Change User Settings":
                     AdminChangeUserSettings.Start();
                     break;
-                    
-                case "Add Movies":
+                case "Add Movie":
                     AdminAddMovie.Start();
                     break;
                 case "Manage Screenings":

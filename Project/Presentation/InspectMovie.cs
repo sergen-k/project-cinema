@@ -36,7 +36,7 @@ public static class InspectMovie
         movieInfo.AppendLine(movie.Title);
         movieInfo.AppendLine($"Genre: {movie.Genre}");
         movieInfo.AppendLine($"Directed by: {movie.Director}");
-        movieInfo.AppendLine($"Must be at least {movie.AgeLimit} years old");
+        movieInfo.AppendLine($"Age rating {MovieLogic.AgeToCategory(movie.AgeLimit)}");
         movieInfo.AppendLine($"Duration: {movie.Duration} minutes");
         movieInfo.AppendLine();
         movieInfo.AppendLine(movie.Description);

@@ -8,8 +8,8 @@ public static class BrowseMovies
     public static void Start()
     {
         MovieModel answer;
-        Movies = _movieLogic.SelectAll();
-        //Movies = _movieLogic.SelectNextTwoWeeks();
+        // Movies = _movieLogic.SelectAll();
+        Movies = _movieLogic.SelectNextTwoWeeks();
 
         while(true)
         {
@@ -32,7 +32,7 @@ public static class BrowseMovies
 
     private static string MovieInfoLine(MovieModel movie)
     { 
-        return $"{movie.Title}; {movie.Genre}; {movie.AgeLimit}+";
+        return $"{movie.Title}; {movie.Genre}; {MovieLogic.AgeToCategory(movie.AgeLimit)}";
     }
 
     private static MovieModel? ChooseMovie()

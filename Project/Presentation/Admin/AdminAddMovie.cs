@@ -7,7 +7,7 @@ public static class AdminAddMovie
         Console.WriteLine("=== Add Movie ===");
 
         string title = AskForInput("Enter movie title:");
-        string genre = AskForInput("Enter movie genre:");
+        string genre = AskGenre();
         string director = AskForInput("Enter movie director:");
         string description = AskForInput("Enter movie description:");
         long ageLimit = AskForAgeLimit();
@@ -32,6 +32,21 @@ public static class AdminAddMovie
         {
             Console.WriteLine("Failed to add movie. Please check the information.");
         }
+    }
+
+
+    private static string AskGenre()
+    {
+        ConsoleMenu menu = new();
+        menu.PopulateOptions(["Fantasy", "Comedy", "Drama", "Action", "Horror", "Sci-Fi"]);
+
+        string option = menu.SelectOption();
+        if (option == "")
+        {
+            option = "-";
+        }
+    
+        return option;
     }
 
     private static string AskForInput(string message)
@@ -65,7 +80,7 @@ public static class AdminAddMovie
 
         if (choice == "2")
         {
-            return 0;
+            return 1;
         }
 
         Console.WriteLine("Enter minimum age:");
