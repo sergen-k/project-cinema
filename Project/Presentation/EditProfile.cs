@@ -35,7 +35,7 @@ public static class EditProfile
                         currentUser.LastName = newLastName;
                     break;
                 case "Email":
-                    string newEmail = AskEmail();
+                    string newEmail = AskEmail(currentUser.Id);
                     if (newEmail != null)
                         currentUser.Email = newEmail;
                     break;
@@ -104,7 +104,7 @@ public static class EditProfile
         }
     }
 
-    private static string AskEmail()
+    private static string AskEmail(long currentUserId)
     {
         string errorMessage = "";
         string input;
@@ -119,7 +119,7 @@ public static class EditProfile
             input = Console.ReadLine().ToLower();
             if (!string.IsNullOrWhiteSpace(input)
                && _userLogic.IsValidEmail(input)
-               && !_userLogic.EmailAlreadyExists(input))
+               && !_userLogic.EmailAlreadyExistsForDifferentUser(input, currentUserId))
             {
                 return input;
             }

@@ -34,6 +34,11 @@ static class AdminPanel
                 case "Add Movies":
                     AdminAddMovie.Start();
                     break;
+                case "Manage Screenings":
+                    AdminManageScreenings.Start();
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                    break;
 
                 case null:
                     break;
@@ -50,6 +55,7 @@ static class AdminPanel
         List<string> options = [];
         options.Add("Change User Settings");
         options.Add("Add Movie");
+        options.Add("Manage Screenings");
         return options;
     }
 }

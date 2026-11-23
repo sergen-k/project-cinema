@@ -10,7 +10,12 @@ public class TimetableAccess: IDataAccess<TimetableModel>
 
     public void Write(TimetableModel reservation)
     {
-        string sql = $"INSERT INTO {Table} (startTime, endTime, movieId, roomNumber) VALUES (@StartTime, @EndTime, @MovieId, @RoomNumber)";
+        if (reservation.Id == 0)
+        {
+            reservation.Id = GetNextTimetableId();
+        }
+
+        string sql = $"INSERT INTO {Table} (id, startTime, endTime, movieId, roomNumber) VALUES (@Id, @StartTime, @EndTime, @MovieId, @RoomNumber)";
         _connection.Execute(sql, reservation);
     }
 
@@ -25,6 +30,16 @@ public class TimetableAccess: IDataAccess<TimetableModel>
         string sql = $"SELECT * FROM {Table} WHERE  movieId = @Id";
         return _connection.Query<TimetableModel>(sql, new {Id = movie.Id}).ToList();
 
+    }
+    public List<TimetableModel> SelectByRoom(int roomNumber)
+    {
+        string sql = $"SELECT * FROM {Table} WHERE roomNumber = @RoomNumber";
+        return _connection.Query<TimetableModel>(sql, new { RoomNumber = roomNumber }).ToList();
+    }
+    public List<TimetableModel> SelectAll()
+    {
+        string sql = $"SELECT * FROM {Table}";
+        return _connection.Query<TimetableModel>(sql).ToList();
     }
 
     public int ReservationCount(TimetableModel model)
@@ -43,4 +58,10 @@ public class TimetableAccess: IDataAccess<TimetableModel>
         string sql = $"DELETE FROM {Table} WHERE id = @Id";
         _connection.Execute(sql, new { Id = timetable.Id });
     }
+    public long GetNextTimetableId()
+    {
+        string sql = $"SELECT COALESCE(MAX(id), 0) + 1 FROM {Table}";
+        return _connection.ExecuteScalar<long>(sql);
+    }
+
 }

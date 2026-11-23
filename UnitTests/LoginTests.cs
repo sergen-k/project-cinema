@@ -12,7 +12,7 @@ public sealed class Test1
     public void LoginValidCredentials(string? m, string? p)
     {
         // arrange
-        AccountsLogic l = new();
+        UserLogic  l = new();
 
         // act 
         UserModel? result = l.CheckLogin(m!, p!);
@@ -32,7 +32,7 @@ public sealed class Test1
     public void LoginInvalidCredentials(string? m, string? p)
     {
         // arrange
-        AccountsLogic l = new();
+        UserLogic  l = new();
 
         // act 
         UserModel? result = l.CheckLogin(m!, p!);
