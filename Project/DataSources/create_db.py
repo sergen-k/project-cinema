@@ -1,4 +1,5 @@
 import sqlite3 
+from time import gmtime, strftime
 
 create_movie = """
 CREATE TABLE IF NOT EXISTS "Movie" (
@@ -268,8 +269,20 @@ CREATE TABLE ConsumableOrder (
 );
 """
 
+timetable_insert = """
+INSERT INTO Timetable (startTime, endTime, movieId, roomNumber) VALUES (strftime('%s' , 'now', '+14 days'), strftime('%s' , 'now', '+14 days', '+2 hours'), 1, 1)
+"""
+
+
+
+
+
+
+
+
+
 import sqlite3
-con = sqlite3.connect("DataSources/project.db")
+con = sqlite3.connect("./project.db")
 con.execute(create_movie)
 con.executescript(insert_default_movies)
 con.execute(create_timetable_table)
@@ -282,3 +295,6 @@ con.execute(insert_admin)
 con.execute(create_consumable_table)
 con.executescript(insert_default_consumable)
 con.execute(create_consumable_order_table)
+
+
+con.executescript(timetable_insert)
