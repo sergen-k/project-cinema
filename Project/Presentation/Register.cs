@@ -277,10 +277,11 @@ public static class Register
 
     private static bool AskPasswordConfirmation(string originalPassword)
     {
+        string prompt = "Confirm your password. Press escape to quit account creation.";
+
         while (true)
         {
-            string confirmation = AskPassword("Confirm your password. Press escape to quit account creation.", 
-                                              "Passwords do not match, try again. Press escape to quit account creation.");
+            string confirmation = AskPassword(prompt, prompt);
             if (confirmation == null)
             {
                 return false;
@@ -288,6 +289,10 @@ public static class Register
             else if (confirmation == originalPassword)
             {
                 return true;
+            }
+            else
+            {
+                prompt = "Passwords do not match, try again. Press escape to quit account creation.";
             }
         }
     }
