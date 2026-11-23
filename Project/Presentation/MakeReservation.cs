@@ -127,7 +127,7 @@ public static class MakeReservation
         Console.WriteLine($"Date: {selectedTimetable.HumanReadableStartTime:dd/MM/yyyy}");
         Console.WriteLine($"Time: {selectedTimetable.HumanReadableStartTime:HH:mm} - {selectedTimetable.HumanReadableEndtime:HH:mm}");
 
-        Console.WriteLine("== Seats == ");
+        Console.WriteLine("== Seats ==");
         string seatInfo = ""; 
         foreach (var item in toReserveSeats)
         {
