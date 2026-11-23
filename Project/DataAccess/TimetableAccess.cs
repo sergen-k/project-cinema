@@ -44,8 +44,8 @@ public class TimetableAccess: IDataAccess<TimetableModel>
 
     public int ReservationCount(TimetableModel model)
     {
-        string sql = $"SELECT COALESCE(sum(People), 0) as val FROM Reservation where movieShowingId = @Id";
-        return _connection.QueryFirstOrDefault<int>(sql, model);
+        string sql = $"SELECT sum(People) as val FROM Reservation where movieShowingId = @Id";
+        return _connection.ExecuteScalar<int>(sql, model);
     }
 
     public void Update(TimetableModel timetable)
