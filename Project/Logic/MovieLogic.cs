@@ -8,7 +8,7 @@ public class MovieLogic
 
     public bool AddMovie(UserModel? user, string title, string genre, string director, string description, long ageLimit, string duration)
     {
-        if (user == null || user.Role != "admin")
+        if (user == null || user.Role != "Admin")
         {
             return false;
         }
@@ -93,4 +93,15 @@ public class MovieLogic
         return _movieAccess.SelectNextTwoWeeks();
     }
 
+
+    public static string AgeToCategory(long age)
+    {
+        if (age < 13) return "PG";
+        if (age >= 13  && age < 16)
+        {
+            return "PG-13";
+        } else {
+            return "R";
+        }
+    }
 }
