@@ -87,4 +87,9 @@ public class ConsumablesLogic
 
         return false;
     }
+
+    public ConsumableModel GetItemByOrder(ConsumableOrderModel order)
+    {
+        return _access.Select((int) order.ConsumableId);
+    }
 }
