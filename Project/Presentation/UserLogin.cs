@@ -70,7 +70,7 @@ static class UserLogin
                 return "0";
             }
 
-            if (string.IsNullOrEmpty(email) || !accountsLogic.IsValidEmail(email))
+            if (string.IsNullOrEmpty(email) || !_userLogic.IsValidEmail(email))
             {
                 Console.WriteLine("Please enter a valid email address (e.g. name@example.com).");
                 continue;
