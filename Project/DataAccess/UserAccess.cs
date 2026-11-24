@@ -49,7 +49,7 @@ public List<UserModel> SelectAll()
                         WHERE Id = @Id";
         _connection.Execute(sql, model);
     }
-
+    
     public void Delete(UserModel model)
     {
         string sql = $"DELETE FROM {Table} WHERE Id = @Id";

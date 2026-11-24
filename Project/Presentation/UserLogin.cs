@@ -4,12 +4,10 @@ using System.Text;
 
 static class UserLogin
 {
-    private static AccountsLogic accountsLogic = new AccountsLogic();
+    private static UserLogic _userLogic = new();
 
     public static void Start()
     {
-        Console.CursorVisible = true;
-        Console.WriteLine("Welcome to the login page");
 
         string email = AskForEmail();
 
@@ -31,11 +29,11 @@ static class UserLogin
                 return;
             }
 
-            UserModel? acc = accountsLogic.CheckLogin(email, password);
+            UserModel? acc = _userLogic.CheckLogin(email, password);
 
             if (acc != null)
             {
-                AccountsLogic.ChangeAccount(acc);
+                UserLogic.ChangeAccount(acc);
 
                 Console.WriteLine("Welcome back " + acc.FirstName + " " + acc.LastName);
                 Console.WriteLine("Login successful!");
@@ -104,6 +102,7 @@ static class UserLogin
 
                 if (string.IsNullOrEmpty(password))
                 {
+                    Console.Clear();
                     Console.WriteLine("Password cannot be empty. Please try again:");
                 }
                 else
@@ -118,6 +117,10 @@ static class UserLogin
                     password = password.Substring(0, password.Length - 1);
                     Console.Write("\b \b");
                 }
+            }            
+            else if (key.Key == ConsoleKey.Escape)
+            {
+                return null;
             }
             else if (!char.IsControl(key.KeyChar))
             {

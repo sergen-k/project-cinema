@@ -1,11 +1,16 @@
 public static class BrowseMovies
 {
+
+    public static readonly MovieLogic _movieLogic = new();
+
     private static List<MovieModel> Movies;
 
     public static void Start()
     {
         MovieModel answer;
-        Movies = BrowseMovieLogic.SelectAll();
+        // Movies = _movieLogic.SelectAll();
+        Movies = _movieLogic.SelectNextTwoWeeks();
+
         while(true)
         {
             Console.Clear();
@@ -27,7 +32,7 @@ public static class BrowseMovies
 
     private static string MovieInfoLine(MovieModel movie)
     { 
-        return $"{movie.Title}; {movie.Genre}; {movie.AgeLimit}+";
+        return $"{movie.Title}; {movie.Genre}; {MovieLogic.AgeToCategory(movie.AgeLimit)}";
     }
 
     private static MovieModel? ChooseMovie()
@@ -37,7 +42,6 @@ public static class BrowseMovies
         {
             menu.AddScrollOption(new SelectOption<MovieModel>(MovieInfoLine(movie), movie));
         }
-        menu.AddOption(new SelectOption<MovieModel>("Return", null));
         
         return menu.SelectOption();
     }
