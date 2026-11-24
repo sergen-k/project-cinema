@@ -181,7 +181,7 @@ private static void SelectMovie(EventModel selectedEvent)
     ConsoleMenu<string> timetableMenu = new();
 
     timetableMenu.AddOption(
-    new InfoOption("===== SELECT A TIMETABLE =====")
+    new InfoOption("= SELECT A TIMETABLE =")
 );
    foreach (TimetableModel timetable in movieTimetables)
 {
