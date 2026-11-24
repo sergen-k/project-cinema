@@ -68,3 +68,5 @@ public class TimetableLogic
         return _timeTableAccess.SelectAll();
     }
 }
+
+ 
