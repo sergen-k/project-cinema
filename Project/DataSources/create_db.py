@@ -39,6 +39,38 @@ CREATE TABLE IF NOT EXISTS "Timetable" (
   FOREIGN KEY (`movieId`)
       REFERENCES `Movie`(`id`)
 );"""
+insert_timetable = """
+INSERT INTO Timetable VALUES(1,strftime('%s','now','+7 days','+0 hours'),strftime('%s','now','+7 days','+3 hours'),0,1);
+INSERT INTO Timetable VALUES(2,strftime('%s','now','+7 days','+4 hours'),strftime('%s','now','+7 days','+7 hours'),1,1);
+INSERT INTO Timetable VALUES(3,strftime('%s','now','+7 days','+8 hours'),strftime('%s','now','+7 days','+11 hours'),2,1);
+INSERT INTO Timetable VALUES(4,strftime('%s','now','+7 days','+12 hours'),strftime('%s','now','+7 days','+15 hours'),3,1);
+INSERT INTO Timetable VALUES(5,strftime('%s','now','+8 days','+0 hours'),strftime('%s','now','+8 days','+3 hours'),4,1);
+INSERT INTO Timetable VALUES(6,strftime('%s','now','+8 days','+4 hours'),strftime('%s','now','+8 days','+7 hours'),5,1);
+INSERT INTO Timetable VALUES(7,strftime('%s','now','+8 days','+8 hours'),strftime('%s','now','+8 days','+11 hours'),6,1);
+INSERT INTO Timetable VALUES(8,strftime('%s','now','+8 days','+12 hours'),strftime('%s','now','+8 days','+15 hours'),7,1);
+INSERT INTO Timetable VALUES(9,strftime('%s','now','+9 days','+0 hours'),strftime('%s','now','+9 days','+3 hours'),8,1);
+INSERT INTO Timetable VALUES(10,strftime('%s','now','+9 days','+4 hours'),strftime('%s','now','+9 days','+7 hours'),9,1);
+INSERT INTO Timetable VALUES(11,strftime('%s','now','+9 days','+8 hours'),strftime('%s','now','+9 days','+11 hours'),10,1);
+INSERT INTO Timetable VALUES(12,strftime('%s','now','+9 days','+12 hours'),strftime('%s','now','+9 days','+15 hours'),11,1);
+INSERT INTO Timetable VALUES(13,strftime('%s','now','+10 days','+0 hours'),strftime('%s','now','+10 days','+3 hours'),12,1);
+INSERT INTO Timetable VALUES(14,strftime('%s','now','+10 days','+4 hours'),strftime('%s','now','+10 days','+7 hours'),13,1);
+INSERT INTO Timetable VALUES(15,strftime('%s','now','+10 days','+8 hours'),strftime('%s','now','+10 days','+11 hours'),14,1);
+INSERT INTO Timetable VALUES(16,strftime('%s','now','+10 days','+12 hours'),strftime('%s','now','+10 days','+15 hours'),0,1);
+INSERT INTO Timetable VALUES(17,strftime('%s','now','+11 days','+0 hours'),strftime('%s','now','+11 days','+3 hours'),1,1);
+INSERT INTO Timetable VALUES(18,strftime('%s','now','+11 days','+4 hours'),strftime('%s','now','+11 days','+7 hours'),2,1);
+INSERT INTO Timetable VALUES(19,strftime('%s','now','+11 days','+8 hours'),strftime('%s','now','+11 days','+11 hours'),3,1);
+INSERT INTO Timetable VALUES(20,strftime('%s','now','+11 days','+12 hours'),strftime('%s','now','+11 days','+15 hours'),4,1);
+INSERT INTO Timetable VALUES(21,strftime('%s','now','+12 days','+0 hours'),strftime('%s','now','+12 days','+3 hours'),5,1);
+INSERT INTO Timetable VALUES(22,strftime('%s','now','+12 days','+4 hours'),strftime('%s','now','+12 days','+7 hours'),6,1);
+INSERT INTO Timetable VALUES(23,strftime('%s','now','+12 days','+8 hours'),strftime('%s','now','+12 days','+11 hours'),7,1);
+INSERT INTO Timetable VALUES(24,strftime('%s','now','+12 days','+12 hours'),strftime('%s','now','+12 days','+15 hours'),8,1);
+INSERT INTO Timetable VALUES(25,strftime('%s','now','+13 days','+0 hours'),strftime('%s','now','+13 days','+3 hours'),9,1);
+INSERT INTO Timetable VALUES(26,strftime('%s','now','+13 days','+4 hours'),strftime('%s','now','+13 days','+7 hours'),10,1);
+INSERT INTO Timetable VALUES(27,strftime('%s','now','+13 days','+8 hours'),strftime('%s','now','+13 days','+11 hours'),11,1);
+INSERT INTO Timetable VALUES(28,strftime('%s','now','+13 days','+12 hours'),strftime('%s','now','+13 days','+15 hours'),12,1);
+INSERT INTO Timetable VALUES(29,strftime('%s','now','+14 days','+0 hours'),strftime('%s','now','+14 days','+3 hours'),13,1);
+INSERT INTO Timetable VALUES(30,strftime('%s','now','+14 days','+4 hours'),strftime('%s','now','+14 days','+7 hours'),14,1);
+"""
 
 create_seats_table = """
 CREATE TABLE IF NOT EXISTS "Seat" (
@@ -272,19 +304,20 @@ CREATE TABLE ConsumableOrder (
 create_event_table = """
 CREATE TABLE Event (
     id INTEGER PRIMARY KEY,
-    Name TEXT,
-    Description TEXT,
-    cost REAL
-); """
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    cost REAL NOT NULL
+);
+"""
 
-
-create_event_timetable = """  
+create_event_timetable_table = """
 CREATE TABLE EventTimetable (
     id INTEGER PRIMARY KEY,
-    EventId INT,
-    TimetableId TEXT,
+    eventId INTEGER NOT NULL,
+    timetableId INTEGER NOT NULL,
 
-    FOREIGN KEY (EventId) REFERENCES Event(id)
+    FOREIGN KEY (eventId) REFERENCES Event(id),
+    FOREIGN KEY (timetableId) REFERENCES Timetable(id)
 );
 """
 
@@ -293,18 +326,27 @@ INSERT INTO Timetable (startTime, endTime, movieId, roomNumber) VALUES (strftime
 """
 
 
+insert_default_events = """
+INSERT INTO Event VALUES(1, 'The Fellowship: Live Orchestra', 'A small live orchestra performs an original fantasy score during the film, bringing the journey through Middle-earth to life from the cinema stage.', 12.0);
+INSERT INTO Event VALUES(2, 'Director''s Midpoint Q&A', 'During a planned intermission, director Peter Jackson joins a live conversation about bringing the story to the screen. Audience questions are welcome.', 8.0);
+"""
 
-
-
-
-
-
+insert_default_event_timetables = """
+INSERT INTO EventTimetable VALUES(1, 1, 1);
+INSERT INTO EventTimetable VALUES(2, 2, 2);
+"""
 
 import sqlite3
-con = sqlite3.connect("./project.db")
+import os
+
+if os.path.exists("DataSources/project.db"):
+    os.remove("DataSources/project.db")
+
+con = sqlite3.connect("DataSources/project.db")
 con.execute(create_movie)
 con.executescript(insert_default_movies)
 con.execute(create_timetable_table)
+con.executescript(insert_timetable)
 con.execute(create_seats_table)
 con.executescript(insert_room_1)
 con.execute(create_reservation_table)
@@ -315,7 +357,9 @@ con.execute(create_consumable_table)
 con.executescript(insert_default_consumable)
 con.execute(create_consumable_order_table)
 con.execute(create_event_table)
-con.execute(create_event_timetable)
-
-
+con.execute(create_event_timetable_table)
 con.executescript(timetable_insert)
+con.executescript(insert_default_events)
+con.executescript(insert_default_event_timetables)
+con.commit()
+con.close()

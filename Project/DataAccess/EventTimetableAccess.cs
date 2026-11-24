@@ -31,6 +31,22 @@ public class EventTimetableAccess : IDataAccess<EventTimetableModel>
         return _connection.Query<EventTimetableModel>(sql, new { TimetableId = timetableId }).ToList();
     }
 
+    public List<EventTimetableModel> SelectAll()
+    {
+        string sql = $"SELECT * FROM {Table}";
+        return _connection.Query<EventTimetableModel>(sql).ToList();
+    }
+
+    public List<EventTimetableModel> SelectAllByMovieId(long movieId)
+    {
+        string sql = $@"SELECT eventTimetable.*
+                        FROM {Table} AS eventTimetable
+                        INNER JOIN Timetable
+                            ON Timetable.id = eventTimetable.TimetableId
+                        WHERE Timetable.movieId = @MovieId";
+        return _connection.Query<EventTimetableModel>(sql, new { MovieId = movieId }).ToList();
+    }
+
     public void Update(EventTimetableModel EventTimetable)
     {
         string sql = $"UPDATE {Table} SET EventId = @EventId, TimetableId = @TimetableId WHERE id = @Id";

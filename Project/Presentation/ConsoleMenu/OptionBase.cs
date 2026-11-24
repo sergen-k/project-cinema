@@ -1,9 +1,9 @@
-public abstract class OptionBase<T>
+public abstract class OptionBase
 {
     public abstract string Label {get; set;}
-    public abstract T ReturnInfo {get; set;}
-    public abstract bool IsSelectable {get;}
-    public abstract bool IsSearchable {get;}
+    public virtual bool IsSelectable => false;
+    public virtual bool IsSearchable => false;
+    public virtual bool IsScrollable => false;
     public virtual void PrintOut(bool isSelected)
     {
         if (isSelected)

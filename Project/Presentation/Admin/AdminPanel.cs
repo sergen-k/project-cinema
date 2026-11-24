@@ -12,33 +12,27 @@ static class AdminPanel
 
         ══════════════════════════════════════════════════════════════════════════════
         """;
-
+    private static List<OptionBase> _options = new();
     public static void Start()
     {
         while (true)
         {
-            ConsoleMenu menu = new();
-            menu.IsMainMenu = true;
-            menu.AddOption(new InfoOption(Banner));
-            menu.PopulateOptions(GetOptions());
 
-            string chosenOption = menu.SelectOption();
+            int chosenOption = Options();
+            if (chosenOption == -1) { break; }
 
             Console.Clear();
-
-            switch (chosenOption)
+            switch (_options[chosenOption].Label)
             {
                 case "Change User Settings":
                     AdminChangeUserSettings.Start();
                     break;
 
-                case "Add Movies":
+                case "Add Movie":
                     AdminAddMovie.Start();
                     break;
                 case "Manage Screenings":
                     AdminManageScreenings.Start();
-                    Console.WriteLine("Press any key to continue...");
-                    Console.ReadKey();
                     break;
 
                 case "Events Panel":
@@ -48,23 +42,18 @@ static class AdminPanel
                 case null:
                     break;
             }
-
-            if (chosenOption == null)
-            {
-                break;
-            }
         }
     }
-
-    private static List<string> GetOptions()
+    private static int Options()
     {
-        List<string> options = [];
-        options.Add("Change User Settings");
-        options.Add("Add Movie");
-        options.Add("Manage Screenings");
-        options.Add("Add Movies");
-        options.Add("Events Panel");
-
-        return options;
+        ConsoleMenu menu = new();
+        _options.Clear();
+        _options.Add(new InfoOption(Banner));
+        _options.Add(new SelectOption("Change User Settings"));
+        _options.Add(new SelectOption("Add Movie"));
+        _options.Add(new SelectOption("Manage Screenings"));
+        _options.Add(new SelectOption("Events Panel"));
+        menu.SetOptions(_options);
+        return menu.SelectOption();
     }
 }

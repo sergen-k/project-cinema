@@ -7,7 +7,7 @@ public class EventTimetableModel
         TimetableId = timetableId;
     }
 
-    public Int64 Id { get; set; }
-    public Int64 EventId { get; set; }
+    public long Id { get; set; }
+    public long EventId { get; set; }
     public long TimetableId { get; set; }
 }

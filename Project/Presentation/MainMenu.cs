@@ -20,23 +20,18 @@ static class MainMenu
         ══════════════════════════════════════════════════════════════════════════════
         
         """;
+
+    private static List<OptionBase> _options = new();
+
     public static void Start()
     {
         while (true)
         {
-            ConsoleMenu menu = new();
-            menu.IsMainMenu = true;
-            menu.AddOption(new InfoOption(Banner));
-            menu.PopulateOptions(GetOptions());
-
-            string chosenOption = menu.SelectOption();
-
             Console.Clear();
-            switch (chosenOption)
+            int chosenOption = Options();
+            if (chosenOption == -1) {break;}
+            switch (_options[chosenOption].Label)
             {
-                case "About Us":
-                    break;
-
                 case "Browse Movies":
                     BrowseMovies.Start();
                     break;
@@ -91,35 +86,40 @@ static class MainMenu
         }
     }
 
-    private static List<string> GetOptions()
+    private static int Options()
     {
-        List<string> options = [];
+
+        ConsoleMenu menu = new();
+        _options.Clear();
+        menu.IsMainMenu = true;
+        _options.Add(new InfoOption(Banner));
 
         if (UserLogic.CurrentAccount?.Role == "Admin")
         {
-            options.Add("░▒▓ ADMIN PANEL ▓▒░");
+            _options.Add(new SelectOption("░▒▓ ADMIN PANEL ▓▒░"));
         }
 
-        options.Add("Browse Movies");
+        _options.Add(new SelectOption("Browse Movies"));
         if (UserLogic.CurrentAccount == null)
         {
-            options.Add("Log In");
-            options.Add("Register");
+            _options.Add(new SelectOption("Log In"));
+            _options.Add(new SelectOption("Register"));
         }
         else
         {
-            options.Add("Log Out");
-            options.Add("View Reservations");
-            options.Add("Edit Profile");
+            _options.Add(new SelectOption("Log Out"));
+            _options.Add(new SelectOption("View Reservations"));
+            _options.Add(new SelectOption("Edit Profile"));
         }
 
-        options.Add("About Us");
+        _options.Add(new SelectOption("About Us"));
 
         if (!UserLogic.IsLoggedIn())
         {
-            options.Add("Auto Log (Temporary)");
+            _options.Add(new SelectOption("Auto Log (Temporary)"));
         }
 
-        return options;
+        menu.SetOptions(_options);
+        return menu.SelectOption();
     }
 }

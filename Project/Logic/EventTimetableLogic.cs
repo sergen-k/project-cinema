@@ -32,4 +32,14 @@ public  class EventTimetableLogic
     {
         _eventTimetableAccess.Delete(model);
     }
+
+    public List<EventTimetableModel> SelectAll()
+    {
+        return _eventTimetableAccess.SelectAll();
+    }
+
+    public List<EventTimetableModel> SelectAllByMovieId(long movieId)
+    {
+        return _eventTimetableAccess.SelectAllByMovieId(movieId);
+    }
 }

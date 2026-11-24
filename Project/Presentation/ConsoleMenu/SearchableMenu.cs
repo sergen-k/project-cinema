@@ -1,30 +1,31 @@
-public class SearchableMenu<T> : ScrollableMenu<T>
+public class SearchableMenu : ScrollableMenu
 {
     protected override int _amountOfPages {get => (int)Math.Ceiling((double)_queriedList.Count/MaxItemsPerPage);}
     protected override int _scrollableOptionsOnScreen {get => _amountOfPages == _currentPage ? _queriedList.Count - (_amountOfPages-1)*10 : 10;}
 
-    protected SearchOption<T> _searchOption = new();
-    protected List<OptionBase<T>> _queriedList = new();
+    protected SearchOption _searchOption = new();
+    protected List<OptionBase> _queriedList = new();
 
     protected override void QueryList()
     {
+        _scrollOptions = _options.OfType<ScrollOption>().ToList();
+
         _queriedList.Clear();
         string query = _searchOption.Query;
-        foreach(var scrollOption in _scrollOptions)
+
+        foreach (var option in _scrollOptions)
         {
-            if (scrollOption.Label.ToLower().Contains(query.ToLower()))
-            {
-                _queriedList.Add(scrollOption);
-            }
+            if (option.Label.Contains(query, StringComparison.OrdinalIgnoreCase))
+                _queriedList.Add(option);
         }
-        _currentPage = _queriedList.Count == 0 ? 0 : 1;
-        
+
+        _currentPage = 1;
+
         FillOptionsList();
-        _selectedIndex = _displayOptions.FindIndex(o => o is SearchOption<T>);
-        if (_selectedIndex < 0) _selectedIndex = 1;
+        _selectedIndex = _displayedOptions.IndexOf(_searchOption);
     }
 
-    public override T SelectOption()
+    public override int SelectOption()
     {
         QueryList();
         return base.SelectOption();
@@ -32,35 +33,38 @@ public class SearchableMenu<T> : ScrollableMenu<T>
 
     protected override void FillOptionsList()
     {
-        _displayOptions.Clear();
-        _displayOptions.Add(new InfoOption<T>($"Page ({_currentPage}/{_amountOfPages})"));
-
+        _displayedOptions.Clear();
+        _displayedOptions.Add(new InfoOption($"Page ({_currentPage}/{_amountOfPages})"));
+        _scrollOptions = _options.OfType<ScrollOption>().ToList();
         // search field
-        _displayOptions.Add(new InfoOption<T>(""));
-        _displayOptions.Add(_searchOption);
-        _displayOptions.Add(new InfoOption<T>(""));
+        _displayedOptions.Add(new InfoOption(""));
+        _displayedOptions.Add(_searchOption);
+        _displayedOptions.Add(new InfoOption(""));
 
         if (_queriedList.Count == 0) 
-            _displayOptions.Add(new InfoOption<T>("Nothing found!"));
+        {
+            _displayedOptions.Add(new InfoOption("Nothing found!"));
+            _displayedOptions.Add(new InfoOption(""));
+        }
+        
         else
         {
             for (int i = (_currentPage-1)*MaxItemsPerPage; i < (_currentPage-1)*10+_scrollableOptionsOnScreen; i++)
-                _displayOptions.Add(_queriedList[i]);
+                _displayedOptions.Add(_queriedList[i]);
+            _displayedOptions.Add(new InfoOption(""));
             if (_currentPage > 1)
             {
-                _displayOptions.Add(new InfoOption<T>(""));
-                _displayOptions.Add(new SelectOption<T>("↑ Scroll Up ↑", default));
+                _displayedOptions.Add(new SelectOption("↑ Scroll Up ↑"));
+                _displayedOptions.Add(new InfoOption(""));
             }
             if (_currentPage < _amountOfPages)
             {
-                _displayOptions.Add(new InfoOption<T>(""));
-                _displayOptions.Add(new SelectOption<T>("↓ Scroll Down ↓", default));
+                _displayedOptions.Add(new SelectOption("↓ Scroll Down ↓"));
+                _displayedOptions.Add(new InfoOption(""));
             }
         }
-        foreach(var option in _options)
-            _displayOptions.Add(option);
-            
-        _displayOptions.Add(new InfoOption<T>(""));
-        _displayOptions.Add(new SelectOption<T>("Return", default));
+        _displayedOptions.AddRange(_options.Where(o => o is not ScrollOption));   
+        _displayedOptions.Add(new SelectOption("Return"));
+        Console.WriteLine(_displayedOptions.IndexOf(_searchOption));
     }
 }

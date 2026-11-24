@@ -48,6 +48,13 @@ public class TimetableAccess : IDataAccess<TimetableModel>
         return _connection.ExecuteScalar<int>(sql, model);
     }
 
+    public List<TimetableModel> SelectAll()
+    {
+        string sql = $"SELECT * FROM {Table}";
+        return _connection.Query<TimetableModel>(sql).ToList();
+    }
+    
+
     public void Update(TimetableModel timetable)
     {
         string sql = $"UPDATE {Table} SET startTime = @StartTime, endTime = @EndTime, movieId = @MovieId, roomNumber = @RoomNumber WHERE id = @Id";

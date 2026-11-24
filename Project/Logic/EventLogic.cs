@@ -7,16 +7,6 @@ public  class EventLogic
         _eventAccess.Write(model);
     }
 
-    public  List<EventModel> GetAllEvents()
-    {
-        return _eventAccess.SelectAll();
-    }
-
-    public  EventModel GetEventById(int id)
-    {
-        return _eventAccess.SelectAllById(id);
-    }
-
     public  void UpdateEvent(EventModel model)
     {
         _eventAccess.Update(model);
@@ -25,5 +15,29 @@ public  class EventLogic
     public  void DeleteEvent(EventModel model)
     {
         _eventAccess.Delete(model);
+    }
+
+    public List<EventModel> SelectAll()
+    {
+        return _eventAccess.SelectAll();
+    }
+    public EventModel? SelectAllById(long id)
+    {
+        return _eventAccess.SelectAllById((int)id);
+    }
+
+    public EventModel? MovieHasEvent(MovieModel movie, List<EventTimetableModel> eventTimetables, List<TimetableModel> timetables)
+    {
+        EventTimetableModel? eventTimetable = eventTimetables
+        .FirstOrDefault(e => timetables.First(t => t.Id == e.TimetableId).MovieId == movie.Id);
+
+        if (eventTimetable != null)
+        {
+            return SelectAllById(eventTimetable.EventId);
+        }
+        else
+        {
+            return null;
+        }
     }
 }

@@ -1,48 +1,70 @@
 public static class BrowseMovies
 {
 
-    public static readonly MovieLogic _movieLogic = new();
+    private static readonly MovieLogic _movieLogic = new();
+    private static readonly TimetableLogic _timetableLogic = new();
+    private static readonly EventTimetableLogic _eventTimetableLogic = new();
+    private static readonly EventLogic _eventLogic = new();
 
-    private static List<MovieModel> Movies;
+    private static List<MovieModel> _movies;
+    private static List<EventTimetableModel> _eventTimetables;
+    private static List<TimetableModel> _timetables;
+    private static List<OptionBase> _options = new();
 
     public static void Start()
     {
-        MovieModel answer;
-        // Movies = _movieLogic.SelectAll();
-        Movies = _movieLogic.SelectNextTwoWeeks();
+        int answer;
+        //_movies = _movieLogic.SelectNextTwoWeeks();
+        _movies = _movieLogic.SelectAll();
+        _eventTimetables = _eventTimetableLogic.SelectAll();
+        _timetables = _timetableLogic.SelectAll();
+
 
         while(true)
         {
             Console.Clear();
-            answer = ChooseMovie();
-            if (answer == null)
-                break;
-            else if (answer.AgeLimit >= 18)
+            answer = Options();
+            if (answer == -1)
             {
-                Console.CursorVisible = true;
-                Console.Clear();
-                Console.WriteLine("This move is 18+");
-                Console.WriteLine("Are you sure you want to continue? (Y/N)");
-                Console.CursorVisible = false;
-                if (Console.ReadKey().Key != ConsoleKey.Y) {Start();}
+                return;
             }
-            InspectMovie.Start(answer);
+            else
+            {
+                MovieModel selectedMovie = _movies[answer];
+                if (selectedMovie.AgeLimit >= 18)
+                {
+                    Console.CursorVisible = true;
+                    Console.Clear();
+                    Console.WriteLine("This move is 18+");
+                    Console.WriteLine("Are you sure you want to continue? (Y/N)");
+                    Console.CursorVisible = false;
+                    if (Console.ReadKey().Key != ConsoleKey.Y) {continue;}
+                }
+
+                InspectMovie.Start(selectedMovie, _eventLogic.MovieHasEvent(selectedMovie, _eventTimetables, _timetables));
+            }
         }
     }
 
     private static string MovieInfoLine(MovieModel movie)
-    { 
-        return $"{movie.Title}; {movie.Genre}; {MovieLogic.AgeToCategory(movie.AgeLimit)}";
+    {
+        EventModel? eventModel = _eventLogic.MovieHasEvent(movie, _eventTimetables, _timetables);
+        string movieString = $"[{(eventModel != null ? "X" : " ")}] {movie.Title}; {movie.Genre}; {MovieLogic.AgeToCategory(movie.AgeLimit)}";
+        if (eventModel != null)
+            movieString += $"\n   - {eventModel.Name} (Event)";
+
+        return movieString;
     }
 
-    private static MovieModel? ChooseMovie()
+    private static int Options()
     {
-        SearchableMenu<MovieModel> menu = new();
-        foreach (var movie in Movies)
+        SearchableMenu menu = new();
+        _options.Clear();
+        foreach (var movie in _movies)
         {
-            menu.AddScrollOption(new SelectOption<MovieModel>(MovieInfoLine(movie), movie));
+            _options.Add(new ScrollOption(MovieInfoLine(movie)));
         }
-        
+        menu.SetOptions(_options);
         return menu.SelectOption();
     }
 }

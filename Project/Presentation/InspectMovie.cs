@@ -2,34 +2,24 @@ using System.Text;
 
 public static class InspectMovie
 {
-    public static void Start(MovieModel movie)
+    private static EventTimetableLogic _eventTimetableLogic = new();
+    private static List<OptionBase> _options = new();
+    public static void Start(MovieModel movie, EventModel? eventModel)
     {
-        ConsoleMenu menu = new();
-        menu.AddOption(new InfoOption(MovieInfo(movie)));
-        List<string> options = [];
-
-        if (MovieLogic.IsOfAge(movie))
-        {
-            options.Add("Reserve");
-        }
-
-        menu.PopulateOptions(options);
 
         while (true)
         {
-            string option = menu.SelectOption();
-            if (option == "Reserve")
-            {
-                MakeReservation.Start(movie);
-            }
+            int option = Options(movie, eventModel);
+            if (option == -1)
+                break;
             else
             {
-                break;
+                MakeReservation.Start(movie, _eventTimetableLogic.SelectAllByMovieId(movie.Id));
             }
         }
     }
 
-    private static string MovieInfo(MovieModel movie)
+    private static string MovieInfo(MovieModel movie, EventModel? eventModel)
     {
         StringBuilder movieInfo = new();
 
@@ -40,6 +30,17 @@ public static class InspectMovie
         movieInfo.AppendLine($"Duration: {movie.Duration} minutes");
         movieInfo.AppendLine();
         movieInfo.AppendLine(movie.Description);
+
+        if (eventModel != null)
+        {
+            movieInfo.AppendLine();
+            movieInfo.AppendLine("There is a special event upcoming in this movie's screenings!");
+            movieInfo.AppendLine(eventModel.Name);
+            movieInfo.AppendLine($"- {eventModel.Description}");
+            movieInfo.AppendLine();
+        }
+
+
         if (!UserLogic.IsLoggedIn())
         {
             movieInfo.AppendLine();
@@ -50,6 +51,22 @@ public static class InspectMovie
             movieInfo.AppendLine();
             movieInfo.AppendLine($"To reserve you need to be at least {movie.AgeLimit}!");
         }
+
         return movieInfo.ToString();
+    }
+
+    private static int Options(MovieModel movie, EventModel? eventModel)
+    {
+        _options.Clear();
+        ConsoleMenu menu = new();
+        
+        _options.Add(new InfoOption(MovieInfo(movie, eventModel)));
+
+        if (MovieLogic.IsOfAge(movie))
+        {
+            _options.Add(new SelectOption("Reserve"));
+        }
+        menu.SetOptions(_options);
+        return menu.SelectOption();
     }
 }
