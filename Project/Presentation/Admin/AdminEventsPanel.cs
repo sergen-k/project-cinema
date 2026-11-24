@@ -135,7 +135,7 @@ private static void SelectMovie(EventModel selectedEvent)
     TimetableLogic timetableLogic = new();
 
     List<TimetableModel> timetables =
-        timetableLogic.SelectAllTimeTables();
+        timetableLogic.SelectAll();
 
     if (timetables.Count == 0)
     {

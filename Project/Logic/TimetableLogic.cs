@@ -67,10 +67,6 @@ public class TimetableLogic
     {
         return _timeTableAccess.SelectAll();
     }
-
-
-    public List<TimetableModel> SelectAllTimeTables()
-    {
-        return _timeTableAccess.SelectAllTimeTables();
-    }
 }
+
+ 

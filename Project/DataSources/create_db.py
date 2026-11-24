@@ -269,6 +269,25 @@ CREATE TABLE ConsumableOrder (
 );
 """
 
+create_event_table = """
+CREATE TABLE Event (
+    id INTEGER PRIMARY KEY,
+    Name TEXT,
+    Description TEXT,
+    cost REAL
+); """
+
+
+create_event_timetable = """  
+CREATE TABLE EventTimetable (
+    id INTEGER PRIMARY KEY,
+    EventId INT,
+    TimetableId TEXT,
+
+    FOREIGN KEY (EventId) REFERENCES Event(id)
+);
+"""
+
 timetable_insert = """
 INSERT INTO Timetable (startTime, endTime, movieId, roomNumber) VALUES (strftime('%s' , 'now', '+14 days'), strftime('%s' , 'now', '+14 days', '+2 hours'), 1, 1)
 """
@@ -295,6 +314,8 @@ con.execute(insert_admin)
 con.execute(create_consumable_table)
 con.executescript(insert_default_consumable)
 con.execute(create_consumable_order_table)
+con.execute(create_event_table)
+con.execute(create_event_timetable)
 
 
 con.executescript(timetable_insert)
