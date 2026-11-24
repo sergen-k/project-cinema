@@ -25,8 +25,10 @@ static class MainMenu
 
     public static void Start()
     {
+        
         while (true)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.Clear();
             int chosenOption = Options();
             if (chosenOption == -1) {break;}
@@ -67,7 +69,7 @@ static class MainMenu
                     AdminAddMovie.Start();
                     break;
 
-                case "░▒▓ ADMIN PANEL ▓▒░":
+                case ">>> ENTER ADMIN PANEL <<<":
                     AdminPanel.Start();
                     break;
 
@@ -96,7 +98,7 @@ static class MainMenu
 
         if (UserLogic.CurrentAccount?.Role == "Admin")
         {
-            _options.Add(new SelectOption("░▒▓ ADMIN PANEL ▓▒░"));
+            _options.Add(new SelectOption(">>> ENTER ADMIN PANEL <<<"));
         }
 
         _options.Add(new SelectOption("Browse Movies"));

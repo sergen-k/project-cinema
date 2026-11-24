@@ -38,13 +38,13 @@ public class InspectReservation
                 switch (item.SeatType)
                 {
                     case 1:
-                        seatInfo += $"normal seat: row {row} seat {col}, price {item.SeatCost} \n";
+                        seatInfo += $"Normal Seat: Row {row} Seat {col}, Price {item.SeatCost:F2} \n";
                         break;
                     case 2:
-                        seatInfo += $"premium seat: row {row} seat {col}, price {item.SeatCost}\n";
+                        seatInfo += $"Premium Seat: Row {row} Seat {col}, Price {item.SeatCost:F2}\n";
                         break;
                     case 3:
-                        seatInfo += $"deluxe seat: row {row} seat {col}, price {item.SeatCost}\n";
+                        seatInfo += $"Deluxe Seat: Row {row} Seat {col}, Price {item.SeatCost:F2}\n";
                         break;
                 }
 
@@ -57,7 +57,7 @@ public class InspectReservation
         List<string> foods = [];
         List<string> drinks = [];
 
-        Func<long, string, double, string> infoLine = (x, y, z) => $" {x} * {y}, price: {z}";
+        Func<long, string, double, string> infoLine = (x, y, z) => $" {x} x {y}, Price: {z}";
 
         foreach (var item in consumableModels)
         {
@@ -89,12 +89,9 @@ public class InspectReservation
             }
         }
 
-        System.Console.WriteLine($"Total price: {totalCost}");
+        System.Console.WriteLine($"Total Price: {totalCost:F2}");
 
         Console.ReadKey();
-
-
-
         // Console.WriteLine($"Food and Drink items: {selectedItems.Count}");
     }
 

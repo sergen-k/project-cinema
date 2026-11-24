@@ -37,16 +37,29 @@ public static class AdminAddMovie
 
     private static string AskGenre()
     {
-        ConsoleMenu menu = new();
-        menu.PopulateOptions(["Fantasy", "Comedy", "Drama", "Action", "Horror", "Sci-Fi"]);
+        string[] genres = ["Fantasy", "Comedy", "Drama", "Action", "Horror", "Sci-Fi"];
 
-        string option = menu.SelectOption();
-        if (option == "")
+        List<OptionBase> options = new();
+        options.Add(new InfoOption("===== SELECT A GENRE ====="));
+        foreach (string genre in genres)
         {
-            option = "-";
+            options.Add(new SelectOption(genre));
         }
-    
-        return option;
+
+        ConsoleMenu menu = new();
+        menu.SetOptions(options);
+
+        int chosen = menu.SelectOption();
+        Console.Clear();
+
+        // -1 = escape / return, same as the old empty-string fallback
+        if (chosen == -1)
+        {
+            return "-";
+        }
+
+        // index 0 is the InfoOption header, so genres are shifted by 1
+        return genres[chosen - 1];
     }
 
     private static string AskForInput(string message)

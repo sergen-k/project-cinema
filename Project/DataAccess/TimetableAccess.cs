@@ -36,11 +36,6 @@ public class TimetableAccess : IDataAccess<TimetableModel>
         string sql = $"SELECT * FROM {Table} WHERE roomNumber = @RoomNumber";
         return _connection.Query<TimetableModel>(sql, new { RoomNumber = roomNumber }).ToList();
     }
-    public List<TimetableModel> SelectAll()
-    {
-        string sql = $"SELECT * FROM {Table}";
-        return _connection.Query<TimetableModel>(sql).ToList();
-    }
 
     public int ReservationCount(TimetableModel model)
     {

@@ -8,29 +8,31 @@ public class ViewReservation
 
     private List<(ReservationModel, string, DateTime, double)> _reservations = [];
     private int _pageNumber = 0;
+    private List<OptionBase> _options = new();
 
     public void Start()
     {
-        
         FetchData(UserLogic.CurrentAccount);
-        ScrollableMenu<ReservationModel> menu = new();
-        foreach (var item in _reservations) 
+        ScrollableMenu menu = new();
+        _options.Clear();
+        foreach (var item in _reservations)
         {
             (ReservationModel model, string title, DateTime time, double price) = item;
-            string infoline = $"{model.Id}, {title}, {time}, {price}";
-            menu.AddScrollOption(new SelectOption<ReservationModel>(infoline, model));
+            string infoline = $"{title}, {time}, {price}";
+            _options.Add(new ScrollOption(infoline));
         }
-
-        ReservationModel selectedReservation = menu.SelectOption();
+        menu.SetOptions(_options);
+        int option = menu.SelectOption();
+        if (option == -1) { return; }
+        ReservationModel selectedReservation = _reservations[option].Item1;
         System.Console.WriteLine(selectedReservation);
         if (selectedReservation is null) return;
         else
         {
             InspectReservation inspectReservation = new();
             inspectReservation.Start(selectedReservation);
-        }
-        
 
+        }
     }
 
     public void FetchData(UserModel user)

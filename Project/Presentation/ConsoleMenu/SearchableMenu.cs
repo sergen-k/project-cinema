@@ -1,6 +1,6 @@
 public class SearchableMenu : ScrollableMenu
 {
-    protected override int _amountOfPages {get => (int)Math.Ceiling((double)_queriedList.Count/MaxItemsPerPage);}
+    protected override int _amountOfPages { get => Math.Max(1, (int)Math.Ceiling((double)_queriedList.Count / MaxItemsPerPage)); }
     protected override int _scrollableOptionsOnScreen {get => _amountOfPages == _currentPage ? _queriedList.Count - (_amountOfPages-1)*10 : 10;}
 
     protected SearchOption _searchOption = new();

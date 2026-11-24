@@ -2,30 +2,28 @@ public static class AdminManageScreenings
 {
     private static TimetableLogic timetableLogic = new TimetableLogic();
     private static MovieLogic movieLogic = new MovieLogic();
+    private static List<OptionBase> _options = new();
 
     public static void Start()
     {
         while (true)
         {
             ConsoleMenu menu = new();
-            List<string> options = new()
-            {
-                "Schedule a new screening",
-                "Edit an existing screening",
-                "Cancel a screening"
-            };
-            menu.PopulateOptions(options);
+            _options.Clear();
+            _options.Add(new SelectOption("Schedule a new screening"));
+            _options.Add(new SelectOption("Edit an existing screening"));
+            _options.Add(new SelectOption("Cancel a screening"));
+            menu.SetOptions(_options);
+            int chosenOption = menu.SelectOption();
 
-            string? chosenOption = menu.SelectOption();
-
-            if (chosenOption == null)
+            if (chosenOption == -1)
             {
                 return;
             }
 
             Console.Clear();
 
-            switch (chosenOption)
+            switch (_options[chosenOption].Label)
             {
                 case "Schedule a new screening":
                     ScheduleScreening();
@@ -37,8 +35,6 @@ public static class AdminManageScreenings
                     CancelScreening();
                     break;
             }
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
         }
     }
 
@@ -193,13 +189,16 @@ public static class AdminManageScreenings
     {
         List<TimetableModel> screenings = timetableLogic.SelectAll();
 
-        SearchableMenu<TimetableModel> menu = new();
+        SearchableMenu menu = new();
+        _options.Clear();
         foreach (var screening in screenings)
         {
-            menu.AddScrollOption(new SelectOption<TimetableModel>(ScreeningInfoLine(screening), screening));
+            _options.Add(new ScrollOption(ScreeningInfoLine(screening)));
         }
-
-        return menu.SelectOption();
+        menu.SetOptions(_options);
+        int option = menu.SelectOption();
+        if (option == -1) {return null;}
+        else {return screenings[option];}
     }
 
     private static string ScreeningInfoLine(TimetableModel screening)
@@ -212,13 +211,16 @@ public static class AdminManageScreenings
     {
         List<MovieModel> movies = movieLogic.SelectAll();
 
-        SearchableMenu<MovieModel> menu = new();
+        SearchableMenu menu = new();
+        _options.Clear();
         foreach (var movie in movies)
         {
-            menu.AddScrollOption(new SelectOption<MovieModel>(MovieInfoLine(movie), movie));
+            _options.Add(new ScrollOption(MovieInfoLine(movie)));
         }
-
-        return menu.SelectOption();
+        menu.SetOptions(_options);
+        int option = menu.SelectOption();
+        if (option == -1) {return null;}
+        else {return movies[option];}
     }
 
     private static string MovieInfoLine(MovieModel movie)
