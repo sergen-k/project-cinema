@@ -96,6 +96,7 @@ public class MovieLogic
 
     public static string AgeToCategory(long age)
     {
+        if (age < 0) return "Invalid age";
         if (age < 13) return "PG";
         if (age >= 13  && age < 16)
         {
