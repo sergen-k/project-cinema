@@ -1,25 +1,28 @@
 using System.Security.Authentication.ExtendedProtection;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.Options;
 
 public static class AdminChangeUserSettings
 {
 
   public static List<string> MainUserOptions = ["Change user roles", "Change user info"];
+  private static List<OptionBase> _options = new();
 
   public static void ChangeUserRoles()
   {
-    List<string> userRoleViewingOptions = ["Show all users", "Select user by email"];
+    ConsoleMenu menu = new();
     while (true)
     {
-      ConsoleMenu userRoleOptions = new();
-      userRoleOptions.PopulateOptions(userRoleViewingOptions);
-      string selectedOption = userRoleOptions.SelectOption();
-
-      switch (selectedOption)
+      _options.Clear();
+      _options.Add(new SelectOption("Show All Users"));
+      _options.Add(new SelectOption("Select User by Email"));
+      menu.SetOptions(_options);
+      int option = menu.SelectOption();
+      switch (option)
       {
-        case null:
+        case -1:
           return;
-        case "Show all users":
+        case 0:
           // print out a list with all the users.
           UserAccess userAccess = new();
           List<UserModel> allUsers = userAccess.SelectAll();
@@ -27,35 +30,39 @@ public static class AdminChangeUserSettings
           {
             // converts the user models and the first name and last name and role into a list
 
-            ConsoleMenu<UserModel> allUserOptions = new();
+            ConsoleMenu allUserOptions = new();
+            _options.Clear();
             allUsers.Remove(allUsers.Find(user => user.Id == UserLogic.CurrentAccount.Id));
             foreach (var user in allUsers)
             {
-              allUserOptions.AddOption(new SelectOption<UserModel>($"{user.FirstName} {user.LastName}, {user.Role}", user));
+              _options.Add(new SelectOption($"{user.FirstName} {user.LastName}, {user.Role}"));
             }
-            UserModel selectedUser = allUserOptions.SelectOption();
-
-            if (selectedUser == null)
+            allUserOptions.SetOptions(_options);
+            int selectedOption = allUserOptions.SelectOption();
+            if (selectedOption == -1)
             {
               break;
             }
+            UserModel selectedUser = allUsers[selectedOption];
             // todo put all the roles into a list and from there let them select what role they want the user to be in
             List<Roles> roleList = Enum.GetValues(typeof(Roles))
                         .Cast<Roles>()
                         .ToList();
-            ConsoleMenu<Roles> allRoleOptions = new();
+            ConsoleMenu allRoleOptions = new();
+            _options.Clear();
             foreach (var role in roleList)
             {
-              allRoleOptions.AddOption(new SelectOption<Roles>(role.ToString(), role));
+              _options.Add(new SelectOption(role.ToString()));
             }
-            Roles selectedRole = allRoleOptions.SelectOption();
+            allRoleOptions.SetOptions(_options);
+            int roleOption = allRoleOptions.SelectOption();
+            if (roleOption == -1) { continue; }
+            Roles selectedRole = roleList[roleOption];
             selectedUser.Role = selectedRole.ToString();
             userAccess.Update(selectedUser);
-
-
           }
           break;
-        case "Select user by email":
+        case 1:
           break;
 
       }
@@ -63,29 +70,29 @@ public static class AdminChangeUserSettings
   }
 
 
-
   public static void Start()
   {
     while (true)
     {
-      ConsoleMenu userOptions = new();
-      userOptions.PopulateOptions(MainUserOptions);
-      string selectedOption = userOptions.SelectOption();
+      ConsoleMenu menu = new();
+      _options.Clear();
+      _options.Add(new SelectOption("Change User Roles"));
+      _options.Add(new SelectOption("Change User Info"));
+      menu.SetOptions(_options);
+      int option = menu.SelectOption();
 
-      // pressed escapekey 
-
-      switch (selectedOption)
+      switch (option)
       {
         // pressed escape key
-        case null:
+        case -1:
           return;
 
-        case "Change user roles":
+        case 0:
           // change user roles 
           ChangeUserRoles();
           break;
 
-        case "Change user info":
+        case 1:
           //change user info
           break;
       }

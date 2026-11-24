@@ -1,19 +1,14 @@
-public class ConsoleMenu<T>
+public class ConsoleMenu
 
 {
     protected int _selectedIndex;
-    protected List<OptionBase<T>> _options = new();
-    protected List<OptionBase<T>> _displayOptions = new();
+    protected List<OptionBase> _options = new();
+    protected List<OptionBase> _displayedOptions = new();
     public bool IsMainMenu;
-    public virtual T SelectOption()
+    public virtual int SelectOption()
     {
         FillOptionsList();
-        _selectedIndex = 0;
-        foreach (var option in _displayOptions)
-            if (!option.IsSelectable)
-                _selectedIndex++;
-            else
-                break;
+        _selectedIndex = _displayedOptions.FindIndex(o => o.IsSelectable);
 
         while (true)
         {
@@ -22,13 +17,13 @@ public class ConsoleMenu<T>
             if (InputKey(key))
             {
                 if (CheckOption())
-                    if (key.Key == ConsoleKey.Escape)
+                    if (key.Key == ConsoleKey.Escape || _selectedIndex == _displayedOptions.Count)
                     {
-                        return _displayOptions[^1].ReturnInfo;
+                        return -1;
                     }
-                    else
+                    else if (_displayedOptions[_selectedIndex] is SelectOption selectedOpt)
                     {
-                        return _displayOptions[_selectedIndex].ReturnInfo;
+                        return _options.IndexOf(selectedOpt);
                     }
             }
         }
@@ -41,7 +36,7 @@ public class ConsoleMenu<T>
     protected bool InputKey(ConsoleKeyInfo keyInfo)
     {
 
-        if (_displayOptions[_selectedIndex] is SearchOption<T> searchOption
+        if (_displayedOptions[_selectedIndex] is SearchOption searchOption
             && keyInfo.Key != ConsoleKey.UpArrow
             && keyInfo.Key != ConsoleKey.DownArrow
             && keyInfo.Key != ConsoleKey.Escape)
@@ -58,19 +53,11 @@ public class ConsoleMenu<T>
             switch (keyInfo.Key)
             {
                 case ConsoleKey.UpArrow:
-                    do
-                    {
-                        _selectedIndex = (_selectedIndex - 1 + _displayOptions.Count) % _displayOptions.Count;
-                        if (_displayOptions[_selectedIndex] == null) { _selectedIndex--; }
-                    } while (!_displayOptions[_selectedIndex].IsSelectable);
+                    MoveSelection(-1);
                     return false;
 
                 case ConsoleKey.DownArrow:
-                    do
-                    {
-                        _selectedIndex = (_selectedIndex + 1) % _displayOptions.Count;
-                        if (_displayOptions[_selectedIndex] == null) { _selectedIndex++; }
-                    } while (!_displayOptions[_selectedIndex].IsSelectable);
+                    MoveSelection(+1);
                     return false;
 
                 case ConsoleKey.Enter:
@@ -82,51 +69,43 @@ public class ConsoleMenu<T>
             }
         }
     }
+    private void MoveSelection(int step)
+    {
+        int n = _displayedOptions.Count;
+        for (int i = 0; i < n; i++)
+        {
+            _selectedIndex = (_selectedIndex + step + n) % n;
+            if (_displayedOptions[_selectedIndex] is { IsSelectable: true })
+                return;
+        }
+    }
 
     protected void PrintAll()
     {
         Console.Clear();
-        for (int i = 0; i < _displayOptions.Count; i++)
+        for (int i = 0; i < _displayedOptions.Count; i++)
         {
-            _displayOptions[i].PrintOut(_selectedIndex == i);
+            _displayedOptions[i].PrintOut(_selectedIndex == i);
         }
     }
 
-    public void AddOption(OptionBase<T> option)
-    {
-        _options.Add(option);
-    }
-
-    public void ResetOptions()
+    public void SetOptions(List<OptionBase> options)
     {
         _options.Clear();
+        _options.AddRange(options);
     }
 
     protected virtual void FillOptionsList()
     {
-        _displayOptions.Clear();
-        _displayOptions.AddRange(_options);
+        _displayedOptions.Clear();
+        _displayedOptions.AddRange(_options);
         if (IsMainMenu)
         {
-            _displayOptions.Add(new SelectOption<T>("Exit", default));
+            _displayedOptions.Add(new SelectOption("Exit"));
         }
         else
         {
-            if (typeof(T) == typeof(int))
-                _displayOptions.Add(new SelectOption<T>("Return", (T)(object)-1));
-            else
-                _displayOptions.Add(new SelectOption<T>("Return", default));
-        }
-    }
-}
-
-public class ConsoleMenu : ConsoleMenu<string>
-{
-    public void PopulateOptions(List<string> options)
-    {
-        foreach (var option in options)
-        {
-            _options.Add(new SelectOption(option));
+            _displayedOptions.Add(new SelectOption("Return"));
         }
     }
 }

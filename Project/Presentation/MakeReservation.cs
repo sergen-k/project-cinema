@@ -1,13 +1,17 @@
 
+using System.Globalization;
+
 public static class MakeReservation
 {
 
     public static readonly ReservationLogic reservationLogic = new();
     public static readonly SeatOrderLogic seatOrderLogic = new();
     public static readonly TimetableLogic timetableLogic = new();
+    public static readonly EventLogic eventLogic = new();
     public static readonly ConsumableOrderLogic ConsumableOrderLogic = new();
+    private static List<OptionBase> _options = new();
 
-    public static void Start(MovieModel movie)
+    public static void Start(MovieModel movie, List<EventTimetableModel> eventTimetables)
     {
 
         // tijdelijke suser id en movie id, we gaan er vanuit dat iemand is ingelogd en een movie heeft gekozen
@@ -19,85 +23,78 @@ public static class MakeReservation
             Console.ReadLine();
             return;
         }
-
-        ConsoleMenu<int> menu = new();
-
-        // makes sure there are no duplicates and that it get turned into a list
-        TimetableModel selectedTimetable;
-        string selectedDateString;
-        string selectedTimeString;
-
-        while (true)
+    DatePick:
+        List<OptionBase> options = new();
+        ConsoleMenu menu = new();
+        foreach (var timetable in timetableLogic.TimetableDatesFormatter(timetables, eventTimetables))
         {
-            List<DateTime> dates = timetables
-                .Select(t => t.HumanReadableStartTime.Date)
-                .Distinct()
-                .ToList();
+            options.Add(new SelectOption(timetable));
+        }
+        menu.SetOptions(options);
+        int selectedOption = menu.SelectOption();
+        if (selectedOption == -1) { return; }
+        DateTime selectedDate = timetables.Select(t => t.HumanReadableStartTime.Date).Distinct().ToList()[selectedOption];
 
-            List<string> formatteddates = dates
-            .Select(d => d.ToString("dd/MM/yyyy"))
+        List<TimetableModel> dayTimetables = timetables
+            .Where(t => t.HumanReadableStartTime.Date == selectedDate.Date)
             .ToList();
 
-            // date selection screen
-            menu.ResetOptions();
-            foreach (string formatteddate in formatteddates)
-                menu.AddOption(new SelectOption<int>(formatteddate, formatteddates.IndexOf(formatteddate)));
-            int selectedDateIndex = menu.SelectOption();
-            if (selectedDateIndex == -1) {return;}
-            DateTime selectedDate = dates[selectedDateIndex];
+        // Format start and end times
+        List<EventModel> eventModels = eventLogic.SelectAll();
+        List<string> formattedTimes = dayTimetables
+            .Select(t => $"[{(timetableLogic.TimetableHasEvent(t, eventTimetables, eventModels) == null ? ' ' : 'X')}] - {t.HumanReadableStartTime:HH:mm} - {t.HumanReadableEndtime:HH:mm} ")
+            .ToList();
 
-            // date selection screen
-
-            // Get all timetables for the selected date
-            List<TimetableModel> dayTimetables = timetables
-                .Where(t => t.HumanReadableStartTime.Date == selectedDate.Date)
-                .ToList();
-
-            // Format start and end times
-            List<string> formattedTimes = dayTimetables
-                .Select(t => $"room: {t.RoomNumber}, {t.HumanReadableStartTime:HH:mm} - {t.HumanReadableEndtime:HH:mm} ")
-                .ToList();
-
-            // Timetable selection screen
-
-            menu.ResetOptions();
-            foreach (string formattedTime in formattedTimes)
-                menu.AddOption(new SelectOption<int>(formattedTime, formattedTimes.IndexOf(formattedTime)));
-            int selectedStartTimeIndex = menu.SelectOption();
-            if (selectedStartTimeIndex == -1) {return;}
-
-            // if (selectedStartTimeIndex == -1)
-            // {
-            //     break;
-            // }
-
-            var timeslot = dayTimetables[selectedStartTimeIndex];
-
-            bool hasDuplicate = reservationLogic.checkDuplicateReservation(timeslot, UserLogic.CurrentAccount);
-
-            if (hasDuplicate)
+        // Timetable selection screen
+        options.Clear();
+        for (int i = 0; i < dayTimetables.Count; i++)
+        {
+            options.Add(new SelectOption(formattedTimes[i]));
+            if (formattedTimes[i][1] == 'X')
             {
-                Console.WriteLine("You already have a reservation for this timeslot, please select a different time");
-                Console.ReadLine();
-            }
-            else
-            {
-                // Get the selected timetable
-                selectedTimetable = dayTimetables[selectedStartTimeIndex];
-                selectedTimeString = formattedTimes[selectedStartTimeIndex];
-                selectedDateString = formatteddates[selectedDateIndex];
-                break;
+                EventModel? linkedEvent = timetableLogic.TimetableHasEvent(dayTimetables[i], eventTimetables, eventModels);
+                options.Add(new InfoOption($"└> Event Available - {linkedEvent.Name}"));
             }
         }
-        SeatOrdering:
+        menu.SetOptions(options);
+        int selectedTime = menu.SelectOption();
+        if (selectedTime == -1) { goto DatePick; }
+
+        TimetableModel timeslot = dayTimetables[selectedTime];
+        EventModel? selectedEvent = timetableLogic.TimetableHasEvent(timeslot, eventTimetables, eventModels);
+
+        bool hasDuplicate = reservationLogic.checkDuplicateReservation(timeslot, UserLogic.CurrentAccount);
+        if (hasDuplicate)
+        {
+            Console.WriteLine("You already have a reservation for this timeslot, please select a different time");
+            Console.ReadLine();
+            goto DatePick;
+        }
+
+        if (selectedEvent != null)
+        {
+            _options.Clear();
+            _options.Add(new InfoOption("This timeslot has an event taking place during the screening!"));
+            _options.Add(new InfoOption(""));
+            _options.Add(new InfoOption($"{selectedEvent.Name}"));
+            _options.Add(new InfoOption($"- {selectedEvent.Description}"));
+            _options.Add(new InfoOption($"Additional fee per seat: €{selectedEvent.Cost:F2}"));
+            _options.Add(new InfoOption(""));
+            _options.Add(new InfoOption("Are you sure you want to book reservation?"));
+            _options.Add(new SelectOption("Continue"));
+            menu.SetOptions(_options);
+            if (menu.SelectOption() == -1) { goto DatePick; }
+        }
+
+    SeatOrdering:
         Console.Clear();
         Console.WriteLine("How many seats would you like to reserve for?");
         int numberOfSeats = AmountOfSeats();
 
         Console.Clear();
         SeatSelection seatSelection = new();
-        List<SeatModel> toReserveSeats = seatSelection.Start(selectedTimetable, numberOfSeats);
-        if (toReserveSeats == null) {return;}
+        List<SeatModel> toReserveSeats = seatSelection.Start(timeslot, numberOfSeats, selectedEvent);
+        if (toReserveSeats == null) { return; }
         Console.Clear();
 
         double totalPrice = toReserveSeats.Sum(x => x.SeatCost);
@@ -107,7 +104,10 @@ public static class MakeReservation
 
         // Select Foods and Drinks
         List<ConsumableOrderModel> selectedItems = FoodsAndDrinks.Start();
-        if (selectedItems?[0].Id == -1) {goto SeatOrdering;}
+        if (selectedItems != null && selectedItems.Count > 0 && selectedItems[0].Id == -1)
+        {
+            goto SeatOrdering;
+        }
 
         double foodTotal = 0;
 
@@ -118,48 +118,48 @@ public static class MakeReservation
                 foodTotal += item.Quantity * item.UnitPrice;
             }
         }
-        
+
         double totalAmount = totalPrice + foodTotal;
+        if (selectedEvent != null)
+            totalPrice += toReserveSeats.Count * selectedEvent.Cost;
         Console.Clear();
 
         Console.WriteLine("=== Confirm Your Reservation ===");
         Console.WriteLine($"Movie: {movie.Title}");
-        Console.WriteLine($"Date: {selectedTimetable.HumanReadableStartTime:dd/MM/yyyy}");
-        Console.WriteLine($"Time: {selectedTimetable.HumanReadableStartTime:HH:mm} - {selectedTimetable.HumanReadableEndtime:HH:mm}");
+        Console.WriteLine($"Date: {timeslot.HumanReadableStartTime:dd/MM/yyyy}");
+        Console.WriteLine($"Time: {timeslot.HumanReadableStartTime:HH:mm} - {timeslot.HumanReadableEndtime:HH:mm}");
 
         Console.WriteLine("== Seats == ");
-       string seatInfo = ""; 
+        string seatInfo = "";
         foreach (var item in toReserveSeats)
         {
             var result = SeatRoomA.GetSeatInfo(item);
             if (result != null)
             {
                 (int row, int col) = ((int, int))result;
-                switch(item.SeatType)
+                switch (item.SeatType)
                 {
-                    case 1: 
-                        seatInfo += $"normal seat: row {row} seat {col}, price {item.SeatCost} \n";
-                    break;
-                    case 2: 
-                        seatInfo += $"premium seat: row {row} seat {col}, price {item.SeatCost}\n";
-                    break;
-                    case 3: 
-                        seatInfo += $"deluxe seat: row {row} seat {col}, price {item.SeatCost}\n";
-                    break;
+                    case 1:
+                        seatInfo += $"Normal Seat: Row {row}, Seat {col}, Price: €{item.SeatCost:F2} \n";
+                        break;
+                    case 2:
+                        seatInfo += $"Premium Seat: Row {row}, Seat {col}, Price: €{item.SeatCost:F2}\n";
+                        break;
+                    case 3:
+                        seatInfo += $"Deluxe Seat: Row {row}, Seat {col}, Price: €{item.SeatCost:F2}\n";
+                        break;
                 }
-                
+
             }
         }
+        if (selectedEvent != null)
+            seatInfo += $"{toReserveSeats.Count} x {selectedEvent.Name}, Price: €{selectedEvent.Cost:F2}\n";
 
-        seatInfo += $"total price {totalPrice}";
         Console.WriteLine(seatInfo);
-
-        if (selectedItems != null) {Console.WriteLine($"Food and Drink items: {selectedItems.Count}");}
-        Console.WriteLine();
-        Console.WriteLine($"Tickets: €{totalPrice:F2}");
+        Console.WriteLine("=== Foods and Drinks ===");
         Console.WriteLine($"Foods and Drinks: €{foodTotal:F2}");
         Console.WriteLine("-------------------------");
-        Console.WriteLine($"Total Amount: €{totalAmount:F2}");
+        Console.WriteLine($"Total Amount: €{totalAmount+foodTotal:F2}");
 
         Console.WriteLine();
         Console.WriteLine("Do you want to confirm your reservation? (Y/N)");
@@ -169,8 +169,8 @@ public static class MakeReservation
         if (userAnswer == ConsoleKey.Y)
         {
             Console.Clear();
-            // Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {selectedTimetable.HumanReadableStartTime:HH:mm} on {selectedTimetable.HumanReadableEndtime:dd/MM/yyyy}");
-            // ReservationModel reservation = new(0, selectedTimetable.Id, UserLogic.CurrentAccount.Id, numberOfSeats);
+            // Console.WriteLine($"Thank you for reserving the movie \n{movie.Title} \nat {timeslot.HumanReadableStartTime:HH:mm} on {timeslot.HumanReadableEndtime:dd/MM/yyyy}");
+            // ReservationModel reservation = new(0, timeslot.Id, UserLogic.CurrentAccount.Id, numberOfSeats);
 
             // Start simulated payment
             string? paymentNumber = ProcessPayment.Start(totalAmount);
@@ -184,10 +184,10 @@ public static class MakeReservation
             }
 
             // Save reservation
-            ReservationModel reservation = new(0, selectedTimetable.Id, UserLogic.CurrentAccount.Id, numberOfSeats);
-            
+            ReservationModel reservation = new(0, timeslot.Id, UserLogic.CurrentAccount.Id, numberOfSeats);
+
             long reservationId = reservationLogic.WriteAndGetId(reservation);
-            ReservationModel reservationRefreshed = new(reservationId, selectedTimetable.Id, UserLogic.CurrentAccount.Id, numberOfSeats);
+            ReservationModel reservationRefreshed = new(reservationId, timeslot.Id, UserLogic.CurrentAccount.Id, numberOfSeats);
 
             foreach (SeatModel seat in toReserveSeats)
             {
@@ -225,9 +225,9 @@ public static class MakeReservation
 
         while (true)
         {
-            if (attempts > 0) Console.WriteLine("Please enter a valid number of at least 1.");
+            if (attempts > 0) Console.WriteLine("Please enter a valid number of 1 - 20");
             string userInput = Console.ReadLine();
-            if (int.TryParse(userInput, out int val) && val >= 1) return val;
+            if (int.TryParse(userInput, out int val) && val >= 1 && val <= 20) return val;
             attempts++;
         }
     }

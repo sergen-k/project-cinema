@@ -11,6 +11,8 @@
         Duration = duration;
     }
 
+    public MovieModel() {}
+
     public  Int64   Id {get; set;}
     public  String   Title {get; set;}
     public  String   Description {get; set;}

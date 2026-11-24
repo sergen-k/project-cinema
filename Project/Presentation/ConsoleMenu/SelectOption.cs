@@ -1,19 +1,13 @@
-public class SelectOption<T> : OptionBase<T>
+public class SelectOption : OptionBase
 {
     
     public override string Label {get; set;}
-    public override T ReturnInfo {get; set;}
-    public override bool IsSelectable {get;} = true;
-    public override bool IsSearchable {get;} = false;
+    public override bool IsSelectable => true;
+    public override bool IsSearchable => false;
+    public override bool IsScrollable => false;
 
-    public SelectOption(string label, T returnInfo)
+    public SelectOption(string label)
     {
         Label = label;
-        ReturnInfo = returnInfo;
     }
-}
-
-public class SelectOption : SelectOption<string>
-{
-    public SelectOption(string label) : base(label, label){}
 }

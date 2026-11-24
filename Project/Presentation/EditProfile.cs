@@ -3,6 +3,7 @@ using System;
 public static class EditProfile
 {
     private static UserLogic _userLogic = new();
+    private static List<OptionBase> _options = new();
 
     public static void Start()
     {
@@ -11,35 +12,37 @@ public static class EditProfile
         while (true)
         {
             ConsoleMenu menu = new();
-            menu.AddOption(new InfoOption("Select to change your profile information!"));
-            menu.AddOption(new SelectOption<string>($"First Name: {currentUser.FirstName}", "First Name"));
-            menu.AddOption(new SelectOption<string>($"Last Name: {currentUser.LastName}", "Last Name"));
-            menu.AddOption(new SelectOption<string>($"Email: {currentUser.Email}", "Email"));
-            menu.AddOption(new SelectOption<string>($"Phone Number: {currentUser.PhoneNumber}", "Phone Number"));
-            string choice = menu.SelectOption();
+            _options.Clear();
+            _options.Add(new InfoOption("Select to change your profile information!"));
+            _options.Add(new SelectOption($"First Name: {currentUser.FirstName}"));
+            _options.Add(new SelectOption($"Last Name: {currentUser.LastName}"));
+            _options.Add(new SelectOption($"Email: {currentUser.Email}"));
+            _options.Add(new SelectOption($"Phone Number: {currentUser.PhoneNumber}"));
+            menu.SetOptions(_options);
+            int choice = menu.SelectOption();
 
-            if (choice == null)
+            if (choice == -1)
             {
                 break;
             }
             switch (choice)
             {
-                case "First Name":
+                case 1:
                     string newFirstName = AskFirstName();
                     if (newFirstName != null)
                         currentUser.FirstName = newFirstName;
                     break;
-                case "Last Name":
+                case 2:
                     string newLastName = AskLastName();
                     if (newLastName != null)
                         currentUser.LastName = newLastName;
                     break;
-                case "Email":
+                case 3:
                     string newEmail = AskEmail();
                     if (newEmail != null)
                         currentUser.Email = newEmail;
                     break;
-                case "Phone Number":
+                case 4:
                     string newPhoneNumber = AskPhoneNumber();
                     if (newPhoneNumber != null)
                         currentUser.PhoneNumber = newPhoneNumber;

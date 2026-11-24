@@ -1,19 +1,11 @@
-public class InfoOption<T> : OptionBase<T>
+public class InfoOption : OptionBase
 {
     
     public override string Label {get; set;}
-    public override T ReturnInfo {get => default ; set;}
-    public override bool IsSelectable {get;} = false;
-    public override bool IsSearchable {get;} = false;
+    public override bool IsSelectable => false;
+    public override bool IsSearchable => false;
+    public override bool IsScrollable => false;
 
     public InfoOption(string label) => Label = label;
-    public override void PrintOut(bool isSelected)
-    {
-        Console.WriteLine(Label);
-    }
-}
-
-public class InfoOption : InfoOption<string>
-{
-    public InfoOption(string label) : base(label){}
+    public override void PrintOut(bool isSelected) => Console.WriteLine(Label);
 }

@@ -93,4 +93,13 @@ public class MovieLogic
         return _movieAccess.SelectNextTwoWeeks();
     }
 
+    public bool MovieHasEvent(long movieId, List<EventTimetableModel> eventTimetables, List<TimetableModel> movieTimetables)
+    {
+        bool hasEvent = movieTimetables
+        .Where(t => t.MovieId == movieId)
+        .Any(t => eventTimetables.Any(et => et.TimetableId == t.Id));
+
+        return hasEvent;
+    }
+
 }

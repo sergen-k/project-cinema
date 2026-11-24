@@ -37,6 +37,38 @@ CREATE TABLE IF NOT EXISTS "Timetable" (
   FOREIGN KEY (`movieId`)
       REFERENCES `Movie`(`id`)
 );"""
+insert_timetable = """
+INSERT INTO Timetable VALUES(1,1794996000,0,1);
+INSERT INTO Timetable VALUES(2,1795010400,1,1);
+INSERT INTO Timetable VALUES(3,1795024800,2,1);
+INSERT INTO Timetable VALUES(4,1795082400,3,1);
+INSERT INTO Timetable VALUES(5,1795096800,4,1);
+INSERT INTO Timetable VALUES(6,1795111200,5,1);
+INSERT INTO Timetable VALUES(7,1795168800,6,1);
+INSERT INTO Timetable VALUES(8,1795183200,7,1);
+INSERT INTO Timetable VALUES(9,1795197600,8,1);
+INSERT INTO Timetable VALUES(10,1795255200,9,1);
+INSERT INTO Timetable VALUES(11,1795269600,10,1);
+INSERT INTO Timetable VALUES(12,1795284000,11,1);
+INSERT INTO Timetable VALUES(13,1795341600,12,1);
+INSERT INTO Timetable VALUES(14,1795356000,13,1);
+INSERT INTO Timetable VALUES(15,1795370400,14,1);
+INSERT INTO Timetable VALUES(16,1795428000,0,1);
+INSERT INTO Timetable VALUES(17,1795442400,1,1);
+INSERT INTO Timetable VALUES(18,1795456800,2,1);
+INSERT INTO Timetable VALUES(19,1795514400,3,1);
+INSERT INTO Timetable VALUES(20,1795528800,4,1);
+INSERT INTO Timetable VALUES(21,1795543200,5,1);
+INSERT INTO Timetable VALUES(22,1795600800,6,1);
+INSERT INTO Timetable VALUES(23,1795615200,7,1);
+INSERT INTO Timetable VALUES(24,1795629600,8,1);
+INSERT INTO Timetable VALUES(25,1795687200,9,1);
+INSERT INTO Timetable VALUES(26,1795701600,10,1);
+INSERT INTO Timetable VALUES(27,1795716000,11,1);
+INSERT INTO Timetable VALUES(28,1795773600,12,1);
+INSERT INTO Timetable VALUES(29,1795788000,13,1);
+INSERT INTO Timetable VALUES(30,1795802400,14,1);
+"""
 
 create_seats_table = """
 CREATE TABLE IF NOT EXISTS "Seat" (
@@ -267,11 +299,42 @@ CREATE TABLE ConsumableOrder (
 );
 """
 
+create_event_table = """
+CREATE TABLE EventTable (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    cost REAL NOT NULL
+);
+"""
+
+create_event_timetable_table = """
+CREATE TABLE EventTimetable (
+    id INTEGER PRIMARY KEY,
+    eventId INTEGER NOT NULL,
+    timetableId INTEGER NOT NULL,
+
+    FOREIGN KEY (eventId) REFERENCES EventTable(id),
+    FOREIGN KEY (timetableId) REFERENCES Timetable(id)
+);
+"""
+
+insert_default_events = """
+INSERT INTO EventTable VALUES(1, 'The Fellowship: Live Orchestra', 'A small live orchestra performs an original fantasy score during the film, bringing the journey through Middle-earth to life from the cinema stage.', 12.0);
+INSERT INTO EventTable VALUES(2, 'Director''s Midpoint Q&A', 'During a planned intermission, director Peter Jackson joins a live conversation about bringing the story to the screen. Audience questions are welcome.', 8.0);
+"""
+
+insert_default_event_timetables = """
+INSERT INTO EventTimetable VALUES(1, 1, 1);
+INSERT INTO EventTimetable VALUES(2, 2, 2);
+"""
+
 import sqlite3
 con = sqlite3.connect("DataSources/project.db")
 con.execute(create_movie)
 con.executescript(insert_default_movies)
 con.execute(create_timetable_table)
+con.executescript(insert_timetable)
 con.execute(create_seats_table)
 con.executescript(insert_room_1)
 con.execute(create_reservation_table)
@@ -281,3 +344,7 @@ con.execute(insert_admin)
 con.execute(create_consumable_table)
 con.executescript(insert_default_consumable)
 con.execute(create_consumable_order_table)
+con.execute(create_event_table)
+con.execute(create_event_timetable_table)
+con.executescript(insert_default_events)
+con.executescript(insert_default_event_timetables)

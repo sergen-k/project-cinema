@@ -19,7 +19,7 @@ public class SeatSelection
 
     private List<SeatModel> toReserve = [];
 
-    public List<SeatModel> Start(TimetableModel timetableModel, int amountToReserve)
+    public List<SeatModel> Start(TimetableModel timetableModel, int amountToReserve, EventModel eventModel)
     {
 
         // make a roomA
@@ -36,7 +36,8 @@ public class SeatSelection
             Console.WriteLine(DrawAuditorium(filledSeats, toReserve));
 
             double totalPrice = toReserve.Sum(x => x.SeatCost);
-            Console.WriteLine($"Total price: {totalPrice}");
+            Console.WriteLine($"Room: {timetableModel.RoomNumber}");
+            Console.WriteLine($"Total price: {totalPrice:F2}");
             Console.WriteLine($"{toReserve.Count} / {amountToReserve}");
             var keypress = Console.ReadKey().Key;
 
@@ -78,7 +79,7 @@ public class SeatSelection
                     if (toReserve.Count == amountToReserve)
                     {
                         Console.Clear();
-                        bool confirmed = ConfirmationMenu();
+                        bool confirmed = ConfirmationMenu(eventModel);
                         if (confirmed)
                         {
                             return toReserve;
@@ -100,9 +101,10 @@ public class SeatSelection
 
 
 
-    public bool ConfirmationMenu()
+    public bool ConfirmationMenu(EventModel eventModel)
     {
-        ConsoleMenu consoleMenu = new();
+        List<OptionBase> options = new();
+        ConsoleMenu menu = new();
 
         string confirmationMessage = "Are you sure you want to reserve the seats:\n";
         foreach (var item in toReserve)
@@ -114,27 +116,30 @@ public class SeatSelection
                 switch (item.SeatType)
                 {
                     case 1:
-                        confirmationMessage += $"normal seat: row {row} seat {col}, price {item.SeatCost} \n";
+                        confirmationMessage += $"Normal Seat: Row {row}, Seat {col}, Price: €{item.SeatCost:F2} \n";
                         break;
                     case 2:
-                        confirmationMessage += $"premium seat: row {row} seat {col}, price {item.SeatCost}\n";
+                        confirmationMessage += $"Premium Seat: Row {row}, Seat {col}, Price: €{item.SeatCost:F2}\n";
                         break;
                     case 3:
-                        confirmationMessage += $"deluxe seat: row {row} seat {col}, price {item.SeatCost}\n";
+                        confirmationMessage += $"Deluxe Seat: Row {row}, Seat {col}, Price: €{item.SeatCost:F2}\n";
                         break;
                 }
             }
         }
+        if (eventModel != null)
+            confirmationMessage += $"{toReserve.Count} x {eventModel.Name}, Price: €{eventModel.Cost*toReserve.Count:F2}\n";
 
         double totalPrice = toReserve.Sum(x => x.SeatCost);
-        confirmationMessage += $"total price: {totalPrice}";
+        if (eventModel != null)
+            totalPrice += toReserve.Count * eventModel.Cost;
+        confirmationMessage += $"\nTotal Price: €{totalPrice:F2}\n";
 
-
-        consoleMenu.AddOption(new InfoOption(confirmationMessage));
-        consoleMenu.PopulateOptions(["Yes", "No"]);
-
-        string userSelected = consoleMenu.SelectOption();
-        return userSelected == "Yes";
+        options.Add(new InfoOption(confirmationMessage));
+        options.Add(new SelectOption("Continue"));
+        menu.SetOptions(options);
+        int userSelected = menu.SelectOption();
+        return userSelected != -1;
     }
 
 
