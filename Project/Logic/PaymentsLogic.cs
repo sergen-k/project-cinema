@@ -135,6 +135,7 @@ public class PaymentsLogic
         return IsOnlyDigits(cvc);
     }
 
+
     public bool IsValidDutchIban(string iban)
     {
         if (string.IsNullOrWhiteSpace(iban))
@@ -152,16 +153,19 @@ public class PaymentsLogic
             }
         }
 
+        // Dutch IBAN must contain 18 characters
         if (cleanIban.Length != 18)
         {
             return false;
         }
 
+        // First two characters must be NL
         if (cleanIban.Substring(0, 2) != "NL")
         {
             return false;
         }
 
+        // Next two characters must be digits
         for (int i = 2; i < 4; i++)
         {
             if (cleanIban[i] < '0' || cleanIban[i] > '9')
@@ -170,6 +174,7 @@ public class PaymentsLogic
             }
         }
 
+        // Next four characters must be letters
         for (int i = 4; i < 8; i++)
         {
             if (cleanIban[i] < 'A' || cleanIban[i] > 'Z')
@@ -178,6 +183,7 @@ public class PaymentsLogic
             }
         }
 
+        // Last ten characters must be digits
         for (int i = 8; i < 18; i++)
         {
             if (cleanIban[i] < '0' || cleanIban[i] > '9')
@@ -186,26 +192,7 @@ public class PaymentsLogic
             }
         }
 
-        string rearranged =
-            cleanIban.Substring(4) + cleanIban.Substring(0, 4);
-
-        int remainder = 0;
-
-        foreach (char character in rearranged)
-        {
-            if (character >= '0' && character <= '9')
-            {
-                int digit = character - '0';
-                remainder = (remainder * 10 + digit) % 97;
-            }
-            else
-            {
-                int number = character - 'A' + 10;
-                remainder = (remainder * 100 + number) % 97;
-            }
-        }
-
-        return remainder == 1;
+        return true;
     }
 
     public string GeneratePaymentNumber()
