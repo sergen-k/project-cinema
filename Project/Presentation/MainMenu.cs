@@ -59,6 +59,12 @@ static class MainMenu
                     Console.CursorVisible = false;
                     break;
 
+
+                case "Finances":
+                    Finances.Start();
+                    Console.WriteLine("hello");
+                   break;
+
                 case "Edit Profile":
                     Console.CursorVisible = true;
                     EditProfile.Start();
@@ -99,6 +105,15 @@ static class MainMenu
         if (UserLogic.CurrentAccount?.Role == "Admin")
         {
             _options.Add(new SelectOption(">>> ENTER ADMIN PANEL <<<"));
+        }
+
+
+
+        // maak een finance panel aan die alleen iets aanroept als de role FinanceWorker is of een admin. 
+
+        if(UserLogic.CurrentAccount?.Role == "Admin" || UserLogic.CurrentAccount?.Role == "FinanceWorker")
+        {
+            _options.Add(new SelectOption("Finances"));
         }
 
         _options.Add(new SelectOption("Browse Movies"));

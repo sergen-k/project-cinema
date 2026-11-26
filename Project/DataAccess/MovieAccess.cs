@@ -93,4 +93,8 @@ public class MovieAccess : IDataAccess<MovieModel>
 
         return _connection.Query<MovieModel>(sql).ToList();
     }
+
+
+
+    
 }

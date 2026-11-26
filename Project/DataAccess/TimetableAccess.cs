@@ -66,4 +66,8 @@ public class TimetableAccess : IDataAccess<TimetableModel>
         return _connection.ExecuteScalar<long>(sql);
     }
 
+
+
+
+
 }

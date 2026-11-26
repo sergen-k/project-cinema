@@ -6,4 +6,6 @@ public enum Roles
 
     Worker,
 
+    FinanceWorker
+
 }
