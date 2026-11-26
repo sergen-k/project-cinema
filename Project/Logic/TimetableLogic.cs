@@ -99,4 +99,10 @@ public class TimetableLogic
         else
             return events.First(e => e.Id == eventTimetable.EventId);
     }
+
+
+   
+
+
+
 }

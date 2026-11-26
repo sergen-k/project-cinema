@@ -1,11 +1,9 @@
-using System.Security.Authentication.ExtendedProtection;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.Extensions.Options;
+
 
 public static class AdminChangeUserSettings
 {
 
-  public static List<string> MainUserOptions = ["Change user roles", "Change user info"];
+
   private static List<OptionBase> _options = new();
 
   public static void ChangeUserRoles()

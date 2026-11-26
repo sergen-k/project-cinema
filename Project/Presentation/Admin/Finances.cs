@@ -21,4 +21,43 @@ public class Finances
    //TODO als je een user finance gaat pakken moet je alle tables checken 
 
     }
+
+
+
+
+
+  public static void UserFinances()
+  {
+     // alles van de user finances moet hierin en dan de checks doe je bij de logic. 
+
+     // pak eerst alle users, 
+
+   
+  }
+
+
+ public static void MovieFinances()
+  {
+     // pak all de movies waar een timetable in zit en vanuit bestaat. 
+     ConsoleMenu timetablemenu = new();
+     TimetableLogic timetableLogic = new();
+     List<TimetableModel> AllTimeTables = timetableLogic.SelectAll();
+     _options.Clear();
+
+     foreach( TimetableModel AllTimetable in AllTimeTables)
+    {
+      _options.Add(new SelectOption(AllTimetable.MovieId.ToString()));
+    }
+     
+     
+
+ 
+     
+
+   
+   
+      
+
+  }
+
 }
